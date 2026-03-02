@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login y Registro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,16 +14,16 @@
             </div>
             
             <div class="form" id="form">
-                <form class="login">
+                <form class="login" id="login-form">
                      <h2>Bienvenido a HiddenStage</h2>
                 <p>Ingresa tu información de inicio de sesión</p>
                 <div class="input">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" placeholder="Ingresa tu email">
+                    <input type="email" name="email" id="email" placeholder="Ingresa tu email" required>
                 </div>
                 <div class="input">
                     <label for="password">Contraseña</label>
-                    <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña">
+                    <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña" required>
                 </div>
                 <div class="reminder">
                     <div class="checkbox-container">
@@ -33,38 +33,38 @@
                     <span class="forgot">¿Olvidaste tu contraseña?</span>
                 </div>
                 <div class="buttons">
-                    <button>Iniciar Sesión</button>
-                    <button>
-                        <img src="/google.webp" alt="google" class="google-icon">
+                    <button type="submit">Iniciar Sesión</button>
+                    <button type="button">
+                        <img src="google.webp" alt="google" class="google-icon">
                         Google
                     </button>
                 </div>
-                <p class="account">No teienes una cuenta?<a href="#" id="sign-up"> Regístrate aquí</a></p>
+                <p class="account">¿No tienes una cuenta?<a href="#" id="sign-up"> Regístrate aquí</a></p>
             </form>
 
-             <form class="register">
+             <form class="register" id="register-form">
                      <h2>Crea tu cuenta</h2>
                 <p>Ingresa tu información de registro</p>
                 <div class="input">
-                    <label for="name">Tu nombre</label>
-                    <input type="text" name="name" id="name" placeholder="Ingresa tu nombre">
+                    <label for="register-name">Tu nombre</label>
+                    <input type="text" name="name" id="register-name" placeholder="Ingresa tu nombre" required>
                 </div>
                 <div class="input">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" placeholder="Ingresa tu email">
+                    <label for="register-email">Email</label>
+                    <input type="email" name="email" id="register-email" placeholder="Ingresa tu email" required>
                 </div>
                 <div class="input">
-                    <label for="password">Contraseña</label>
-                    <input type="password" name="password" id="password" placeholder="Ingresa tu contraseña">
+                    <label for="register-password">Contraseña</label>
+                    <input type="password" name="password" id="register-password" placeholder="Ingresa tu contraseña" required>
                 </div>
                 <div class="buttons">
-                    <button>Crear Cuenta</button>
-                    <button>
-                        <img src="/google.webp" alt="google" class="google-icon">
+                    <button type="submit">Crear Cuenta</button>
+                    <button type="button">
+                        <img src="google.webp" alt="google" class="google-icon">
                         Google
                     </button>
                 </div>
-                <p class="account">Ya tienes una cuenta?<a href="#" id="sign-in"> Inicia sesión</a></p>
+                <p class="account">¿Ya tienes una cuenta?<a href="#" id="sign-in"> Inicia sesión</a></p>
             </form>
             </div>
             <div class="form-bot">
@@ -75,7 +75,7 @@
  
         </div>
     </div>
-    <script src="/java.js"></script>
+    <script src="java.js"></script>
 
 </body>
 </html>
