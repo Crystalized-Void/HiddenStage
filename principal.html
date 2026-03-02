@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Inicio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="principal.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" href="principal.html" aria-label="HiddenStage Inicio">
+                <img src="img/LOGO_pagina3.png" alt="HiddenStage" class="brand-logo">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="buscar" aria-label="Buscar contenido">
+            </div>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
+                    <span data-user-name>Usuario</span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <a href="perfil.html">PERFIL</a>
+                    <a href="#">EDITAR PERFIL</a>
+                    <a href="configuracion.html">CONFIGURACIÓN</a>
+                    <a href="index.html">CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="tag">Bienvenido a</p>
+                <h1>HIDDENSTAGE</h1>
+                <p>Tu hub principal para noticias, guías y actualizaciones de cualquier juego.</p>
+                <button>SOBRE NOSOTROS</button>
+            </div>
+        </section>
+
+        <section id="articles" class="articles">
+            <h2>PUBLICACIONES DESTACADAS</h2>
+            <div class="cards">
+                <article class="card card-main">
+                    <div class="thumb one"></div>
+                    <h3>Conoce el nuevo parche</h3>
+                    <p>Resumen de ajustes, armas y balance competitivo.</p>
+                </article>
+                <article class="card card-small">
+                    <div class="thumb two"></div>
+                    <h3>Guía de economía</h3>
+                    <p>Cuándo guardar, forzar o hacer compra completa.</p>
+                </article>
+                <article class="card card-small">
+                    <div class="thumb three"></div>
+                    <h3>Mejores composiciones</h3>
+                    <p>Sets de agentes recomendados por mapa.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="publicaciones-recientes" class="recent-posts">
+            <div class="recent-head">
+                <h2>PUBLICACIONES RECIENTES</h2>
+                <a href="#">VER MÁS</a>
+            </div>
+
+            <div class="recent-grid">
+                <article class="recent-card">
+                    <div class="recent-thumb"></div>
+                    <span>hace 2 horas</span>
+                    <h3>Top picks de armas para iniciar la temporada competitiva</h3>
+                </article>
+
+                <article class="recent-card">
+                    <div class="recent-thumb"></div>
+                    <span>hace 5 horas</span>
+                    <h3>Guía rápida para mejorar decisiones de economía por ronda</h3>
+                </article>
+
+                <article class="recent-card">
+                    <div class="recent-thumb"></div>
+                    <span>hace 8 horas</span>
+                    <h3>Errores comunes de posicionamiento en mapas de control</h3>
+                </article>
+
+                <article class="recent-card">
+                    <div class="recent-thumb"></div>
+                    <span>hace 1 día</span>
+                    <h3>5 hábitos de comunicación que mejoran tu winrate en equipo</h3>
+                </article>
+            </div>
+        </section>
+
+        <section id="noticias" class="news">
+            <h2>NOTICIAS</h2>
+
+            <div class="news-grid">
+                <article class="news-card">
+                    <div class="news-thumb"></div>
+                    <span>hace 1 día</span>
+                    <h3>ffffLorem ipsum dolor sit amet consectetur adipisicing elit curabitur, eu</h3>
+                    <p>semper felis mattis per sociosqu lobortis cum, nunc laoreet aliquam</p>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-thumb"></div>
+                    <span>hace 1 día</span>
+                    <h3>ffffLorem ipsum dolor sit amet consectetur adipisicing elit curabitur, eu</h3>
+                    <p>semper felis mattis per socio</p>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-thumb"></div>
+                    <span>hace 1 día</span>
+                    <h3>ffffLorem ipsum dolor sit amet consectetur adipisicing elit curabitur, eu</h3>
+                    <p>semper felis mattis per sociosqu lobortis cum, nunc laoreet aliquam dictumet auctor sollicitudin vestibulum. Mauris vel tristique sed</p>
+                </article>
+
+                <article class="news-card">
+                    <div class="news-thumb"></div>
+                    <span>hace 1 día</span>
+                    <h3>ffffLorem ipsum dolor sit amet consectetur adipisicing elit curabitur, eu</h3>
+                    <p>semper felis mattis per socio</p>
+                </article>
+            </div>
+
+            <div class="news-bottom">
+                <div class="news-list">
+                    <article class="news-list-item">
+                        <div class="news-thumb-small"></div>
+                        <div>
+                            <span>hace 1 día</span>
+                            <h3>ffffLorem ipsum dolor sit amet consectetur adipiscing elit curabitur</h3>
+                        </div>
+                    </article>
+
+                    <article class="news-list-item">
+                        <div class="news-thumb-small"></div>
+                        <div>
+                            <span>hace 1 día</span>
+                            <h3>ffffLorem ipsum dolor sit amet consectetur adipiscing elit curabitur</h3>
+                        </div>
+                    </article>
+
+                    <article class="news-list-item">
+                        <div class="news-thumb-small"></div>
+                        <div>
+                            <span>hace 1 día</span>
+                            <h3>ffffLorem ipsum dolor sit amet consectetur adipiscing elit curabitur</h3>
+                        </div>
+                    </article>
+
+                    <article class="news-list-item">
+                        <div class="news-thumb-small"></div>
+                        <div>
+                            <span>hace 1 día</span>
+                            <h3>ffffLorem ipsum dolor sit amet consectetur adipiscing elit curabitur</h3>
+                        </div>
+                    </article>
+
+                    <article class="news-list-item">
+                        <div class="news-thumb-small"></div>
+                        <div>
+                            <span>hace 1 día</span>
+                            <h3>ffffLorem ipsum dolor sit amet consectetur adipiscing elit curabitur</h3>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="proximos-lanzamientos" class="launches">
+            <div class="launches-head">
+                <p class="tag">AGENDA GAMING</p>
+                <h2>PRÓXIMOS LANZAMIENTOS</h2>
+                <p>Descubre los títulos que están por llegar y prepárate para jugar desde el día uno.</p>
+            </div>
+
+            <div class="launches-grid">
+                <article class="launch-card launch-featured">
+                    <span class="launch-date">12 OCT 2026</span>
+                    <h3>PHANTOM REBORN</h3>
+                    <p>Shooter táctico futurista con campaña cooperativa y arenas competitivas 5v5.</p>
+                    <div class="launch-platforms">
+                        <span>PC</span>
+                        <span>PS5</span>
+                        <span>XBOX</span>
+                    </div>
+                </article>
+
+                <article class="launch-card">
+                    <span class="launch-date">24 NOV 2026</span>
+                    <h3>LEGENDS OF RIFT</h3>
+                    <p>RPG de acción de mundo abierto con raids semanales y progresión por temporadas.</p>
+                    <div class="launch-platforms">
+                        <span>PC</span>
+                        <span>PS5</span>
+                    </div>
+                </article>
+
+                <article class="launch-card">
+                    <span class="launch-date">03 DIC 2026</span>
+                    <h3>NEON DRIFT X</h3>
+                    <p>Conducción arcade en circuitos urbanos con físicas dinámicas y modo online.</p>
+                    <div class="launch-platforms">
+                        <span>PC</span>
+                        <span>PS5</span>
+                        <span>SWITCH</span>
+                    </div>
+                </article>
+
+                <article class="launch-card">
+                    <span class="launch-date">19 ENE 2027</span>
+                    <h3>KINGDOMS UNDER FIRE</h3>
+                    <p>Estrategia en tiempo real con asedios masivos, diplomacia y mapa persistente.</p>
+                    <div class="launch-platforms">
+                        <span>PC</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="guias-trucos" class="guides">
+            <div class="guides-head">
+                <p class="tag">APRENDE MÁS RÁPIDO</p>
+                <h2>GUÍAS Y TRUCOS</h2>
+                <p>Mejora tu nivel con estrategias claras, configuraciones recomendadas y jugadas clave para rankear.</p>
+                <a href="#" class="guides-more">VER TODAS LAS GUÍAS</a>
+            </div>
+
+            <div class="guides-grid">
+                <article class="guide-card guide-card-featured">
+                    <div class="guide-thumb"></div>
+                    <span>META ACTUAL</span>
+                    <h3>Cómo subir de elo sin depender del aim perfecto</h3>
+                </article>
+
+                <article class="guide-card">
+                    <div class="guide-thumb"></div>
+                    <span>CONFIG</span>
+                    <h3>Crosshair competitivo: ajustes recomendados</h3>
+                </article>
+
+                <article class="guide-card">
+                    <div class="guide-thumb"></div>
+                    <span>MAPAS</span>
+                    <h3>Smokes y líneas esenciales para cada sitio</h3>
+                </article>
+
+                <article class="guide-card">
+                    <div class="guide-thumb"></div>
+                    <span>ECONOMÍA</span>
+                    <h3>Cuándo forzar y cuándo guardar para dominar partidas</h3>
+                </article>
+
+                <article class="guide-card">
+                    <div class="guide-thumb"></div>
+                    <span>TEAMPLAY</span>
+                    <h3>Comunicaciones cortas que ganan rondas</h3>
+                </article>
+
+                <article class="guide-card">
+                    <div class="guide-thumb"></div>
+                    <span>TIPS PRO</span>
+                    <h3>Errores comunes que te frenan en competitivo</h3>
+                </article>
+            </div>
+        </section>
+
+        <section id="ofertas" class="deals">
+            <div class="deals-head">
+                <p class="tag">PROMOS DE LA SEMANA</p>
+                <h2>OFERTAS DE VIDEOJUEGOS</h2>
+                <p>Precios especiales por tiempo limitado en títulos competitivos, aventura y acción.</p>
+            </div>
+
+            <div class="deals-layout">
+                <article class="deal-hero">
+                    <span class="deal-pill">-70%</span>
+                    <h3>PACK ULTIMATE HIDDENSTAGE</h3>
+                    <p>Incluye 4 juegos top + contenido exclusivo y acceso anticipado.</p>
+                    <div class="deal-hero-price">
+                        <small>$199.00</small>
+                        <strong>$59.90</strong>
+                    </div>
+                    <button>COMPRAR AHORA</button>
+                </article>
+
+                <div class="deals-grid">
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PC</span>
+                        <div class="deal-price"><small>$109.50</small><strong>$79.50</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PC</span>
+                        <div class="deal-price"><small>$493.00</small><strong>$329.00</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PS5</span>
+                        <div class="deal-price"><small>$1023.70</small><strong>$899.00</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PC</span>
+                        <div class="deal-price"><small>$100.00</small><strong>$74.00</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PS5</span>
+                        <div class="deal-price"><small>$129.50</small><strong>$99.50</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PC</span>
+                        <div class="deal-price"><small>$549.00</small><strong>$399.00</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PS5</span>
+                        <div class="deal-price"><small>$899.00</small><strong>$699.00</strong></div>
+                    </article>
+
+                    <article class="deal-card">
+                        <div class="deal-thumb"></div>
+                        <h4>Nombre del juego</h4>
+                        <span>PC</span>
+                        <div class="deal-price"><small>$149.90</small><strong>$109.90</strong></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-top-line"></div>
+
+        <div class="footer-main">
+            <div class="footer-row">
+                <a href="principal.html">INICIO</a>
+            </div>
+
+            <div class="footer-row footer-row-split">
+                <span>SÍGUENOS</span>
+                <span class="footer-brand-name">HIDDENSTAGE</span>
+            </div>
+
+            <div class="footer-socials">
+                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Copyright 2020-2026 - Prohibida la reproducción total o parcial de estos contenidos sin el permiso expreso de los autores.
+        </div>
+    </footer>
+
+    <script>
+        (() => {
+            const userPanel = document.querySelector('.user-panel');
+            const userTrigger = document.querySelector('.user-trigger');
+            const userNameText = document.querySelector('[data-user-name]');
+            const userFullNameText = document.querySelector('[data-user-fullname]');
+            const userTopAvatar = document.querySelector('[data-user-avatar]');
+            const logoutLink = document.querySelector('.user-dropdown a[href="index.html"]');
+
+            const storedUserRaw = localStorage.getItem('hiddenstageUser');
+
+            if (storedUserRaw && userNameText && userFullNameText) {
+                try {
+                    const storedUser = JSON.parse(storedUserRaw);
+                    if (storedUser?.username) {
+                        userNameText.textContent = storedUser.username;
+                        userFullNameText.textContent = storedUser.username;
+                    }
+
+                    if (userTopAvatar) {
+                        const photo = storedUser?.foto_perfil || '';
+                        if (photo) {
+                            userTopAvatar.style.backgroundImage = `url(${photo})`;
+                            userTopAvatar.classList.add('has-photo');
+                        } else {
+                            userTopAvatar.style.backgroundImage = '';
+                            userTopAvatar.classList.remove('has-photo');
+                        }
+                    }
+                } catch (error) {
+                    localStorage.removeItem('hiddenstageUser');
+                }
+            }
+
+            if (logoutLink) {
+                logoutLink.addEventListener('click', () => {
+                    localStorage.removeItem('hiddenstageUser');
+                });
+            }
+
+            if (!userPanel || !userTrigger) {
+                return;
+            }
+
+            const closeMenu = () => {
+                userPanel.classList.remove('open');
+                userTrigger.setAttribute('aria-expanded', 'false');
+            };
+
+            userTrigger.addEventListener('click', () => {
+                const isOpen = userPanel.classList.toggle('open');
+                userTrigger.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!userPanel.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
