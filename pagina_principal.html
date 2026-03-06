@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="principal.css">
+</head>
+<body id="inicio">
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" aria-label="HiddenStage Inicio">
+                <img src="Img/LogoHS.png" alt="HiddenStage" class="brand-logo" onclick="Menu()">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+            </div>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu" onclick="toggleUserMenu()">
+                    <span data-user-name></span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <label for="avatar-upload" style="cursor: pointer; display: block; padding: 10px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+                        Cambiar foto de perfil
+                    </label>
+                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="updateProfileImage(event)">
+                    <a href="#">PERFIL</a>
+                    <a href="#">EDITAR PERFIL</a>
+                    <a href="#">CONFIGURACIÓN</a>
+                    <a href="index.html">CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+    </header>
+<nav class="nav-bar">
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
+    <a href="#"><i class="fas fa-gamepad"></i> Géneros</a>
+</nav>
+<div id="sideMenu" class="side-menu">
+    <div class="menu-header">
+        <img src="Img/LogoHS.png" onclick="Menu()">
+        <i class="fas fa-times close-icon" onclick="Menu()"></i>
+    </div>
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
+    <a href="#"><i class="fas fa-gamepad"></i> Géneros</a>
+</div>
+<div id="sideProfile" class="side-profile">
+    <div class="menu-header">
+        <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+        <img src="Img/LogoHS.png" onclick="AjustesPerfil()" class="profile-logo">
+    </div>
+    <a href="#"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="#"><i class="fas fa-cog"></i> Ajustes</a>
+    <a href="#"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+    <a href="#"><i class="fas fa-sign-out-alt"></i> Cerrar sesion</a>
+    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+</div>
+    
+<main id="relevancia" class="container">
+    <section class="featured">
+        <div class="featured-image">
+            <img src="Img/Imagendeprueba.png" alt="Post Destacado">
+        </div>
+        <div class="featured-text">
+            <h2><i class="fas fa-star"></i> Team Cherry nos la hace otra vez</h2>
+            <p>Team Cherry confirma que les gusto tanto crear el dlc de Silksong que sera un juego nuevo</p>
+        </div>
+    </section>
+    <aside class="sidebar">
+        <div class="sidepost">
+            <img src="" alt="Publicación 1">
+            <div class="post-info">
+                <h4>Publicación 1</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+        <div class="sidepost">
+            <img src="" alt="Publicación 2">
+            <div class="post-info">
+                <h4>Publicación 2</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+        <div class="sidepost">
+            <img src="" alt="Publicación 3">
+            <div class="post-info">
+                <h4>Publicación 3</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<section class="Populares">
+    <h2><i class="fas fa-fire"></i> MAS POPULARES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="reciente" class="Recientes">
+    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="guias" class="Guias">
+    <h2><i class="fas fa-book"></i> GUIAS </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="trucos" class="Trucos">
+    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+</section>
+<script>
+    function Menu() {
+        document.getElementById("sideMenu").classList.toggle("active");
+    }
+</script>
+<script>
+    function AjustesPerfil() {
+        document.getElementById("sideProfile").classList.toggle("active");
+    }
+</script>
+<script>
+    function toggleUserMenu() {
+        const panel = document.querySelector('.user-panel');
+        const expanded = panel.getAttribute('aria-expanded') === 'true';
+        panel.setAttribute('aria-expanded', !expanded);
+    }
+</script>
+</body>
+</html>
