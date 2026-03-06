@@ -18,7 +18,7 @@
 }
 
 body {
-    background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    background: var(--bg-1);
     color: var(--text);
 }
 
@@ -178,7 +178,7 @@ body {
 
 .cover {
     min-height: 220px;
-    background: linear-gradient(130deg, #d9d9d9, #bdbdbd);
+    background: #d9d9d9;
     border-radius: 0 0 16px 16px;
     position: relative;
 }
@@ -244,7 +244,7 @@ body {
     height: 154px;
     border-radius: 50%;
     border: 4px solid rgba(149, 130, 193, 0.45);
-    background: linear-gradient(135deg, #d9d9d9, #9582c1);
+    background: #d9d9d9;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -366,7 +366,7 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #d9d9d9, #9582c1);
+    background: #bdbdbd;
 }
 
 .profile-content {
@@ -495,7 +495,7 @@ body {
     width: 100%;
     aspect-ratio: 1;
     border-radius: 12px;
-    background: linear-gradient(140deg, #d9d9d9, #9582c1);
+    background: #d9d9d9;
 }
 
 .post-thumb.post-cover-image {
@@ -550,7 +550,7 @@ body {
     width: 100%;
     min-height: 250px;
     border-radius: 16px;
-    background: linear-gradient(145deg, #d9d9d9, #9582c1);
+    background: #d9d9d9;
     border: 1px solid rgba(124, 105, 168, 0.45);
 }
 
