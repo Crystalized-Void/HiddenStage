@@ -13,8 +13,8 @@
 <body>
     <header class="topbar">
         <div class="topbar-main">
-            <a class="brand" href="principal.html" aria-label="HiddenStage Inicio">
-                <img src="img/LOGO_pagina3.png" alt="HiddenStage" class="brand-logo">
+            <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
+                <img src="img/LOGO_pagina2.png" alt="HiddenStage" class="brand-logo">
             </a>
 
             <div class="topbar-search">
@@ -45,7 +45,7 @@
 
     <main class="profile-page">
         <section class="cover">
-            <a class="home-link" href="principal.html" aria-label="Volver al inicio">
+            <a class="home-link" href="pagina_principal.html" aria-label="Volver al inicio">
                 <i class="fa-solid fa-house"></i>
             </a>
         </section>
@@ -67,7 +67,7 @@
 
                 <h1 data-profile-name>Nombre de Usuario/Autor</h1>
                 <p class="handle" data-profile-handle>@example</p>
-                <p class="bio">Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
+                <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
                 <p class="joined">Se unió el 13 de febrero del 2026</p>
 
                 <h2>Socials</h2>
@@ -94,7 +94,14 @@
 
             <section class="profile-content">
                 <div class="tab-panel" data-panel="posts">
-                    <div class="post-list">
+                    <div class="posts-toolbar">
+                        <a class="create-post-btn" href="crear-post.html">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>Crear post en nueva página</span>
+                        </a>
+                    </div>
+
+                    <div class="post-list" data-post-list>
                     <article class="post-card">
                         <div class="post-text">
                             <h3>RESEÑA DE VIDEOJUEGO</h3>
@@ -175,6 +182,14 @@
 
     <script>
         (() => {
+            const LOCAL_API_ORIGIN = 'http://localhost:3000';
+            const isLocalFrontend =
+                window.location.protocol === 'file:' ||
+                ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+            const API_BASE = isLocalFrontend && !isBackendOrigin
+                ? LOCAL_API_ORIGIN
+                : '';
             const userPanel = document.querySelector('.user-panel');
             const userTrigger = document.querySelector('.user-trigger');
             const tabs = document.querySelectorAll('.tab');
@@ -184,10 +199,14 @@
             const userTopAvatar = document.querySelector('[data-user-avatar]');
             const profileNameText = document.querySelector('[data-profile-name]');
             const profileHandleText = document.querySelector('[data-profile-handle]');
+            const profileBioText = document.querySelector('[data-profile-bio]');
             const profileAvatar = document.querySelector('.avatar');
             const profileCover = document.querySelector('.cover');
             const logoutLink = document.querySelector('.user-dropdown a[href="index.html"]');
             const socialSlots = document.querySelectorAll('[data-social-slot]');
+            const postsList = document.querySelector('[data-post-list]');
+            const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
+            let currentSessionUser = null;
 
             const normalizeUrl = (value) => {
                 if (!value || typeof value !== 'string') {
@@ -272,11 +291,223 @@
                 });
             };
 
+            const getPostsStorageKey = () => {
+                if (!currentSessionUser || typeof currentSessionUser !== 'object') {
+                    return '';
+                }
+
+                const uniqueId = currentSessionUser.id_usuario || currentSessionUser.email || currentSessionUser.username;
+                return uniqueId ? `hiddenstagePosts_${String(uniqueId)}` : '';
+            };
+
+            const readStoredPosts = () => {
+                const storageKey = getPostsStorageKey();
+
+                if (!storageKey) {
+                    return [];
+                }
+
+                try {
+                    const storedPostsRaw = localStorage.getItem(storageKey);
+
+                    if (!storedPostsRaw) {
+                        return [];
+                    }
+
+                    const parsedPosts = JSON.parse(storedPostsRaw);
+                    return Array.isArray(parsedPosts) ? parsedPosts : [];
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const readSqlPosts = async () => {
+                if (!currentSessionUser?.id_usuario) {
+                    return [];
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/posts/${Number(currentSessionUser.id_usuario)}`);
+                    const data = await response.json();
+
+                    if (!response.ok || !Array.isArray(data?.posts)) {
+                        return [];
+                    }
+
+                    return data.posts.map((post) => ({
+                        id: Number(post.id_post),
+                        sql_post_id: Number(post.id_post),
+                        title: post.titulo || '',
+                        content: post.contenido || '',
+                        coverImage: post.portada_url || '',
+                        youtube_url: post.youtube_url || '',
+                        media: [],
+                        createdAt: post.created_at || new Date().toISOString(),
+                        source: 'sql'
+                    }));
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const writeStoredPosts = (posts) => {
+                const storageKey = getPostsStorageKey();
+
+                if (!storageKey) {
+                    return;
+                }
+
+                localStorage.setItem(storageKey, JSON.stringify(posts));
+            };
+
+            const buildPostCard = (post) => {
+                const article = document.createElement('article');
+                article.className = 'post-card post-card-custom';
+
+                const textWrapper = document.createElement('div');
+                textWrapper.className = 'post-text';
+
+                const titleNode = document.createElement('h3');
+                titleNode.textContent = post.title;
+
+                const contentNode = document.createElement('p');
+                contentNode.textContent = post.content;
+
+                textWrapper.appendChild(titleNode);
+                textWrapper.appendChild(contentNode);
+
+                const thumb = document.createElement('div');
+                thumb.className = 'post-thumb';
+
+                const coverImage = typeof post?.coverImage === 'string' && post.coverImage.trim()
+                    ? post.coverImage.trim()
+                    : (typeof post?.coverUrl === 'string' ? post.coverUrl.trim() : '');
+                if (coverImage) {
+                    thumb.style.backgroundImage = `url(${coverImage})`;
+                    thumb.classList.add('post-cover-image');
+                }
+
+                article.appendChild(textWrapper);
+                article.appendChild(thumb);
+
+                const media = Array.isArray(post?.media) ? post.media : [];
+
+                if (typeof post?.youtube_url === 'string' && post.youtube_url.trim()) {
+                    const youtubeMatch = post.youtube_url.match(/(?:watch\?v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+                    if (youtubeMatch?.[1]) {
+                        media.push({
+                            type: 'youtube',
+                            videoId: youtubeMatch[1]
+                        });
+                    }
+                }
+
+                if (media.length) {
+                    const mediaList = document.createElement('div');
+                    mediaList.className = 'post-media-list';
+
+                    media.forEach((item) => {
+                        if (!item || typeof item !== 'object') {
+                            return;
+                        }
+
+                        if (item.type === 'image' && item.src) {
+                            const image = document.createElement('img');
+                            image.className = 'post-media-image';
+                            image.src = item.src;
+                            image.alt = 'Imagen del post';
+                            mediaList.appendChild(image);
+                            return;
+                        }
+
+                        if (item.type === 'youtube' && item.videoId) {
+                            const iframe = document.createElement('iframe');
+                            iframe.className = 'post-media-video';
+                            iframe.src = `https://www.youtube.com/embed/${item.videoId}`;
+                            iframe.title = 'Video de YouTube';
+                            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                            iframe.allowFullscreen = true;
+                            mediaList.appendChild(iframe);
+                            return;
+                        }
+
+                        if (item.type === 'video' && item.src) {
+                            const video = document.createElement('video');
+                            video.className = 'post-media-video';
+                            video.src = item.src;
+                            video.controls = true;
+                            mediaList.appendChild(video);
+                        }
+                    });
+
+                    if (mediaList.childElementCount > 0) {
+                        article.appendChild(mediaList);
+                    }
+                }
+
+                return article;
+            };
+
+            const renderCustomPosts = () => {
+                if (!postsList) {
+                    return;
+                }
+
+                const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
+                oldCustomPosts.forEach((card) => card.remove());
+
+                const posts = readStoredPosts();
+                posts
+                    .slice()
+                    .reverse()
+                    .forEach((post) => {
+                        postsList.prepend(buildPostCard(post));
+                    });
+            };
+
+            const renderMergedPosts = async () => {
+                if (!postsList) {
+                    return;
+                }
+
+                const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
+                oldCustomPosts.forEach((card) => card.remove());
+
+                const localPosts = readStoredPosts();
+                const sqlPosts = await readSqlPosts();
+
+                const mergedMap = new Map();
+
+                sqlPosts.forEach((post) => {
+                    mergedMap.set(`sql-${post.id}`, post);
+                });
+
+                localPosts.forEach((post) => {
+                    const sqlId = Number(post?.sql_post_id || 0);
+                    if (sqlId) {
+                        mergedMap.set(`sql-${sqlId}`, {
+                            ...post,
+                            id: sqlId
+                        });
+                        return;
+                    }
+
+                    mergedMap.set(`local-${post.id}`, post);
+                });
+
+                Array.from(mergedMap.values())
+                    .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                    .forEach((post) => {
+                        postsList.prepend(buildPostCard(post));
+                    });
+            };
+
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
 
             if (storedUserRaw) {
                 try {
                     const storedUser = JSON.parse(storedUserRaw);
+                    currentSessionUser = storedUser;
                     if (storedUser?.username) {
                         if (userNameText) {
                             userNameText.textContent = storedUser.username;
@@ -293,6 +524,13 @@
                         if (profileHandleText) {
                             profileHandleText.textContent = `@${storedUser.username}`;
                         }
+                    }
+
+                    if (profileBioText) {
+                        const bio = typeof storedUser?.biografia === 'string'
+                            ? storedUser.biografia.trim()
+                            : '';
+                        profileBioText.textContent = bio || defaultBioText;
                     }
 
                     if (profileAvatar) {
@@ -325,6 +563,7 @@
                     }
 
                     renderSocialLinks(storedUser);
+                    renderMergedPosts();
                 } catch (error) {
                     localStorage.removeItem('hiddenstageUser');
                 }

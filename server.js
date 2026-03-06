@@ -122,7 +122,25 @@ app.post('/api/login', async (req, res) => {
         }
 
         const user = users[0];
-        const validPassword = await bcrypt.compare(String(password), user.password);
+        const inputPassword = String(password);
+        const storedPassword = String(user.password || '');
+        const isBcryptHash = /^\$2[aby]\$\d{2}\$/.test(storedPassword);
+
+        let validPassword = false;
+
+        if (isBcryptHash) {
+            validPassword = await bcrypt.compare(inputPassword, storedPassword);
+        } else {
+            validPassword = inputPassword === storedPassword;
+
+            if (validPassword) {
+                const upgradedHash = await bcrypt.hash(inputPassword, 10);
+                await pool.query(
+                    'UPDATE usuarios SET password = ? WHERE id_usuario = ? LIMIT 1',
+                    [upgradedHash, Number(user.id_usuario)]
+                );
+            }
+        }
 
         if (!validPassword) {
             return res.status(401).json({ message: 'Credenciales inválidas' });
@@ -269,6 +287,91 @@ app.put('/api/profile', async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al actualizar perfil' });
+    }
+});
+
+app.get('/api/posts/:id_usuario', async (req, res) => {
+    try {
+        const userId = Number(req.params.id_usuario);
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario inválido' });
+        }
+
+        const [posts] = await pool.query(
+            `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, created_at
+             FROM publicaciones
+             WHERE id_usuario = ?
+             ORDER BY created_at DESC`,
+            [userId]
+        );
+
+        return res.json({ posts });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones' });
+    }
+});
+
+app.post('/api/posts', async (req, res) => {
+    try {
+        const {
+            id_usuario,
+            titulo,
+            contenido,
+            portada_url,
+            youtube_url,
+            resumen_media
+        } = req.body;
+
+        const userId = Number(id_usuario);
+        const normalizedTitle = typeof titulo === 'string' ? titulo.trim() : '';
+        const normalizedContent = typeof contenido === 'string' ? contenido.trim() : '';
+        const normalizedCoverUrl = typeof portada_url === 'string' ? portada_url.trim() : '';
+        const normalizedYoutubeUrl = typeof youtube_url === 'string' ? youtube_url.trim() : '';
+
+        if (!userId || !normalizedTitle || !normalizedContent) {
+            return res.status(400).json({ message: 'id_usuario, titulo y contenido son obligatorios' });
+        }
+
+        if (normalizedTitle.length > 120) {
+            return res.status(400).json({ message: 'El título supera el máximo permitido' });
+        }
+
+        const mediaSummary = resumen_media && typeof resumen_media === 'object'
+            ? JSON.stringify(resumen_media)
+            : null;
+
+        const [insertResult] = await pool.query(
+            `INSERT INTO publicaciones (id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+                userId,
+                normalizedTitle,
+                normalizedContent,
+                normalizedCoverUrl || null,
+                normalizedYoutubeUrl || null,
+                mediaSummary
+            ]
+        );
+
+        const [createdRows] = await pool.query(
+            `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, created_at
+             FROM publicaciones
+             WHERE id_post = ?
+             LIMIT 1`,
+            [Number(insertResult.insertId)]
+        );
+
+        return res.status(201).json({
+            message: 'Publicación creada correctamente',
+            post: createdRows[0]
+        });
+    } catch (error) {
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(400).json({ message: 'El usuario no existe para crear publicación' });
+        }
+
+        return res.status(500).json({ message: 'Error interno al crear publicación' });
     }
 });
 

@@ -96,7 +96,7 @@ if (loginForm) {
 
             alert(`Bienvenido, ${data.user.username}`);
             loginForm.reset();
-            window.location.href = 'principal.html';
+            window.location.href = 'pagina_principal.html';
         } catch (error) {
             alert('No se pudo conectar con el servidor.');
         }
