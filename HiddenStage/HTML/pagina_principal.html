@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hidden Stage</title>
+    <link rel="stylesheet" href="principal.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo" onclick="Menu()">
+            <img src="Img/LogoHS.png">
+        </div>
+        <input type="text" placeholder="Buscar...." class="search">
+
+        <div class="user">
+            Usuario
+            <div class="perfil">
+                <img src="Img/Perfil.png" onclick="AjustesPerfil()">
+            </div>
+        </div>
+</header>
+<div id="sideMenu" class="side-menu">
+    <img src="Img/LogoHS.png" onclick="Menu()">
+    <a href="#">Inicio</a>
+    <a href="#">Relevancia</a>
+    <a href="#">Reciente</a>
+    <a href="#">Guías</a>
+    <a href="#">Trucos</a>
+    <a href="#">Foro</a>
+    <a href="#">Géneros</a>
+</div>
+<div id="sideProfile" class="side-profile">
+    <a href="#">Tu perfil</a>
+    <a href="#">Ajustes</a>
+    <a href="#">Cambiar de cuenta</a>
+    <a href="#">Cerrar sesion</a>
+    <a href="#" onclick="AjustesPerfil()">Regresar</a>
+</div>
+    
+<main class="container">
+    <section class="featured">
+        <div class="featured-image">
+            <img src="Img/Imagendeprueba.png" alt="Post Destacado"
+        </div>
+        <div class="featured-text">
+            <h2>Team Cherry nos la hace otra vez</h2>
+            <p>Team Cherry confirma que les gusto tanto crear el dlc de Silksong que sera un juego nuevo</p>
+        </div>
+    </section>
+    <aside class="sidebar">
+        <div class="sidepost">
+            <img src="">
+        </div>
+
+    </aside>
+</main>
+
+<section class="Populares">
+    <h2> MAS POPULARES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section class="Recientes">
+    <h2> NOVEDADES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section class="Guias">
+    <h2> GUIAS </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section class="Trucos">
+    <h2> TRUCOS </h2> 
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+</section>
+
+<section class="foro">
+    <h2> FORO </h2>
+
+</section>
+
+<script>
+    function Menu() {
+        document.getElementById("sideMenu").classList.toggle("active");
+    }
+</script>
+<script>
+    function AjustesPerfil() {
+        document.getElementById("sideProfile").classList.toggle("active");
+    }
+</script>
+</body>
+</html>
