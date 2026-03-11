@@ -34,7 +34,7 @@ body {
 }
 
 .topbar-main {
-    min-height: 74px;
+    height: 74px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -45,12 +45,14 @@ body {
     display: flex;
     align-items: center;
     text-decoration: none;
+    height: 100%;
     /* removido width fijo para que se ajuste al logo */
 }
 
 .brand-logo {
-    height: 80px;
-    width: 150px; /* ancho fijo para que no se estire */
+    height: 100%;
+    width: auto;
+    max-width: 160px;
     display: block;
     object-fit: contain;
     object-position: left center;
@@ -273,6 +275,7 @@ body {
     flex-direction: column;
     gap: 10px;
     scrollbar-width: none;
+    z-index: 1000;
 }
 .side-menu a {
     padding: 15px 20px;
@@ -332,6 +335,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    z-index: 1000;
 }
 .side-profile a {
     padding: 15px 20px;
