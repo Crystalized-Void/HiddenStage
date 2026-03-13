@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Configuración</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="configuracion.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" href="../pagina_principal/pagina_principal.html" aria-label="HiddenStage Inicio">
+                <img src="img/LOGO_pagina3.png" alt="HiddenStage" class="brand-logo">
+            </a>
+
+            <div class="topbar-right">
+                <span data-user-name>Usuario</span>
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="settings-layout">
+        <aside class="settings-sidebar">
+            <nav class="settings-menu" aria-label="Menú de configuración">
+                <button type="button" class="settings-item active">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Perfil</span>
+                </button>
+                <button type="button" class="settings-item">
+                    <i class="fa-regular fa-book-open"></i>
+                    <span>Informacion Personal</span>
+                </button>
+                <button type="button" class="settings-item">
+                    <i class="fa-regular fa-shield"></i>
+                    <span>Privacidad y Seguridad</span>
+                </button>
+            </nav>
+
+            <div class="support-block">
+                <p>Soporte</p>
+                <div class="support-divider"></div>
+                <button type="button" class="settings-item">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span>Legal y Términos</span>
+                </button>
+                <button type="button" class="settings-item">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>Centro de asistencia</span>
+                </button>
+            </div>
+        </aside>
+
+        <section class="settings-content" aria-label="Contenido de configuración">
+            <div class="settings-panel">
+                <div class="panel-head">
+                    <h1>Perfil</h1>
+                </div>
+
+                <div class="profile-grid">
+                    <div class="profile-form">
+                        <div class="field-block">
+                            <label for="profile-name">Nombre</label>
+                            <input id="profile-name" type="text" placeholder="Tu nombre visible">
+                            <small>Tu nombre puede aparecer en HiddenStage cuando publiques o comentes.</small>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="profile-bio">Biografía</label>
+                            <textarea id="profile-bio" rows="5" placeholder="Cuéntanos algo sobre ti."></textarea>
+                            <small>Cuéntanos algo sobre ti.</small>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="profile-pronouns">Pronombres</label>
+                            <input id="profile-pronouns" type="text" placeholder="Ella / Él / Elle">
+                        </div>
+
+                        <div class="field-block social-block">
+                            <label>Redes Sociales</label>
+                            <div class="social-inputs">
+                                <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-1" type="url" placeholder="Link de red social 1"></div>
+                                <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-2" type="url" placeholder="Link de red social 2"></div>
+                                <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-3" type="url" placeholder="Link de red social 3"></div>
+                                <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-4" type="url" placeholder="Link de red social 4"></div>
+                                <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-5" type="url" placeholder="Link de red social 5"></div>
+                            </div>
+                        </div>
+
+                        <div class="field-block banner-block">
+                            <label>Imagen de banner</label>
+                            <div class="banner-upload" id="profile-banner-preview">
+                                <i class="fa-regular fa-image"></i>
+                                <button type="button" class="edit-chip" aria-label="Editar banner">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <input type="file" id="profile-banner-input" accept="image/*" hidden>
+                            </div>
+                        </div>
+
+                        <div class="danger-zone">
+                            <h2>Desactivar Cuenta</h2>
+                            <p>Si desactivas esta cuenta podrás recuperarla en cualquier momento, pero si la eliminas no.</p>
+                            <div class="danger-actions">
+                                <button type="button" class="btn btn-soft">Desactivar cuenta</button>
+                                <button type="button" class="btn btn-danger">Eliminar cuenta</button>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions profile-actions-bottom">
+                            <button type="button" class="btn btn-primary" id="save-profile-btn">Guardar cambios</button>
+                        </div>
+                    </div>
+
+                    <aside class="profile-photo">
+                        <p>Foto de perfil</p>
+                        <div class="photo-circle" id="profile-photo-preview">
+                            <i class="fa-regular fa-circle-user"></i>
+                            <button type="button" class="edit-chip" aria-label="Editar foto de perfil">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <input type="file" id="profile-photo-input" accept="image/*" hidden>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            const LOCAL_API_ORIGIN = 'http://localhost:3000';
+            const MAX_PROFILE_PHOTO_BYTES = 1024 * 1024;
+            const isLocalFrontend =
+                window.location.protocol === 'file:' ||
+                ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+            const API_BASE = isLocalFrontend && !isBackendOrigin
+                ? LOCAL_API_ORIGIN
+                : '';
+
+            const userNameText = document.querySelector('[data-user-name]');
+            const profileNameInput = document.getElementById('profile-name');
+            const profileBioInput = document.getElementById('profile-bio');
+            const profilePronounsInput = document.getElementById('profile-pronouns');
+            const socialLink1Input = document.getElementById('social-link-1');
+            const socialLink2Input = document.getElementById('social-link-2');
+            const socialLink3Input = document.getElementById('social-link-3');
+            const socialLink4Input = document.getElementById('social-link-4');
+            const socialLink5Input = document.getElementById('social-link-5');
+            const profilePhotoPreview = document.getElementById('profile-photo-preview');
+            const profilePhotoInput = document.getElementById('profile-photo-input');
+            const profilePhotoEditBtn = profilePhotoPreview?.querySelector('.edit-chip');
+            const profileBannerPreview = document.getElementById('profile-banner-preview');
+            const profileBannerInput = document.getElementById('profile-banner-input');
+            const profileBannerEditBtn = profileBannerPreview?.querySelector('.edit-chip');
+            const saveProfileBtn = document.getElementById('save-profile-btn');
+            const storedUserRaw = localStorage.getItem('hiddenstageUser');
+
+            let currentUser = null;
+            let currentPhotoValue = '';
+            let currentBannerValue = '';
+
+            const renderProfilePhoto = (photoValue) => {
+                if (!profilePhotoPreview) {
+                    return;
+                }
+
+                if (photoValue) {
+                    profilePhotoPreview.style.backgroundImage = `url(${photoValue})`;
+                    profilePhotoPreview.classList.add('has-photo');
+                } else {
+                    profilePhotoPreview.style.backgroundImage = '';
+                    profilePhotoPreview.classList.remove('has-photo');
+                }
+            };
+
+            const renderProfileBanner = (bannerValue) => {
+                if (!profileBannerPreview) {
+                    return;
+                }
+
+                if (bannerValue) {
+                    profileBannerPreview.style.backgroundImage = `url(${bannerValue})`;
+                    profileBannerPreview.classList.add('has-banner');
+                } else {
+                    profileBannerPreview.style.backgroundImage = '';
+                    profileBannerPreview.classList.remove('has-banner');
+                }
+            };
+
+            if (!storedUserRaw) {
+                return;
+            }
+
+            try {
+                const storedUser = JSON.parse(storedUserRaw);
+                currentUser = storedUser;
+
+                if (storedUser?.username) {
+                    if (userNameText) {
+                        userNameText.textContent = storedUser.username;
+                    }
+
+                    if (profileNameInput && !profileNameInput.value.trim()) {
+                        profileNameInput.value = storedUser.username;
+                    }
+                }
+
+                if (profileBioInput && typeof storedUser?.biografia === 'string') {
+                    profileBioInput.value = storedUser.biografia;
+                }
+
+                if (profilePronounsInput && typeof storedUser?.pronombres === 'string') {
+                    profilePronounsInput.value = storedUser.pronombres;
+                }
+
+                if (socialLink1Input) socialLink1Input.value = storedUser?.red_social_1 || '';
+                if (socialLink2Input) socialLink2Input.value = storedUser?.red_social_2 || '';
+                if (socialLink3Input) socialLink3Input.value = storedUser?.red_social_3 || '';
+                if (socialLink4Input) socialLink4Input.value = storedUser?.red_social_4 || '';
+                if (socialLink5Input) socialLink5Input.value = storedUser?.red_social_5 || '';
+
+                currentPhotoValue = storedUser?.foto_perfil || '';
+                renderProfilePhoto(currentPhotoValue);
+
+                currentBannerValue = storedUser?.banner_perfil || '';
+                renderProfileBanner(currentBannerValue);
+            } catch (error) {
+                localStorage.removeItem('hiddenstageUser');
+            }
+
+            if (profilePhotoEditBtn && profilePhotoInput) {
+                profilePhotoEditBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    profilePhotoInput.click();
+                });
+
+                profilePhotoInput.addEventListener('change', () => {
+                    const selectedFile = profilePhotoInput.files?.[0];
+
+                    if (!selectedFile) {
+                        return;
+                    }
+
+                    if (!selectedFile.type.startsWith('image/')) {
+                        alert('Selecciona un archivo de imagen válido.');
+                        profilePhotoInput.value = '';
+                        return;
+                    }
+
+                    if (selectedFile.size > MAX_PROFILE_PHOTO_BYTES) {
+                        alert('La imagen supera el límite de 1MB. Elige una más ligera.');
+                        profilePhotoInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        currentPhotoValue = String(reader.result || '');
+                        renderProfilePhoto(currentPhotoValue);
+                    };
+                    reader.readAsDataURL(selectedFile);
+                });
+            }
+
+            if (profileBannerEditBtn && profileBannerInput) {
+                profileBannerEditBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    profileBannerInput.click();
+                });
+
+                profileBannerInput.addEventListener('change', () => {
+                    const selectedFile = profileBannerInput.files?.[0];
+
+                    if (!selectedFile) {
+                        return;
+                    }
+
+                    if (!selectedFile.type.startsWith('image/')) {
+                        alert('Selecciona un archivo de imagen válido.');
+                        profileBannerInput.value = '';
+                        return;
+                    }
+
+                    if (selectedFile.size > MAX_PROFILE_PHOTO_BYTES) {
+                        alert('La imagen supera el límite de 1MB. Elige una más ligera.');
+                        profileBannerInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        currentBannerValue = String(reader.result || '');
+                        renderProfileBanner(currentBannerValue);
+                    };
+                    reader.readAsDataURL(selectedFile);
+                });
+            }
+
+            if (
+                saveProfileBtn &&
+                profileNameInput &&
+                profileBioInput &&
+                profilePronounsInput &&
+                socialLink1Input &&
+                socialLink2Input &&
+                socialLink3Input &&
+                socialLink4Input &&
+                socialLink5Input
+            ) {
+                saveProfileBtn.addEventListener('click', async () => {
+                    const newUsername = profileNameInput.value.trim();
+                    const newBio = profileBioInput.value.trim();
+                    const newPronouns = profilePronounsInput.value.trim();
+                    const socialLink1 = socialLink1Input.value.trim();
+                    const socialLink2 = socialLink2Input.value.trim();
+                    const socialLink3 = socialLink3Input.value.trim();
+                    const socialLink4 = socialLink4Input.value.trim();
+                    const socialLink5 = socialLink5Input.value.trim();
+
+                    if (!newUsername) {
+                        alert('Ingresa un nombre válido.');
+                        return;
+                    }
+
+                    if (!currentUser || typeof currentUser !== 'object') {
+                        currentUser = {};
+                    }
+
+                    if (!currentUser.id_usuario) {
+                        alert('No se encontró el usuario de sesión. Inicia sesión nuevamente.');
+                        return;
+                    }
+
+                    const previousLabel = saveProfileBtn.textContent;
+                    saveProfileBtn.disabled = true;
+                    saveProfileBtn.textContent = 'Guardando...';
+
+                    try {
+                        const response = await fetch(`${API_BASE}/api/profile`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id_usuario: currentUser.id_usuario,
+                                username: newUsername,
+                                biografia: newBio,
+                                pronombres: newPronouns,
+                                red_social_1: socialLink1,
+                                red_social_2: socialLink2,
+                                red_social_3: socialLink3,
+                                red_social_4: socialLink4,
+                                red_social_5: socialLink5,
+                                foto_perfil: currentPhotoValue,
+                                banner_perfil: currentBannerValue
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            alert(data.message || 'No se pudo actualizar el perfil.');
+                            return;
+                        }
+
+                        currentUser = {
+                            ...currentUser,
+                            ...data.user
+                        };
+
+                        localStorage.setItem('hiddenstageUser', JSON.stringify(currentUser));
+
+                        if (userNameText) {
+                            userNameText.textContent = currentUser.username;
+                        }
+
+                        profileNameInput.value = currentUser.username;
+                        profileBioInput.value = currentUser.biografia || '';
+                        profilePronounsInput.value = currentUser.pronombres || '';
+                        socialLink1Input.value = currentUser.red_social_1 || '';
+                        socialLink2Input.value = currentUser.red_social_2 || '';
+                        socialLink3Input.value = currentUser.red_social_3 || '';
+                        socialLink4Input.value = currentUser.red_social_4 || '';
+                        socialLink5Input.value = currentUser.red_social_5 || '';
+                        currentPhotoValue = currentUser.foto_perfil || '';
+                        renderProfilePhoto(currentPhotoValue);
+                        currentBannerValue = currentUser.banner_perfil || '';
+                        renderProfileBanner(currentBannerValue);
+                        alert('Perfil actualizado correctamente.');
+                    } catch (error) {
+                        alert('No se pudo conectar con el servidor.');
+                    } finally {
+                        saveProfileBtn.disabled = false;
+                        saveProfileBtn.textContent = previousLabel;
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

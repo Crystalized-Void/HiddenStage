@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="principal.css">
+</head>
+<body id="inicio">
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" aria-label="HiddenStage Inicio">
+                <img src="Img/LogoHS.png" alt="HiddenStage" class="brand-logo" onclick="Menu()">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+            </div>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu" onclick="toggleUserMenu()">
+                    <span data-user-name></span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <a href="../perfil/perfil.html">PERFIL</a>
+                    <a href="#">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html">CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+    </header>
+<nav class="nav-bar">
+    <a href="#paginaprincipal" onclick="Volver(); return false;"><i class="fas fa-house"></i> Inicio</a>
+    <a href="#accion"><i class="fas fa-bolt"></i> Accion</a>
+    <a href="#aventuras"><i class="fas fa-compass"></i> Aventuras</a>
+    <a href="#carrera"><i class="fas fa-flag-checkered"></i> Carreras</a>
+    <a href="#plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
+    <a href="#romances"><i class="fas fa-heart"></i> Romance</a>
+    <a href="#porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
+</nav>
+<div id="sideMenu" class="side-menu">
+    <div class="menu-header">
+        <img src="Img/LogoHS.png" onclick="Menu()">
+        <i class="fas fa-times close-icon" onclick="Menu()"></i>
+    </div>
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
+</div>
+<div id="sideProfile" class="side-profile">
+    <div class="menu-header">
+        <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+        <img src="Img/LogoHS.png" onclick="AjustesPerfil()" class="profile-logo">
+    </div>
+    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+    <a href="#"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+    <a href="../inicio_de_sesion/index.html"><i class="fas fa-sign-out-alt"></i> Cerrar sesion</a>
+    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+</div>
+<section id="accion" class="Accion">
+    <h2><i class="fas fa-bolt"></i> ACCION </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="aventuras" class="Aventuras">
+    <h2><i class="fas fa-compass"></i> AVENTURA </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="carrera" class="Carreras">
+    <h2><i class="fas fa-book"></i> GUIAS </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="trucos" class="Trucos">
+    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+</section>
+<script>
+    function Menu() {
+        document.getElementById("sideMenu").classList.toggle("active");
+    }
+</script>
+<script>
+    function AjustesPerfil() {
+        document.getElementById("sideProfile").classList.toggle("active");
+    }
+</script>
+<script>
+    function toggleUserMenu() {
+        const panel = document.querySelector('.user-panel');
+        const expanded = panel.getAttribute('aria-expanded') === 'true';
+        panel.setAttribute('aria-expanded', !expanded);
+    }
+</script>
+<script>
+    function Volver() {
+        window.location.href = "pagina_principal.html";
+    }
+</script>
