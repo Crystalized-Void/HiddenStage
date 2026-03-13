@@ -5,6 +5,7 @@
     const form = document.getElementById('form');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
+    const guestAccessButton = document.getElementById('guest-access');
 
     const LOCAL_API_ORIGIN = 'http://localhost:3000';
     const isLocalFrontend =
@@ -15,6 +16,27 @@
     const API_BASE = isLocalFrontend && !isBackendOrigin
         ? LOCAL_API_ORIGIN
         : '';
+    const MAIN_PAGE_URL = '../pagina_principal/pagina_principal.html';
+
+    const saveSessionUser = (user) => {
+        localStorage.setItem('hiddenstageUser', JSON.stringify(user));
+    };
+
+    const buildGuestUser = () => ({
+        id_usuario: null,
+        username: 'Invitado',
+        email: '',
+        biografia: 'Explorando HiddenStage como visitante.',
+        pronombres: '',
+        red_social_1: '',
+        red_social_2: '',
+        red_social_3: '',
+        red_social_4: '',
+        red_social_5: '',
+        foto_perfil: '',
+        banner_perfil: '',
+        isGuest: true
+    });
 
     if (signIn && signUp && form) {
         signIn.addEventListener('click', (e) => {
@@ -66,6 +88,13 @@
         });
     }
 
+    if (guestAccessButton) {
+        guestAccessButton.addEventListener('click', () => {
+            saveSessionUser(buildGuestUser());
+            window.location.href = MAIN_PAGE_URL;
+        });
+    }
+
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -94,11 +123,11 @@
                     return;
                 }
 
-                localStorage.setItem('hiddenstageUser', JSON.stringify(data.user));
+                saveSessionUser(data.user);
 
                 alert(`Bienvenido, ${data.user.username}`);
                 loginForm.reset();
-                window.location.href = '../pagina_principal/pagina_principal.html';
+                window.location.href = MAIN_PAGE_URL;
             } catch (error) {
                 alert('No se pudo conectar con el servidor.');
             }
