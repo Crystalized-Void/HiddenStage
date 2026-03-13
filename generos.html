@@ -43,13 +43,13 @@
         </div>
     </header>
 <nav class="nav-bar">
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="#generos" onclick="Generos(); return false;"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#paginaprincipal" onclick="Volver(); return false;"><i class="fas fa-house"></i> Inicio</a>
+    <a href="#accion"><i class="fas fa-bolt"></i> Accion</a>
+    <a href="#aventuras"><i class="fas fa-compass"></i> Aventuras</a>
+    <a href="#carrera"><i class="fas fa-flag-checkered"></i> Carreras</a>
+    <a href="#plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
+    <a href="#romances"><i class="fas fa-heart"></i> Romance</a>
+    <a href="#porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
 </nav>
 <div id="sideMenu" class="side-menu">
     <div class="menu-header">
@@ -74,44 +74,8 @@
     <a href="#"><i class="fas fa-sign-out-alt"></i> Cerrar sesion</a>
     <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
 </div>
-    
-<main id="relevancia" class="container">
-    <section class="featured">
-        <div class="featured-image">
-            <img src="Img/Imagendeprueba.png" alt="Post Destacado">
-        </div>
-        <div class="featured-text">
-            <h2><i class="fas fa-star"></i> Team Cherry nos la hace otra vez</h2>
-            <p>Team Cherry confirma que les gusto tanto crear el dlc de Silksong que sera un juego nuevo</p>
-        </div>
-    </section>
-    <aside class="sidebar">
-        <div class="sidepost">
-            <img src="" alt="Publicación 1">
-            <div class="post-info">
-                <h4>Publicación 1</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 2">
-            <div class="post-info">
-                <h4>Publicación 2</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 3">
-            <div class="post-info">
-                <h4>Publicación 3</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-    </aside>
-</main>
-
-<section class="Populares">
-    <h2><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
+<section id="accion" class="Accion">
+    <h2><i class="fas fa-bolt"></i> ACCION </h2>
         <div class="cards">
 
         <div class="card">
@@ -128,8 +92,8 @@
     </div>
 </section>
 
-<section id="reciente" class="Recientes">
-    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+<section id="aventuras" class="Aventuras">
+    <h2><i class="fas fa-compass"></i> AVENTURA </h2>
         <div class="cards">
 
         <div class="card">
@@ -146,7 +110,7 @@
     </div>
 </section>
 
-<section id="guias" class="Guias">
+<section id="carrera" class="Carreras">
     <h2><i class="fas fa-book"></i> GUIAS </h2>
         <div class="cards">
 
@@ -198,9 +162,7 @@
     }
 </script>
 <script>
-    function Generos() {
-        window.location.href = "generos.html";
+    function Volver() {
+        window.location.href = "pagina_principal.html";
     }
 </script>
-</body>
-</html>
