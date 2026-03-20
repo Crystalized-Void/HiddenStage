@@ -4,6 +4,8 @@ Hidden Stage es una plataforma web enfocada en la difusión de contenido relacio
 
 El proyecto busca crear un espacio digital donde los jugadores puedan descubrir contenido útil sobre videojuegos, resolver dudas, compartir experiencias y participar en discusiones dentro de una comunidad activa.
 
+Enlace de la pagina:
+
 # Descripción del Proyecto
 
 Hidden Stage es una página web desarrollada utilizando tecnologías fundamentales del desarrollo web. El proyecto está diseñado para ofrecer una experiencia sencilla, intuitiva y accesible para los usuarios interesados en el mundo de los videojuegos.
@@ -70,5 +72,9 @@ El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
 
 ##  👩‍💻👨‍💻 AUTORES: 
-  GÓMEZ TINOCO FERNANDO, GUERRERO GARCÍA ÁLVARO ALBERTO, GUZMÁN LIZAMA IARA SAMANTHA, MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL, SANCHEZ GARCÍA OSCAR ALBERTO
+GÓMEZ TINOCO FERNANDO:
+GUERRERO GARCÍA ÁLVARO ALBERTO:
+GUZMÁN LIZAMA IARA SAMANTHA:
+MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL:
+SANCHEZ GARCÍA OSCAR ALBERTO:
 
