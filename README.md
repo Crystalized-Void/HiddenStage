@@ -12,20 +12,7 @@ La plataforma permite que los usuarios generen contenido, interactúen entre sí
 
 Además, el sitio busca funcionar como un punto de encuentro para jugadores que desean mantenerse informados sobre novedades, compartir opiniones o aprender más sobre distintos títulos.
 
-# Tecnologías Utilizadas
-
-El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
-
-HTML
-Se utiliza para construir la estructura del sitio web, organizar el contenido y definir los elementos principales de cada página.
-
-CSS
-Se encarga del diseño visual de la plataforma, incluyendo estilos, colores, distribución de los elementos y adaptación de la interfaz para que sea más atractiva y fácil de usar.
-
-JavaScript
-Permite agregar interactividad y funcionalidades dinámicas al sitio, como la creación de publicaciones, interacción dentro del foro, manejo de perfiles de usuario y otras acciones dentro de la página.
-
-# Objetivo del Proyecto
+## ✨ Objetivo del Proyecto
 
 El propósito principal de Hidden Stage es crear una comunidad digital dedicada a los videojuegos donde los usuarios puedan compartir conocimientos, opiniones y experiencias.
 
@@ -45,7 +32,7 @@ Descubrir ofertas o recomendaciones de juegos.
 
 Tener una experiencia personalizada mediante la gestión de su perfil.
 
-# Funcionalidades Principales
+## 💡 Funcionalidades Principales
 
 Hidden Stage incluye diferentes funcionalidades diseñadas para mejorar la interacción entre los usuarios y facilitar la creación de contenido dentro de la plataforma:
 
@@ -64,6 +51,24 @@ Los usuarios pueden modificar información básica de su cuenta para mantener su
 Exploración de contenido
 Los visitantes pueden navegar por distintas publicaciones, descubrir nuevos juegos y ver las opiniones de otros jugadores.
 
-# AUTORES: 
+## 💻 Tecnologías Utilizadas
+
+El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
+
+-HTML 
+    Se utiliza para construir la estructura del sitio web, organizar el contenido y definir los elementos principales de        cada página.
+    
+-CSS
+    Se encarga del diseño visual de la plataforma, incluyendo estilos, colores, distribución de los elementos y adaptación      de la interfaz para que sea más atractiva y fácil de usar.
+
+-JavaScript
+    Permite agregar interactividad y funcionalidades dinámicas al sitio, como la creación de publicaciones, interacción         dentro del foro, manejo de perfiles de usuario y otras acciones dentro de la página.
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+
+##  👩‍💻👨‍💻 AUTORES: 
   GÓMEZ TINOCO FERNANDO, GUERRERO GARCÍA ÁLVARO ALBERTO, GUZMÁN LIZAMA IARA SAMANTHA, MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL, SANCHEZ GARCÍA OSCAR ALBERTO
 
