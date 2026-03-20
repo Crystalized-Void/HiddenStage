@@ -84,12 +84,7 @@ app.post('/api/register', async (req, res) => {
 
         await pool.query(
             `INSERT INTO usuarios (username, email, password, id_rol)
-             VALUES (
-                ?,
-                ?,
-                ?,
-                (SELECT id_rol FROM roles WHERE nombre_rol = 'Usuario registrado' LIMIT 1)
-             )`,
+             VALUES (?,?,?, 1)`,
             [normalizedUsername, normalizedEmail, hashedPassword]
         );
 
