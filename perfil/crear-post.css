@@ -8,6 +8,16 @@
     --accent-2: #7c69a8;
 }
 
+body[data-theme="dark"] {
+    --bg-1: #191325;
+    --bg-2: #211933;
+    --panel: #251c38;
+    --text: #f4edff;
+    --muted: #cfbedf;
+    --accent: #b09adf;
+    --accent-2: #8e74c4;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -18,7 +28,7 @@
 body {
     min-height: 100vh;
     color: var(--text);
-    background: var(--bg-1);
+    background: radial-gradient(circle at top left, var(--bg-2, var(--bg-1)), var(--bg-1) 45%, var(--bg-1) 100%);
 }
 
 .create-post-page {
@@ -51,11 +61,22 @@ body {
     gap: 8px;
 }
 
+body[data-theme="dark"] .back-link {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+}
+
 .card {
     background: var(--panel);
     border: 1px solid #d9d9d9;
     border-radius: 16px;
     padding: 16px;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .mini-post {
+    border-color: rgba(124, 105, 168, 0.4);
+    background: color-mix(in srgb, var(--panel) 88%, #ffffff 12%);
 }
 
 .help-text {
@@ -89,6 +110,18 @@ body {
     padding: 10px 12px;
 }
 
+body[data-theme="dark"] .post-form input,
+body[data-theme="dark"] .post-form textarea {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+    color: #ffffff;
+}
+
+body[data-theme="dark"] .post-form input::placeholder,
+body[data-theme="dark"] .post-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.78);
+}
+
 .post-form textarea {
     resize: vertical;
     min-height: 140px;
@@ -101,6 +134,12 @@ body {
     min-height: 72px;
     padding: 10px;
     background: #f2f2f2;
+}
+
+body[data-theme="dark"] .single-media-preview,
+body[data-theme="dark"] .media-preview-grid {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
 }
 
 .single-media-preview img,

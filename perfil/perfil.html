@@ -14,11 +14,11 @@
     <header class="topbar">
         <div class="topbar-main">
             <a class="brand" href="../pagina_principal/pagina_principal.html" aria-label="HiddenStage Inicio">
-                <img src="img/LOGO_pagina2.png" alt="HiddenStage" class="brand-logo">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="buscar" aria-label="Buscar contenido">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
             </div>
 
             <div class="user-panel">
@@ -34,14 +34,40 @@
                         <span data-user-fullname>NOMBRE USUARIO</span>
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <a href="perfil.html">PERFIL</a>
-                    <a href="#">EDITAR PERFIL</a>
+                    <a href="#" data-open-profile-menu>PERFIL</a>
+                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
                     <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
-                    <a href="../inicio_de_sesion/index.html">CERRAR SESIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
                 </div>
             </div>
         </div>
     </header>
+
+    <div id="sideProfile" class="side-profile">
+        <div class="menu-header">
+            <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+        </div>
+        <div class="side-profile-header">
+            <div class="side-profile-avatar" data-side-avatar aria-hidden="true">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="side-profile-meta">
+                <strong data-side-username>Invitado</strong>
+                <span data-side-handle>@hiddenstage</span>
+            </div>
+        </div>
+        <span class="menu-section-title">Cuenta</span>
+        <a href="perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
+        <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+        <button type="button" class="theme-toggle-link" data-theme-toggle>
+            <i class="fas fa-moon" data-theme-icon></i>
+            <span data-theme-label>Tema oscuro</span>
+        </button>
+        <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+        <span class="menu-section-title">Sesión</span>
+        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    </div>
 
     <main class="profile-page">
         <section class="cover">
@@ -181,7 +207,12 @@
     </main>
 
     <script>
+        function AjustesPerfil() {
+            document.getElementById('sideProfile')?.classList.toggle('active');
+        }
+
         (() => {
+            const THEME_KEY = 'hiddenstageTheme';
             const LOCAL_API_ORIGIN = 'http://localhost:3000';
             const isLocalFrontend =
                 window.location.protocol === 'file:' ||
@@ -197,16 +228,44 @@
             const userNameText = document.querySelector('[data-user-name]');
             const userFullNameText = document.querySelector('[data-user-fullname]');
             const userTopAvatar = document.querySelector('[data-user-avatar]');
+            const sideAvatar = document.querySelector('[data-side-avatar]');
+            const sideUsername = document.querySelector('[data-side-username]');
+            const sideHandle = document.querySelector('[data-side-handle]');
+            const openProfileMenuLink = document.querySelector('[data-open-profile-menu]');
+            const sideProfile = document.getElementById('sideProfile');
+            const themeToggleButton = document.querySelector('[data-theme-toggle]');
+            const themeLabel = document.querySelector('[data-theme-label]');
+            const themeIcon = document.querySelector('[data-theme-icon]');
             const profileNameText = document.querySelector('[data-profile-name]');
             const profileHandleText = document.querySelector('[data-profile-handle]');
             const profileBioText = document.querySelector('[data-profile-bio]');
             const profileAvatar = document.querySelector('.avatar');
             const profileCover = document.querySelector('.cover');
-            const logoutLink = document.querySelector('.user-dropdown a[href="../inicio_de_sesion/index.html"]');
+            const logoutLinks = document.querySelectorAll('[data-logout-link]');
             const socialSlots = document.querySelectorAll('[data-social-slot]');
             const postsList = document.querySelector('[data-post-list]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
             let currentSessionUser = null;
+
+            const applyTheme = () => {
+                const storedTheme = localStorage.getItem(THEME_KEY);
+                const isDarkTheme = storedTheme === 'dark';
+                document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
+
+                if (themeLabel) {
+                    themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
+                }
+
+                if (themeIcon) {
+                    themeIcon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            };
+
+            const toggleTheme = () => {
+                const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem(THEME_KEY, nextTheme);
+                applyTheme();
+            };
 
             const normalizeUrl = (value) => {
                 if (!value || typeof value !== 'string') {
@@ -524,6 +583,14 @@
                         if (profileHandleText) {
                             profileHandleText.textContent = `@${storedUser.username}`;
                         }
+
+                        if (sideUsername) {
+                            sideUsername.textContent = storedUser.username;
+                        }
+
+                        if (sideHandle) {
+                            sideHandle.textContent = `@${storedUser.username.toLowerCase().replace(/\s+/g, '_')}`;
+                        }
                     }
 
                     if (profileBioText) {
@@ -556,9 +623,17 @@
                         if (photo) {
                             userTopAvatar.style.backgroundImage = `url(${photo})`;
                             userTopAvatar.classList.add('has-photo');
+                            if (sideAvatar) {
+                                sideAvatar.style.backgroundImage = `url(${photo})`;
+                                sideAvatar.classList.add('has-photo');
+                            }
                         } else {
                             userTopAvatar.style.backgroundImage = '';
                             userTopAvatar.classList.remove('has-photo');
+                            if (sideAvatar) {
+                                sideAvatar.style.backgroundImage = '';
+                                sideAvatar.classList.remove('has-photo');
+                            }
                         }
                     }
 
@@ -569,11 +644,19 @@
                 }
             }
 
-            if (logoutLink) {
+            logoutLinks.forEach((logoutLink) => {
                 logoutLink.addEventListener('click', () => {
                     localStorage.removeItem('hiddenstageUser');
                 });
+            });
+
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    toggleTheme();
+                });
             }
+
+            applyTheme();
 
             if (!userPanel || !userTrigger) {
                 return;
@@ -585,21 +668,40 @@
             };
 
             userTrigger.addEventListener('click', () => {
-                const isOpen = userPanel.classList.toggle('open');
-                userTrigger.setAttribute('aria-expanded', String(isOpen));
+                const isOpen = sideProfile?.classList.toggle('active');
+                userTrigger.setAttribute('aria-expanded', String(Boolean(isOpen)));
+                userPanel.classList.remove('open');
             });
 
             document.addEventListener('click', (event) => {
                 if (!userPanel.contains(event.target)) {
                     closeMenu();
                 }
+
+                if (sideProfile && sideProfile.classList.contains('active')) {
+                    const clickedInsideProfileMenu = sideProfile.contains(event.target);
+                    const clickedProfileTrigger = openProfileMenuLink?.contains(event.target);
+                    const clickedTopTrigger = userTrigger.contains(event.target);
+                    if (!clickedInsideProfileMenu && !clickedProfileTrigger && !clickedTopTrigger) {
+                        sideProfile.classList.remove('active');
+                    }
+                }
             });
 
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeMenu();
+                    sideProfile?.classList.remove('active');
                 }
             });
+
+            if (openProfileMenuLink) {
+                openProfileMenuLink.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    sideProfile?.classList.add('active');
+                    closeMenu();
+                });
+            }
 
             if (tabs.length && panels.length) {
                 tabs.forEach((tab) => {
