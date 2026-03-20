@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HiddenStage · Foro</title>
+  <link rel="stylesheet" href="foro.css" />
+
+  <!--
+    COMO IMPLEMENTAR ESTE FORO EN TU PAGINA PRINCIPAL
+    1) Asegurate de que `foro.css` y `Foro.html` esten en la misma carpeta donde cargas tu pagina principal.
+    2) Opcion A (recomendado): enlaza a `Foro.html` desde tu menu (ej: <a href="Foro.html">Foro</a>).
+    3) Opcion B (embebido): copia el contenido del <body> dentro de tu principal, y SOLO mantiene un <link> hacia `foro.css`.
+    4) El spoiler y el editor dependen de `java.js`: si embebes, asegúrate de cargarlo al final igual que aqui.
+  -->
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo">HiddenStage</div>
+      <nav class="main-nav">
+        <a class="nav-link active">Foro</a>
+        <a class="nav-link" href="index.html">Volver</a>
+        <a class="nav-link" href="#">Noticias</a>
+        <a class="nav-link" href="#">Torneos</a>
+      </nav>
+      <div class="user-area">
+        <span class="user-pill">@DemoUser · Noob</span>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <aside class="sidebar-left">
+        <div class="card">
+          <h2 class="card-title">Plataformas</h2>
+          <ul class="category-list">
+            <li class="category-item active">PC</li>
+            <li class="category-item">PlayStation</li>
+            <li class="category-item">Xbox</li>
+            <li class="category-item">Nintendo</li>
+            <li class="category-item">Retro</li>
+            <li class="category-item">Off-topic</li>
+          </ul>
+        </div>
+
+        <div class="card warning-card">
+          <h2 class="card-title">Reglas de Oro</h2>
+          <p class="rules-text">
+            Cero tolerancia a la toxicidad. El Filtro de Hierro bloquea contenido ofensivo
+            antes de publicarse. Al registrarte, aceptas estas normas.
+          </p>
+          <a href="#" class="rules-link">Leer normas completas</a>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div class="search-bar">
+          <input type="text" placeholder="Buscar hilos, juegos, usuarios..." />
+          <select>
+            <option>Relevancia</option>
+            <option>Más recientes</option>
+            <option>Más populares</option>
+          </select>
+          <select>
+            <option>Todas las categorías</option>
+            <option>PC</option>
+            <option>PlayStation</option>
+            <option>Xbox</option>
+            <option>Nintendo</option>
+            <option>Retro</option>
+            <option>Off-topic</option>
+          </select>
+        </div>
+
+        <div class="thread-list">
+          <article class="thread-card">
+            <div class="thread-meta">
+              <span class="thread-category">[PC]</span>
+              <span class="thread-tags">
+                <span class="tag tag-guide">[Guía]</span>
+                <span class="tag tag-spoiler">[SPOILER]</span>
+              </span>
+            </div>
+            <h2 class="thread-title">Guía definitiva para subir a Diamante</h2>
+            <div class="thread-footer">
+              <span class="author">@PlayerOne · Pro</span>
+              <span class="stats">120 respuestas · 3.4k vistas</span>
+            </div>
+          </article>
+        </div>
+
+        <article class="thread-view">
+          <header class="thread-header">
+            <h1>Guía definitiva para subir a Diamante</h1>
+            <div class="thread-header-meta">
+              <span class="author">@PlayerOne</span>
+              <span class="rank-badge rank-pro">Pro</span>
+              <span class="platform-ids">Steam: playerone_gg</span>
+            </div>
+          </header>
+
+          <section class="post">
+            <div class="post-header">
+              <div class="user-info">
+                <div class="avatar"></div>
+                <div>
+                  <span class="username">@PlayerOne</span>
+                  <span class="user-rank">Pro</span>
+                </div>
+              </div>
+              <div class="post-actions">
+                <button class="reaction-btn">🎮</button>
+                <button class="reaction-btn">🏆</button>
+                <button class="reaction-btn">❤️</button>
+                <button class="reaction-btn">🔥</button>
+              </div>
+            </div>
+            <div class="post-body markdown-body">
+              <p>En esta guía veremos cómo optimizar tu posicionamiento...</p>
+              <div class="spoiler-block" data-open="false">
+                <button class="spoiler-toggle">Mostrar SPOILER</button>
+                <div class="spoiler-content">
+                  <p>Este es el contenido oculto que solo se ve al hacer clic.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="replies">
+            <article class="post reply depth-0">
+              <div class="post-header">
+                <div class="user-info">
+                  <div class="avatar small"></div>
+                  <div>
+                    <span class="username">@SupportMain</span>
+                    <span class="user-rank">Casual</span>
+                  </div>
+                </div>
+                <div class="post-actions">
+                  <button class="reaction-btn">🎮</button>
+                  <button class="reaction-btn">❤️</button>
+                </div>
+              </div>
+              <div class="post-body">
+                Gracias por la guía, me ayudó muchísimo a subir de rango.
+              </div>
+            </article>
+          </section>
+
+          <section class="reply-editor">
+            <div class="editor-toolbar">
+              <button type="button">Negrita</button>
+              <button type="button">Cursiva</button>
+              <button type="button">Lista</button>
+              <button type="button">Cita</button>
+              <button type="button">Imagen</button>
+              <button type="button">Embed YouTube/Twitch</button>
+              <button type="button" id="insert-spoiler">Tag [SPOILER]</button>
+            </div>
+            <textarea id="reply-content" placeholder="Escribe tu respuesta (Markdown soportado)..."></textarea>
+            <div class="editor-footer">
+              <span class="hint">
+                Recuerda: Cero tolerancia a la toxicidad. El Filtro de Hierro revisa tu mensaje.
+              </span>
+              <button class="btn-primary" id="submit-reply">Publicar respuesta</button>
+            </div>
+            <div class="error-message" id="reply-error"></div>
+          </section>
+        </article>
+      </section>
+
+      <aside class="sidebar-right">
+        <div class="card profile-card">
+          <div class="profile-header">
+            <div class="avatar large"></div>
+            <div>
+              <div class="username">@DemoUser</div>
+              <div class="rank-badge rank-legend">Noob</div>
+            </div>
+          </div>
+          <div class="profile-body">
+            <div class="platform-ids">
+              <span>Steam: —</span>
+              <span>PSN: —</span>
+              <span>Xbox: —</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Notificaciones</h2>
+          <ul class="notifications-list">
+            <li>No tienes notificaciones nuevas.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="java.js"></script>
+</body>
+</html>
+
