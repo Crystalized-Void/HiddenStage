@@ -89,7 +89,7 @@ body {
     color: color-mix(in srgb, var(--muted) 80%, #ffffff 20%);
 }
 
-/* Botón de crear publicación */
+
 .create-post-btn {
     background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
     border: none;
@@ -685,7 +685,6 @@ body {
     width: calc((100% - 60px) / 3);
     min-width: 260px;
 }
-}
 
 .Trucos {
     background: var(--panel);
@@ -885,6 +884,7 @@ body {
     font-size: 14px;
     line-height: 1.4;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -895,6 +895,7 @@ body {
     font-size: 12px;
     line-height: 1.3;
     display: -webkit-box;
+    line-clamp: 1;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
