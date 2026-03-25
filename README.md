@@ -1,126 +1,43 @@
 # HiddenStage
 
-Plataforma web de comunidad gamer para publicar contenido, gestionar perfil y explorar temas de videojuegos.
+Hidden Stage es una plataforma web enfocada en la difusión de contenido relacionado con videojuegos. En este sitio los usuarios pueden compartir información, publicar reseñas, crear guías, interactuar con otros usuarios y administrar su perfil dentro de la plataforma.
 
-Este README fue actualizado con base en el estado actual de esta rama (frontend estatico + backend Node.js/Express + MySQL).
+El proyecto busca crear un espacio digital donde los jugadores puedan descubrir contenido útil sobre videojuegos, resolver dudas, compartir experiencias y participar en discusiones dentro de una comunidad activa.
 
-<<<<<<< HEAD
-## Resumen Del Proyecto
-=======
 [Visita mi sitio web](https://hiddenstage.io/pagina_principal/pagina_principal.html#reciente)
 
 ## 📁 Descripción del Proyecto
->>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
-HiddenStage combina:
+Hidden Stage es una página web desarrollada utilizando tecnologías fundamentales del desarrollo web. El proyecto está diseñado para ofrecer una experiencia sencilla, intuitiva y accesible para los usuarios interesados en el mundo de los videojuegos.
 
-- Frontend en HTML/CSS/JavaScript con multiples vistas.
-- Backend en Node.js con API REST.
-- Persistencia en MySQL para usuarios, perfiles y publicaciones.
+La plataforma permite que los usuarios generen contenido, interactúen entre sí y mantengan un perfil personalizado donde puedan gestionar sus publicaciones y participación dentro de la comunidad.
 
-Flujo principal:
+Además, el sitio busca funcionar como un punto de encuentro para jugadores que desean mantenerse informados sobre novedades, compartir opiniones o aprender más sobre distintos títulos.
 
-<<<<<<< HEAD
-1. El servidor inicia y redirige la raiz a la pantalla de login.
-2. Login/registro consumen la API.
-3. La sesion se guarda en localStorage bajo la clave hiddenstageUser.
-4. Perfil y publicaciones se consultan/actualizan por API.
-
-## Stack Tecnologico
-
-- Node.js
-- Express
-- MySQL 8+
-- mysql2
-- bcryptjs
-- dotenv
-- cors
-- HTML5, CSS3 y JavaScript vanilla
-- Font Awesome + Google Fonts (Lato)
-
-## Estructura Principal
-
-```text
-HiddenStage/
-|-- server.js
-|-- package.json
-|-- README.md
-|-- inicio_de_sesion/
-|   |-- index.html
-|   |-- java.js
-|   `-- style.css
-|-- pagina_principal/
-|   |-- pagina_principal.html
-|   |-- generos.html
-|   |-- principal.css
-|   `-- README.md
-|-- perfil/
-|   |-- perfil.html
-|   |-- crear-post.html
-|   |-- perfil.css
-|   `-- crear-post.css
-|-- configuracion/
-|   |-- configuracion.html
-|   `-- configuracion.css
-|-- database/
-|   |-- hiddenstage_schema.sql
-|   `-- MANUAL_INSTALACION.md
-`-- img/
-```
-
-## Funcionalidades Actuales En Esta Rama
-=======
 ## ✨ Objetivo del Proyecto
->>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
-- Registro de usuario por email y password.
-- Inicio de sesion con validacion de credenciales.
-- Migracion automatica de password plano a bcrypt al primer login valido.
-- Acceso como invitado desde login.
-- Edicion de perfil:
-  - username
-  - biografia
-  - pronombres
-  - hasta 5 enlaces sociales
-  - foto de perfil (base64)
-  - banner de perfil (base64)
-- Validacion de peso de imagen en backend (maximo 1MB para foto y banner).
-- Creacion y consulta de posts por usuario.
-- Cambio de tema claro/oscuro en vistas principales.
+El propósito principal de Hidden Stage es crear una comunidad digital dedicada a los videojuegos donde los usuarios puedan compartir conocimientos, opiniones y experiencias.
 
-## Pantallas Del Frontend
+La plataforma busca ofrecer un espacio donde los jugadores puedan:
 
-- Login y registro: inicio_de_sesion/index.html
-- Home principal: pagina_principal/pagina_principal.html
-- Vista de generos: pagina_principal/generos.html
-- Perfil de usuario: perfil/perfil.html
-- Crear post: perfil/crear-post.html
-- Configuracion: configuracion/configuracion.html
+Compartir información sobre videojuegos.
 
-## API Disponible
+Publicar reseñas y opiniones sobre distintos títulos.
 
-Base URL local: <http://localhost:3000>
+Crear guías que ayuden a otros jugadores a completar misiones, niveles o desafíos.
 
-### Salud
+Enterarse de novedades y noticias relacionadas con la industria de los videojuegos.
 
-- GET /api/health
+Interactuar con otros jugadores a través de publicaciones y foros.
 
-### Autenticacion
+Descubrir ofertas o recomendaciones de juegos.
 
-- POST /api/register
-- POST /api/login
+Tener una experiencia personalizada mediante la gestión de su perfil.
 
-<<<<<<< HEAD
-### Perfil
-=======
 ## 💡 Funcionalidades Principales
->>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
-- PUT /api/profile
+Hidden Stage incluye diferentes funcionalidades diseñadas para mejorar la interacción entre los usuarios y facilitar la creación de contenido dentro de la plataforma:
 
-<<<<<<< HEAD
-### Publicaciones
-=======
 Modo oscuro
 El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer ambas versiones, garantizamos que nuestra interfaz sea cómoda, adaptándose a las preferencias del usuario.
 
@@ -128,21 +45,10 @@ El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer amb
 
 Creación de publicaciones
 Los usuarios pueden compartir contenido relacionado con videojuegos, como reseñas, recomendaciones, noticias o experiencias personales.
->>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
-- GET /api/posts/:id_usuario
-- POST /api/posts
+Sistema de perfiles
+Cada usuario cuenta con un perfil donde puede editar su información, ver sus publicaciones y personalizar algunos aspectos de su cuenta.
 
-<<<<<<< HEAD
-## Base De Datos
-
-Script principal: database/hiddenstage_schema.sql
-
-Entidades definidas en script:
-
-- roles
-- usuarios
-=======
 <img width="1688" height="874" alt="image" src="https://github.com/user-attachments/assets/82e526b6-70d5-45fc-aaa8-73ed24f28031" />
 
 Foro o sistema de chat
@@ -186,72 +92,4 @@ El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
 * [MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL](https://github.com/EzequielFie)
 * [SANCHEZ GARCÍA OSCAR ALBERTO](https://github.com/Oscar2434)
 
->>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
-Campos de perfil persistidos en usuarios:
-
-- biografia
-- pronombres
-- red_social_1 a red_social_5
-- foto_perfil
-- banner_perfil
-
-Nota importante: la API de publicaciones usa la tabla publicaciones, pero el script principal no la crea actualmente. Si estas levantando desde cero, agrega una tabla compatible antes de usar endpoints de posts.
-
-## Instalacion Rapida
-
-1. Instala dependencias:
-
-```bash
-npm install
-```
-
-1. Crea un archivo .env en la raiz con este formato:
-
-```env
-PORT=3000
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=TU_PASSWORD
-DB_NAME=usuarios_hiddenstage
-```
-
-1. Aplica el esquema SQL:
-
-```bash
-mysql -u root -p < database/hiddenstage_schema.sql
-```
-
-1. Inicia el servidor:
-
-```bash
-npm start
-```
-
-1. Abre en navegador:
-
-<http://localhost:3000>
-
-## Scripts NPM
-
-- npm start
-- npm run dev
-
-Ambos ejecutan server.js en el estado actual del proyecto.
-
-## Estado Tecnico Actual
-
-- Backend y frontend estan integrados via fetch a la API local.
-- El frontend puede correr desde archivo local o desde localhost.
-- Existe una carpeta database/mysql-data con datos locales de MySQL para entorno de desarrollo.
-
-## Autores
-
-- Gomez Tinoco Fernando
-- Guerrero Garcia Alvaro Alberto
-- Guzman Lizama Iara Samantha
-- Membrila Gonzalez Fernando Ezequiel
-- Sanchez Garcia Oscar Alberto
-
-Proyecto academico en desarrollo activo.
