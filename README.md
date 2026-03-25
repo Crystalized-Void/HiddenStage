@@ -64,6 +64,11 @@ El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer amb
 
 <img width="1528" height="1091" alt="image" src="https://github.com/user-attachments/assets/5ad1d5f8-9447-4ccc-9870-ebc65067721c" />
 
+Modo oscuro
+El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer ambas versiones, garantizamos que nuestra interfaz sea cómoda, adaptándose a las preferencias del usuario.
+
+<img width="1528" height="1091" alt="image" src="https://github.com/user-attachments/assets/5ad1d5f8-9447-4ccc-9870-ebc65067721c" />
+
 Creación de publicaciones
 Los usuarios pueden compartir contenido relacionado con videojuegos, como reseñas, recomendaciones, noticias o experiencias personales.
 
