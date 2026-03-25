@@ -21,6 +21,10 @@
                 <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
             </div>
 
+            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
+                <i class="fas fa-plus"></i>
+            </button>
+
             <div class="user-panel">
                 <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
                     <span data-user-name></span>
@@ -197,7 +201,135 @@
         </div>
     </div>
 </section>
+
+<section id="carreras" class="Carreras">
+    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="plataformas" class="Plataformas">
+    <h2><i class="fas fa-server"></i> PLATAFORMAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="romance" class="Romance">
+    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="porturnos" class="Porturnos">
+    <h2><i class="fas fa-mask"></i> POR TURNOS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="accion" class="Accion">
+    <h2><i class="fas fa-explosion"></i> ACCIÓN </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="aventuras" class="Aventuras">
+    <h2><i class="fas fa-map"></i> AVENTURAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
 </div>
+
+<!-- Modal: Crear Publicación -->
+<div id="createModal" class="modal-create-post">
+    <div class="modal-overlay" onclick="toggleCreateModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Crear publicación</h2>
+            <button class="modal-close" onclick="toggleCreateModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <button class="create-option" onclick="redirectToCreatePost()">
+                <i class="fas fa-pen"></i>
+                <span>Crear nota</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
@@ -216,6 +348,86 @@
 
     function Generos() {
         window.location.href = 'generos.html';
+    }
+
+    function toggleCreateModal() {
+        const modal = document.getElementById('createModal');
+        if (modal) {
+            modal.classList.toggle('active');
+        }
+    }
+
+    function redirectToCreatePost() {
+        const storedUser = localStorage.getItem('hiddenstageUser');
+        if (!storedUser) {
+            alert('Debes iniciar sesión para crear una publicación');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+        window.location.href = 'crearPublicacion.html';
+    }
+
+    // Cargar publicaciones desde localStorage
+    function loadPublications() {
+        const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
+        const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
+
+        categories.forEach(category => {
+            const section = document.getElementById(category);
+            if (!section) return;
+
+            const cards = section.querySelector('.cards');
+            if (!cards) return;
+
+            // Limpiar tarjetas existentes
+            cards.innerHTML = '';
+
+            // Filtrar publicaciones por categoría
+            const categoryPosts = posts.filter(p => p.categoria === category);
+
+            if (categoryPosts.length === 0) {
+                cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+                return;
+            }
+
+            // Crear tarjetas de publicación
+            categoryPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.onclick = () => window.location.href = `publicacion.html?id=${post.id}`;
+                
+                const avatarInitials = post.username.substring(0, 2).toUpperCase();
+                const avatarStyle = post.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
+                
+                card.innerHTML = `
+                    ${post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="" class="post-card-image">` : '<div class="post-card-image"></div>'}
+                    <div class="post-card-content">
+                        <div class="post-card-title">${post.titulo}</div>
+                        <div class="post-card-heading">${post.encabezado}</div>
+                        <div class="post-card-meta">
+                            <div class="post-card-avatar" style="${avatarStyle}">${!post.userAvatar ? avatarInitials : ''}</div>
+                            <span>${post.username}</span>
+                            <span>•</span>
+                            <span>${formatPostDate(post.fecha)}</span>
+                        </div>
+                    </div>
+                `;
+                cards.appendChild(card);
+            });
+        });
+    }
+
+    function formatPostDate(isoDate) {
+        const date = new Date(isoDate);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        if (days === 0) return 'Hoy';
+        if (days === 1) return 'Ayer';
+        if (days < 7) return `${days}d`;
+        if (days < 30) return `${Math.floor(days / 7)}sem`;
+        return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
     }
 
     (() => {
@@ -389,6 +601,16 @@
             if (event.key === 'Escape') {
                 closeUserMenu();
                 sideProfile?.classList.remove('active');
+            }
+        });
+
+        // Cargar publicaciones al iniciar
+        loadPublications();
+
+        // Escuchar cambios en storage para actualizar publicaciones
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'hiddenstagePosts') {
+                loadPublications();
             }
         });
     })();

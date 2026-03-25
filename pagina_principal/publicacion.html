@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Publicación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="publicacion.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+            </a>
+            <div class="spacer"></div>
+            <button type="button" class="back-btn" onclick="window.history.back()" title="Volver">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="publication-page">
+        <div class="container">
+            <!-- Información de la Publicación -->
+            <article id="postContent" class="post-article">
+                <!-- Encabezado del Autor -->
+                <div class="post-header">
+                    <div class="author-info">
+                        <div id="authorAvatar" class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="author-details">
+                            <strong id="authorName">Usuario</strong>
+                            <span id="postDate">Hace poco</span>
+                        </div>
+                    </div>
+                    <a id="categoryTag" href="#" class="category-tag">Categoría</a>
+                </div>
+
+                <!-- Título y Encabezado -->
+                <div class="post-title-section">
+                    <h1 id="postTitle">Título de la publicación</h1>
+                    <p id="postHeading" class="post-heading">Encabezado descriptivo</p>
+                </div>
+
+                <!-- Imagen Principal -->
+                <div id="imageSection" class="post-image-section">
+                    <img id="mainImage" src="" alt="Imagen principal" class="post-image">
+                </div>
+
+                <!-- Contenido de la Publicación -->
+                <div id="postContentText" class="post-content-text">
+                    <!-- El contenido se cargará aquí -->
+                </div>
+
+                <!-- Galería de Imágenes -->
+                <div id="gallerySection" class="post-gallery">
+                    <!-- Las imágenes se cargarán aquí -->
+                </div>
+
+                <!-- Enlaces -->
+                <div id="linksSection" class="post-links">
+                    <!-- Los enlaces se cargarán aquí -->
+                </div>
+            </article>
+
+            <!-- Sección de Interacciones -->
+            <section class="community-section">
+                <h2>¿Qué opina la comunidad?</h2>
+
+                <!-- Botones de Reacción -->
+                <div class="reaction-bar">
+                    <button class="reaction-btn hype-btn" id="hypeBtn" onclick="toggleHype()">
+                        <i class="fas fa-fire"></i>
+                        <span>HYPE!</span>
+                        <span id="hypeCount">0</span>
+                    </button>
+                    <button class="reaction-btn like-btn" id="likeBtn" onclick="toggleLike()">
+                        <i class="fas fa-heart"></i>
+                        <span id="likeCount">0</span>
+                    </button>
+                    <button class="reaction-btn comment-btn" onclick="scrollToComments()">
+                        <i class="fas fa-comment"></i>
+                        <span id="commentCount">0</span>
+                    </button>
+                </div>
+
+                <!-- Comentarios -->
+                <div class="comments-container">
+                    <h3>Comunidad</h3>
+                    <div id="commentList" class="comment-list">
+                        <!-- Los comentarios se cargarán aquí -->
+                    </div>
+                </div>
+
+                <!-- Formulario de Comentario -->
+                <div class="comment-form">
+                    <h3>Escribe un comentario</h3>
+                    <p class="logged-user">Comentando como: <strong id="displayUserName">Invitado</strong></p>
+                    <textarea 
+                        id="userComment" 
+                        placeholder="Escribe tu comentario aquí..." 
+                        rows="4"
+                        maxlength="500"
+                    ></textarea>
+                    <small id="commentCharCount">0/500</small>
+                    <button onclick="postComment()" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Publicar comentario
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const SESSION_KEY = 'hiddenstageUser';
+        const POSTS_KEY = 'hiddenstagePosts';
+        const THEME_KEY = 'hiddenstageTheme';
+
+        const getSessionUser = () => {
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') return null;
+                return parsed;
+            } catch {
+                return null;
+            }
+        };
+
+        const escapeHtml = (value) => {
+            const text = String(value ?? '');
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        };
+
+        const getTotalCommentCount = (comments) => {
+            return (comments || []).reduce((acc, comment) => {
+                const replies = Array.isArray(comment.respuestas) ? comment.respuestas.length : 0;
+                return acc + 1 + replies;
+            }, 0);
+        };
+
+        // Aplicar tema
+        const applyTheme = () => {
+            const storedTheme = localStorage.getItem(THEME_KEY);
+            document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+        };
+
+        applyTheme();
+
+        // Obtener ID de la publicación desde URL
+        const getPostId = () => {
+            const params = new URLSearchParams(window.location.search);
+            return parseInt(params.get('id')) || null;
+        };
+
+        // Cargar publicación
+        const loadPost = () => {
+            const postId = getPostId();
+            if (!postId) {
+                document.body.innerHTML = '<p style="text-align:center; padding: 20px;">Publicación no encontrada</p>';
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const post = posts.find(p => p.id === postId);
+
+            if (!post) {
+                document.body.innerHTML = '<p style="text-align:center; padding: 20px;">Publicación no encontrada</p>';
+                return;
+            }
+
+            // Llenar datos
+            document.getElementById('postTitle').textContent = post.titulo;
+            document.getElementById('postHeading').textContent = post.encabezado;
+            document.getElementById('authorName').textContent = post.username;
+            const sessionUser = getSessionUser();
+            document.getElementById('displayUserName').textContent = sessionUser?.username || 'Invitado';
+            document.getElementById('categoryTag').textContent = post.categoria.charAt(0).toUpperCase() + post.categoria.slice(1);
+            document.getElementById('categoryTag').href = `pagina_principal.html#${post.categoria}`;
+            document.getElementById('postDate').textContent = formatDate(post.fecha);
+            document.getElementById('hypeCount').textContent = post.hypes?.length || 0;
+            document.getElementById('likeCount').textContent = post.likes || 0;
+            document.getElementById('commentCount').textContent = getTotalCommentCount(post.comentarios || []);
+
+            // Avatar del autor
+            if (post.userAvatar) {
+                document.getElementById('authorAvatar').style.backgroundImage = `url(${post.userAvatar})`;
+                document.getElementById('authorAvatar').classList.add('has-photo');
+            }
+
+            // Imagen principal
+            if (post.imagenPrincipal) {
+                document.getElementById('mainImage').src = post.imagenPrincipal;
+            } else {
+                document.getElementById('imageSection').style.display = 'none';
+            }
+
+            // Contenido
+            document.getElementById('postContentText').innerHTML = post.contenido.replace(/\n/g, '<br>');
+
+            // Galería
+            if (post.imagenGaleria && post.imagenGaleria.length > 0) {
+                const gallery = document.getElementById('gallerySection');
+                gallery.innerHTML = '<h3>Galería de imágenes</h3><div class="gallery-grid">';
+                post.imagenGaleria.forEach(img => {
+                    gallery.innerHTML += `<img src="${img}" alt="Galería" class="gallery-img">`;
+                });
+                gallery.innerHTML += '</div>';
+            }
+
+            // Enlaces
+            if (post.links && post.links.length > 0) {
+                const linksSection = document.getElementById('linksSection');
+                linksSection.innerHTML = '<h3>Enlaces útiles</h3><div class="links-list">';
+                post.links.forEach(link => {
+                    linksSection.innerHTML += `
+                        <a href="${link.url}" target="_blank" class="link-item">
+                            <i class="fas fa-link"></i> ${link.title}
+                        </a>
+                    `;
+                });
+                linksSection.innerHTML += '</div>';
+            }
+
+            // Cargar comentarios
+            loadComments(post.comentarios || []);
+
+            // Verificar si ya dio HYPE
+            const sessionUserForHype = getSessionUser();
+            const pageKey = 'hype_' + postId + '_' + (sessionUserForHype?.username || 'guest');
+            if (localStorage.getItem(pageKey) === '1') {
+                document.getElementById('hypeBtn').disabled = true;
+                document.getElementById('hypeBtn').classList.add('already-hype');
+            }
+
+            // Verificar si ya dio like (1 por usuario)
+            const likeKey = 'like_' + postId + '_' + (sessionUserForHype?.username || 'guest');
+            if (localStorage.getItem(likeKey) === '1') {
+                const likeBtn = document.getElementById('likeBtn');
+                likeBtn.disabled = true;
+                likeBtn.classList.add('liked');
+            }
+
+            window.currentPost = post;
+        };
+
+        // Formatear fecha
+        const formatDate = (isoDate) => {
+            const date = new Date(isoDate);
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            if (days === 0) return 'Hoy';
+            if (days === 1) return 'Ayer';
+            if (days < 7) return `Hace ${days} días`;
+            return date.toLocaleDateString('es-ES');
+        };
+
+        // Cargar comentarios
+        const loadComments = (comments) => {
+            const commentList = document.getElementById('commentList');
+            commentList.innerHTML = '';
+
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p class="no-comments">Sé el primero en comentar</p>';
+                return;
+            }
+
+            comments.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = 'comment';
+                const commentId = Number(comment.id) || Date.now();
+                const safeUsername = escapeHtml(comment.username || 'Usuario');
+                const safeText = escapeHtml(comment.texto || '');
+                const avatarInitials = escapeHtml((comment.username || 'US').substring(0, 2).toUpperCase());
+                const replies = Array.isArray(comment.respuestas) ? comment.respuestas : [];
+
+                const repliesHtml = replies.map((reply) => {
+                    const replyUser = escapeHtml(reply.username || 'Usuario');
+                    const replyText = escapeHtml(reply.texto || '');
+                    const replyInitials = escapeHtml((reply.username || 'US').substring(0, 2).toUpperCase());
+                    return `
+                        <div class="reply-item">
+                            <div class="reply-avatar" ${reply.userAvatar ? `style="background-image: url('${reply.userAvatar}')"` : ''}>
+                                ${!reply.userAvatar ? replyInitials : ''}
+                            </div>
+                            <div class="reply-content">
+                                <div class="reply-header">
+                                    <strong>${replyUser}</strong>
+                                    <span class="comment-date">${formatDate(reply.fecha)}</span>
+                                </div>
+                                <p>${replyText}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                commentEl.innerHTML = `
+                    <div class="comment-avatar" ${comment.userAvatar ? `style="background-image: url('${comment.userAvatar}')"` : ''}>
+                        ${!comment.userAvatar ? avatarInitials : ''}
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <strong>${safeUsername}</strong>
+                            <span class="comment-date">${formatDate(comment.fecha)}</span>
+                        </div>
+                        <p>${safeText}</p>
+                        <div class="comment-actions">
+                            <button type="button" class="comment-reply-btn" onclick="toggleReplyForm(${commentId})">
+                                <i class="fas fa-reply"></i> Responder
+                            </button>
+                        </div>
+                        <div id="replyForm-${commentId}" class="reply-form hidden">
+                            <textarea id="replyInput-${commentId}" placeholder="Escribe tu respuesta..." rows="3" maxlength="500"></textarea>
+                            <div class="reply-form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="toggleReplyForm(${commentId})">Cancelar</button>
+                                <button type="button" class="btn btn-primary" onclick="postReply(${commentId})">
+                                    <i class="fas fa-paper-plane"></i> Responder
+                                </button>
+                            </div>
+                        </div>
+                        ${replies.length > 0 ? `<div class="reply-list">${repliesHtml}</div>` : ''}
+                    </div>
+                `;
+                commentList.appendChild(commentEl);
+            });
+        };
+
+        const toggleReplyForm = (commentId) => {
+            const form = document.getElementById(`replyForm-${commentId}`);
+            if (!form) return;
+            form.classList.toggle('hidden');
+
+            if (!form.classList.contains('hidden')) {
+                const input = document.getElementById(`replyInput-${commentId}`);
+                input?.focus();
+            }
+        };
+
+        const postReply = (commentId) => {
+            const userData = getSessionUser();
+            if (!userData) {
+                alert('Debes iniciar sesión para responder comentarios');
+                return;
+            }
+
+            const replyInput = document.getElementById(`replyInput-${commentId}`);
+            const replyText = replyInput?.value.trim() || '';
+            if (!replyText) {
+                alert('La respuesta no puede estar vacía');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const postIndex = posts.findIndex(p => p.id === window.currentPost.id);
+            if (postIndex === -1) return;
+
+            const comments = posts[postIndex].comentarios || [];
+            const commentIndex = comments.findIndex(c => Number(c.id) === Number(commentId));
+            if (commentIndex === -1) return;
+
+            const newReply = {
+                id: Date.now(),
+                username: userData.username,
+                userAvatar: userData.foto_perfil || '',
+                texto: replyText,
+                fecha: new Date().toISOString()
+            };
+
+            const updatedComment = {
+                ...comments[commentIndex],
+                respuestas: [...(comments[commentIndex].respuestas || []), newReply]
+            };
+
+            comments[commentIndex] = updatedComment;
+            posts[postIndex].comentarios = comments;
+            localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+
+            loadComments(posts[postIndex].comentarios);
+            const totalComments = getTotalCommentCount(posts[postIndex].comentarios);
+            document.getElementById('commentCount').textContent = totalComments;
+            window.currentPost.comentarios = posts[postIndex].comentarios;
+        };
+
+        // Toggle HYPE
+        const toggleHype = () => {
+            if (!window.currentPost) return;
+
+            const userData = getSessionUser();
+            if (!userData) {
+                alert('Debes iniciar sesión para dar HYPE');
+                return;
+            }
+
+            const pageKey = 'hype_' + window.currentPost.id + '_' + userData.username;
+            if (localStorage.getItem(pageKey) === '1') {
+                alert('Ya diste HYPE a esta publicación');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const postIndex = posts.findIndex(p => p.id === window.currentPost.id);
+            if (postIndex !== -1) {
+                posts[postIndex].hypes = (posts[postIndex].hypes || []).concat([userData.username]);
+                localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+                localStorage.setItem(pageKey, '1');
+                document.getElementById('hypeCount').textContent = posts[postIndex].hypes.length;
+                document.getElementById('hypeBtn').disabled = true;
+                document.getElementById('hypeBtn').classList.add('already-hype');
+                window.currentPost.hypes = posts[postIndex].hypes;
+            }
+        };
+
+        // Toggle Like
+        const toggleLike = () => {
+            if (!window.currentPost) return;
+
+            const userData = getSessionUser();
+            if (!userData) {
+                alert('Debes iniciar sesión para dar like');
+                return;
+            }
+
+            const likeKey = 'like_' + window.currentPost.id + '_' + userData.username;
+            if (localStorage.getItem(likeKey) === '1') {
+                alert('Ya diste like a esta publicación');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const postIndex = posts.findIndex(p => p.id === window.currentPost.id);
+            if (postIndex !== -1) {
+                const likeBtn = document.getElementById('likeBtn');
+                posts[postIndex].likes++;
+                likeBtn.classList.add('liked');
+                likeBtn.disabled = true;
+                localStorage.setItem(likeKey, '1');
+                localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+                document.getElementById('likeCount').textContent = posts[postIndex].likes;
+                window.currentPost.likes = posts[postIndex].likes;
+            }
+        };
+
+        // Publicar comentario
+        const postComment = () => {
+            const userData = getSessionUser();
+            if (!userData) {
+                alert('Debes iniciar sesión para comentar');
+                return;
+            }
+
+            const commentText = document.getElementById('userComment').value.trim();
+            if (!commentText) {
+                alert('El comentario no puede estar vacío');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const postIndex = posts.findIndex(p => p.id === window.currentPost.id);
+
+            if (postIndex !== -1) {
+                const comment = {
+                    id: Date.now(),
+                    username: userData.username,
+                    userAvatar: userData.foto_perfil || '',
+                    texto: commentText,
+                    fecha: new Date().toISOString(),
+                    respuestas: []
+                };
+
+                posts[postIndex].comentarios = (posts[postIndex].comentarios || []).concat([comment]);
+                localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+
+                document.getElementById('userComment').value = '';
+                document.getElementById('commentCharCount').textContent = '0/500';
+                loadComments(posts[postIndex].comentarios);
+                document.getElementById('commentCount').textContent = getTotalCommentCount(posts[postIndex].comentarios);
+                window.currentPost.comentarios = posts[postIndex].comentarios;
+            }
+        };
+
+        // Contador de caracteres en comentario
+        document.getElementById('userComment')?.addEventListener('input', (e) => {
+            document.getElementById('commentCharCount').textContent = `${e.target.value.length}/500`;
+        });
+
+        // Scroll a comentarios
+        const scrollToComments = () => {
+            document.querySelector('.comments-container')?.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // Cargar publicación al iniciar
+        loadPost();
+    </script>
+</body>
+</html>
