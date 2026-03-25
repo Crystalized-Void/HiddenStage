@@ -6,11 +6,29 @@
     font-family: "Lato", sans-serif;
 }
 
+body[data-theme="dark"] {
+    --cfg-bg: #191325;
+    --cfg-panel: #251c38;
+    --cfg-panel-soft: #2b2140;
+    --cfg-text: #f4edff;
+    --cfg-muted: #cfbedf;
+    --cfg-border: rgba(124, 105, 168, 0.45);
+}
+
 /* === Fondo general de configuración === */
 body {
     background: #f4e8fc;
     color: #1f1f1f;
     min-height: 100vh;
+}
+
+body[data-theme="dark"] {
+    background: var(--cfg-bg);
+    color: var(--cfg-text);
+}
+
+body[data-theme="dark"] .brand-logo {
+    filter: brightness(0) invert(1);
 }
 
 /* === Barra superior de configuración === */
@@ -357,6 +375,53 @@ body {
 .btn-primary {
     background: #9582c1;
     color: #fff;
+}
+
+body[data-theme="dark"] .settings-layout,
+body[data-theme="dark"] .settings-content,
+body[data-theme="dark"] .settings-panel,
+body[data-theme="dark"] .settings-item,
+body[data-theme="dark"] .profile-actions-bottom {
+    background: var(--cfg-panel);
+    color: var(--cfg-text);
+    border-color: var(--cfg-border);
+}
+
+body[data-theme="dark"] .settings-sidebar,
+body[data-theme="dark"] .field-block input,
+body[data-theme="dark"] .field-block textarea,
+body[data-theme="dark"] .banner-upload,
+body[data-theme="dark"] .photo-circle,
+body[data-theme="dark"] .btn-soft {
+    background: var(--cfg-panel-soft);
+    color: var(--cfg-text);
+    border-color: var(--cfg-border);
+}
+
+body[data-theme="dark"] .panel-head,
+body[data-theme="dark"] .profile-actions-bottom,
+body[data-theme="dark"] .danger-zone,
+body[data-theme="dark"] .support-divider,
+body[data-theme="dark"] .settings-sidebar {
+    border-color: var(--cfg-border);
+}
+
+body[data-theme="dark"] .support-block p,
+body[data-theme="dark"] .field-block small,
+body[data-theme="dark"] .danger-zone p,
+body[data-theme="dark"] .profile-photo p,
+body[data-theme="dark"] .topbar-right {
+    color: var(--cfg-muted);
+}
+
+body[data-theme="dark"] .field-block input::placeholder,
+body[data-theme="dark"] .field-block textarea::placeholder {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+body[data-theme="dark"] .btn-danger {
+    background: color-mix(in srgb, var(--cfg-panel-soft) 70%, #b91c1c 30%);
+    color: var(--cfg-text);
 }
 
 /* === Ajustes responsive === */

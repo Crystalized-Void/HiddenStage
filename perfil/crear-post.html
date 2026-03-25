@@ -65,6 +65,7 @@
 
     <script>
         (() => {
+            const THEME_KEY = 'hiddenstageTheme';
             const MAX_IMAGE_BYTES = 1024 * 1024;
             const MAX_VIDEO_BYTES = 3 * 1024 * 1024;
             const LOCAL_API_ORIGIN = 'http://localhost:3000';
@@ -88,6 +89,13 @@
             const videoPreview = document.getElementById('video-preview');
             const myPostsList = document.getElementById('my-posts-list');
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
+
+            const applyTheme = () => {
+                const storedTheme = localStorage.getItem(THEME_KEY);
+                document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+            };
+
+            applyTheme();
 
             if (!storedUserRaw) {
                 alert('Debes iniciar sesión para crear un post.');

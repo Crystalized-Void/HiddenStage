@@ -14,7 +14,7 @@
     <header class="topbar">
         <div class="topbar-main">
             <a class="brand" href="../pagina_principal/pagina_principal.html" aria-label="HiddenStage Inicio">
-                <img src="img/LOGO_pagina3.png" alt="HiddenStage" class="brand-logo">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
 
             <div class="topbar-right">
@@ -133,6 +133,7 @@
 
     <script>
         (() => {
+            const THEME_KEY = 'hiddenstageTheme';
             const LOCAL_API_ORIGIN = 'http://localhost:3000';
             const MAX_PROFILE_PHOTO_BYTES = 1024 * 1024;
             const isLocalFrontend =
@@ -161,6 +162,13 @@
             const profileBannerEditBtn = profileBannerPreview?.querySelector('.edit-chip');
             const saveProfileBtn = document.getElementById('save-profile-btn');
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
+
+            const applyTheme = () => {
+                const storedTheme = localStorage.getItem(THEME_KEY);
+                document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+            };
+
+            applyTheme();
 
             let currentUser = null;
             let currentPhotoValue = '';
