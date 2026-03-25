@@ -6,6 +6,11 @@
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const guestAccessButton = document.getElementById('guest-access');
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+    const themeToggleLabel = document.getElementById('theme-toggle-label');
+
+    const THEME_KEY = 'hiddenstageTheme';
 
     const LOCAL_API_ORIGIN = 'http://localhost:3000';
     const isLocalFrontend =
@@ -17,6 +22,39 @@
         ? LOCAL_API_ORIGIN
         : '';
     const MAIN_PAGE_URL = '../pagina_principal/pagina_principal.html';
+
+    const applyTheme = (themeName) => {
+        const isDarkTheme = themeName === 'dark';
+
+        document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
+
+        if (themeToggleLabel) {
+            themeToggleLabel.textContent = isDarkTheme ? 'Modo claro' : 'Modo oscuro';
+        }
+
+        if (themeToggleIcon) {
+            themeToggleIcon.textContent = isDarkTheme ? '☀️' : '🌙';
+        }
+    };
+
+    const readStoredTheme = () => {
+        const storedTheme = localStorage.getItem(THEME_KEY);
+
+        if (storedTheme === 'dark' || storedTheme === 'light') {
+            return storedTheme;
+        }
+
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initialTheme = prefersDark ? 'dark' : 'light';
+        localStorage.setItem(THEME_KEY, initialTheme);
+        return initialTheme;
+    };
+
+    const toggleTheme = () => {
+        const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(THEME_KEY, nextTheme);
+        applyTheme(nextTheme);
+    };
 
     const saveSessionUser = (user) => {
         localStorage.setItem('hiddenstageUser', JSON.stringify(user));
@@ -37,6 +75,12 @@
         banner_perfil: '',
         isGuest: true
     });
+
+    applyTheme(readStoredTheme());
+
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', toggleTheme);
+    }
 
     if (signIn && signUp && form) {
         signIn.addEventListener('click', (e) => {
@@ -59,7 +103,7 @@
             const password = registerForm.querySelector('#register-password')?.value;
 
             if (!username || !email || !password) {
-                alert('Completa nombre de usuario, email y contraseña.');
+                alert('Completa apodo, email y contraseña.');
                 return;
             }
 
@@ -90,6 +134,7 @@
 
     if (guestAccessButton) {
         guestAccessButton.addEventListener('click', () => {
+            localStorage.setItem(THEME_KEY, document.body.dataset.theme === 'dark' ? 'dark' : 'light');
             saveSessionUser(buildGuestUser());
             window.location.href = MAIN_PAGE_URL;
         });
@@ -124,6 +169,7 @@
                 }
 
                 saveSessionUser(data.user);
+                localStorage.setItem(THEME_KEY, document.body.dataset.theme === 'dark' ? 'dark' : 'light');
 
                 alert(`Bienvenido, ${data.user.username}`);
                 loginForm.reset();

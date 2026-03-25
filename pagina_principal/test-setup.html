@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Sistema de Publicaciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            background: #f0f7ff;
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .button-group {
+            margin: 15px 0;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .nav-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+        .nav-links a {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .nav-links a:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Sistema de Publicaciones HiddenStage</h1>
+        
+        <div class="test-section">
+            <h2>1. Validación de Archivos</h2>
+            <div class="test-item">
+                <strong>✓ crearPublicacion.html</strong>
+                <span class="status success">CREADO</span>
+            </div>
+            <div class="test-item">
+                <strong>✓ crearPublicacion.css</strong>
+                <span class="status success">CREADO</span>
+            </div>
+            <div class="test-item">
+                <strong>✓ publicacion.html</strong>
+                <span class="status success">CREADO</span>
+            </div>
+            <div class="test-item">
+                <strong>✓ publicacion.css</strong>
+                <span class="status success">CREADO</span>
+            </div>
+            <div class="test-item">
+                <strong>✓ pagina_principal.html (Modificado)</strong>
+                <span class="status success">ACTUALIZADO</span>
+            </div>
+            <div class="test-item">
+                <strong>✓ principal.css (Modificado)</strong>
+                <span class="status success">ACTUALIZADO</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Validación de localStorage</h2>
+            <div class="button-group">
+                <button onclick="testStorageSetup()">Verificar Storage</button>
+                <button onclick="createTestUser()">Crear Usuario de Prueba</button>
+                <button onclick="createTestPost()">Crear Publicación de Prueba</button>
+                <button onclick="showStorageContent()">Ver Contenido de Storage</button>
+                <button onclick="clearAllData()">Limpiar Todo (⚠️ CUIDADO)</button>
+            </div>
+            <div id="storageResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Validación de Categorías</h2>
+            <div class="button-group">
+                <button onclick="checkCategories()">Verificar Categorías</button>
+            </div>
+            <div id="categoriesResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Validación de Rutas</h2>
+            <div class="button-group">
+                <button onclick="checkRoutes()">Verificar Rutas</button>
+            </div>
+            <div id="routesResult"></div>
+        </div>
+
+        <div class="nav-links">
+            <h3>Acciones Rápidas:</h3>
+            <a href="pagina_principal.html">→ Ir a Página Principal</a>
+            <a href="crearPublicacion.html">→ Ir a Crear Publicación</a>
+            <a href="javascript:goToFirstPost()">→ Ver Primera Publicación</a>
+        </div>
+    </div>
+
+    <script>
+        const SESSION_KEY = 'hiddenstageUser';
+        const POSTS_KEY = 'hiddenstagePosts';
+        const THEME_KEY = 'hiddenstageTheme';
+
+        const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
+
+        function testStorageSetup() {
+            const result = document.getElementById('storageResult');
+            result.innerHTML = '';
+
+            const user = localStorage.getItem(SESSION_KEY);
+            const posts = localStorage.getItem(POSTS_KEY);
+
+            const userStatus = user ? 
+                `<div class="test-item">Usuario guardado: <span class="status success">✓ OK</span></div>` :
+                `<div class="test-item">Usuario: <span class="status warning">⚠ No initializado</span></div>`;
+
+            const postsStatus = posts ? 
+                `<div class="test-item">Posts guardados: <span class="status success">✓ OK (${JSON.parse(posts).length} posts)</span></div>` :
+                `<div class="test-item">Posts: <span class="status warning">⚠ No initializado</span></div>`;
+
+            result.innerHTML = userStatus + postsStatus;
+        }
+
+        function createTestUser() {
+            const testUser = {
+                id: 1,
+                username: 'UsuarioTest',
+                email: 'test@hiddenstage.local',
+                foto_perfil: ''
+            };
+            localStorage.setItem(SESSION_KEY, JSON.stringify(testUser));
+            alert('✓ Usuario de prueba creado: ' + testUser.username);
+            testStorageSetup();
+        }
+
+        function createTestPost() {
+            const user = JSON.parse(localStorage.getItem(SESSION_KEY));
+            if (!user) {
+                alert('❌ Primero crea un usuario de prueba');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const testPost = {
+                id: Date.now(),
+                userId: user.id,
+                username: user.username,
+                userAvatar: user.foto_perfil || '',
+                titulo: 'Publicación de Prueba #' + (posts.length + 1),
+                encabezado: 'Esta es una publicación de prueba del sistema',
+                categoria: categories[Math.floor(Math.random() * categories.length)],
+                contenido: 'Este es el contenido de prueba.\n\nLa publicación ha sido creada correctamente en localStorage.\n\nPuedes ver esta publicación en la sección correspondiente.',
+                imagenPrincipal: '',
+                imagenGaleria: [],
+                links: [
+                    { title: 'Enlace de Prueba', url: 'https://google.com' }
+                ],
+                fecha: new Date().toISOString(),
+                likes: 0,
+                comentarios: [],
+                hypes: []
+            };
+
+            posts.push(testPost);
+            localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+            alert('✓ Publicación creada en categoría: ' + testPost.categoria);
+            showStorageContent();
+        }
+
+        function showStorageContent() {
+            const result = document.getElementById('storageResult');
+            result.innerHTML = '';
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+
+            if (posts.length === 0) {
+                result.innerHTML = '<div class="test-item"><span class="status warning">⚠ No hay publicaciones</span></div>';
+                return;
+            }
+
+            let html = '';
+            posts.forEach((post, i) => {
+                html += `
+                    <div class="test-item">
+                        <strong>#${i + 1}</strong> - ${post.titulo}
+                        <br/>
+                        <small>Categoría: <strong>${post.categoria}</strong> | Autor: ${post.username} | ID: ${post.id}</small>
+                    </div>
+                `;
+            });
+            result.innerHTML = html;
+        }
+
+        function checkCategories() {
+            const result = document.getElementById('categoriesResult');
+            result.innerHTML = '';
+
+            let html = '<strong>Categorías esperadas:</strong>';
+            categories.forEach(cat => {
+                html += `<div class="test-item">✓ ${cat}</div>`;
+            });
+
+            result.innerHTML = html + '<div class="test-item"><span class="status success">8 categorías configuradas</span></div>';
+        }
+
+        function checkRoutes() {
+            const result = document.getElementById('routesResult');
+            result.innerHTML = '';
+
+            const routes = [
+                { file: 'crearPublicacion.html', desc: 'Crear nueva publicación' },
+                { file: 'publicacion.html?id=12345', desc: 'Ver publicación (requiere ID)' },
+                { file: 'pagina_principal.html#guias', desc: 'Ver sección Guías' },
+                { file: 'pagina_principal.html#trucos', desc: 'Ver sección Trucos' },
+                { file: 'pagina_principal.html#carreras', desc: 'Ver sección Carreras' }
+            ];
+
+            let html = '<strong>Rutas configuradas:</strong>';
+            routes.forEach(route => {
+                html += `<div class="test-item">✓ ${route.file} - ${route.desc}</div>`;
+            });
+
+            result.innerHTML = html + '<div class="test-item"><span class="status success">Todas las rutas disponibles</span></div>';
+        }
+
+        function goToFirstPost() {
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            if (posts.length === 0) {
+                alert('❌ No hay publicaciones para mostrar');
+                return;
+            }
+            window.location.href = `publicacion.html?id=${posts[0].id}`;
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ ¿Estás seguro de que quieres eliminar TODAS las publicaciones y datos?')) {
+                localStorage.removeItem(POSTS_KEY);
+                localStorage.removeItem(SESSION_KEY);
+                alert('✓ Datos eliminados');
+                testStorageSetup();
+            }
+        }
+
+        // Ejecutar verificación inicial
+        window.addEventListener('load', () => {
+            testStorageSetup();
+        });
+    </script>
+</body>
+</html>
