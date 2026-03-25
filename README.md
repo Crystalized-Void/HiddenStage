@@ -1,42 +1,63 @@
 # HiddenStage
+[Visita nuestro sitio web](https://hiddenstage.io/pagina_principal/pagina_principal.html#reciente)
 
-Hidden Stage es una plataforma web enfocada en la difusión de contenido relacionado con videojuegos. En este sitio los usuarios pueden compartir información, publicar reseñas, crear guías, interactuar con otros usuarios y administrar su perfil dentro de la plataforma.
+---------------------------------------------
+## Descripción del Proyecto
 
-El proyecto busca crear un espacio digital donde los jugadores puedan descubrir contenido útil sobre videojuegos, resolver dudas, compartir experiencias y participar en discusiones dentro de una comunidad activa.
+HiddenStage combina:
 
-[Visita mi sitio web](https://hiddenstage.io/pagina_principal/pagina_principal.html#reciente)
+- Frontend en HTML/CSS/JavaScript con multiples vistas.
+- Backend en Node.js con API REST.
+- Persistencia en MySQL para usuarios, perfiles y publicaciones.
 
-## 📁 Descripción del Proyecto
+---------------------------------------------
+## Stack Tecnologico
 
-Hidden Stage es una página web desarrollada utilizando tecnologías fundamentales del desarrollo web. El proyecto está diseñado para ofrecer una experiencia sencilla, intuitiva y accesible para los usuarios interesados en el mundo de los videojuegos.
+- Node.js
+- Express
+- MySQL 8+
+- mysql2
+- bcryptjs
+- dotenv
+- cors
+- HTML5, CSS3 y JavaScript vanilla
+- Font Awesome + Google Fonts (Lato)
 
-La plataforma permite que los usuarios generen contenido, interactúen entre sí y mantengan un perfil personalizado donde puedan gestionar sus publicaciones y participación dentro de la comunidad.
-
-Además, el sitio busca funcionar como un punto de encuentro para jugadores que desean mantenerse informados sobre novedades, compartir opiniones o aprender más sobre distintos títulos.
-
+---------------------------------------------
 ## ✨ Objetivo del Proyecto
 
-El propósito principal de Hidden Stage es crear una comunidad digital dedicada a los videojuegos donde los usuarios puedan compartir conocimientos, opiniones y experiencias.
+- Registro de usuario por email y password.
+- Inicio de sesion con validacion de credenciales.
+- Migracion automatica de password plano a bcrypt al primer login valido.
+- Acceso como invitado desde login.
+- Edicion de perfil:
+  - username
+  - biografia
+  - pronombres
+  - hasta 5 enlaces sociales
+  - foto de perfil (base64)
+  - banner de perfil (base64)
+- Validacion de peso de imagen en backend (maximo 1MB para foto y banner).
+- Creacion y consulta de posts por usuario.
+- Cambio de tema claro/oscuro en vistas principales.
 
-La plataforma busca ofrecer un espacio donde los jugadores puedan:
+---------------------------------------------
+## Pantallas Del Frontend
 
-Compartir información sobre videojuegos.
+- Login y registro: inicio_de_sesion/index.html
+- Home principal: pagina_principal/pagina_principal.html
+- Vista de generos: pagina_principal/generos.html
+- Perfil de usuario: perfil/perfil.html
+- Crear post: perfil/crear-post.html
+- Configuracion: configuracion/configuracion.html
 
-Publicar reseñas y opiniones sobre distintos títulos.
+---------------------------------------------
 
-Crear guías que ayuden a otros jugadores a completar misiones, niveles o desafíos.
-
-Enterarse de novedades y noticias relacionadas con la industria de los videojuegos.
-
-Interactuar con otros jugadores a través de publicaciones y foros.
-
-Descubrir ofertas o recomendaciones de juegos.
-
-Tener una experiencia personalizada mediante la gestión de su perfil.
 
 ## 💡 Funcionalidades Principales
 
 Hidden Stage incluye diferentes funcionalidades diseñadas para mejorar la interacción entre los usuarios y facilitar la creación de contenido dentro de la plataforma:
+
 
 Modo oscuro
 El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer ambas versiones, garantizamos que nuestra interfaz sea cómoda, adaptándose a las preferencias del usuario.
@@ -90,6 +111,4 @@ El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
 * [GUERRERO GARCÍA ÁLVARO ALBERTO](https://github.com/aguerrero29-creator)
 * [GUZMÁN LIZAMA IARA SAMANTHA](https://github.com/IaraLizama)
 * [MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL](https://github.com/EzequielFie)
-* [SANCHEZ GARCÍA OSCAR ALBERTO](https://github.com/Oscar2434)
-
-
+* [SANCHEZ GARCÍA OSCAR ALBERTO
