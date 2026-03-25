@@ -4,7 +4,13 @@ Plataforma web de comunidad gamer para publicar contenido, gestionar perfil y ex
 
 Este README fue actualizado con base en el estado actual de esta rama (frontend estatico + backend Node.js/Express + MySQL).
 
+<<<<<<< HEAD
 ## Resumen Del Proyecto
+=======
+[Visita mi sitio web](https://hiddenstage.io/pagina_principal/pagina_principal.html#reciente)
+
+## 📁 Descripción del Proyecto
+>>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
 HiddenStage combina:
 
@@ -14,6 +20,7 @@ HiddenStage combina:
 
 Flujo principal:
 
+<<<<<<< HEAD
 1. El servidor inicia y redirige la raiz a la pantalla de login.
 2. Login/registro consumen la API.
 3. La sesion se guarda en localStorage bajo la clave hiddenstageUser.
@@ -62,6 +69,9 @@ HiddenStage/
 ```
 
 ## Funcionalidades Actuales En Esta Rama
+=======
+## ✨ Objetivo del Proyecto
+>>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
 - Registro de usuario por email y password.
 - Inicio de sesion con validacion de credenciales.
@@ -100,15 +110,30 @@ Base URL local: <http://localhost:3000>
 - POST /api/register
 - POST /api/login
 
+<<<<<<< HEAD
 ### Perfil
+=======
+## 💡 Funcionalidades Principales
+>>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
 - PUT /api/profile
 
+<<<<<<< HEAD
 ### Publicaciones
+=======
+Modo oscuro
+El modo oscuro mejora la accesibilidad y reduce la fatiga visual. Al ofrecer ambas versiones, garantizamos que nuestra interfaz sea cómoda, adaptándose a las preferencias del usuario.
+
+<img width="1528" height="1091" alt="image" src="https://github.com/user-attachments/assets/5ad1d5f8-9447-4ccc-9870-ebc65067721c" />
+
+Creación de publicaciones
+Los usuarios pueden compartir contenido relacionado con videojuegos, como reseñas, recomendaciones, noticias o experiencias personales.
+>>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
 - GET /api/posts/:id_usuario
 - POST /api/posts
 
+<<<<<<< HEAD
 ## Base De Datos
 
 Script principal: database/hiddenstage_schema.sql
@@ -117,6 +142,51 @@ Entidades definidas en script:
 
 - roles
 - usuarios
+=======
+<img width="1688" height="874" alt="image" src="https://github.com/user-attachments/assets/82e526b6-70d5-45fc-aaa8-73ed24f28031" />
+
+Foro o sistema de chat
+Permite que los usuarios participen en discusiones, respondan a publicaciones y compartan opiniones con otros miembros de la comunidad.
+
+<img width="1537" height="992" alt="image" src="https://github.com/user-attachments/assets/ee5512de-8578-4629-8e1c-02efc42aa0d4" />
+
+Edición de perfil
+Los usuarios pueden modificar información básica de su cuenta para mantener su perfil actualizado.
+
+<img width="1595" height="1078" alt="image" src="https://github.com/user-attachments/assets/e99f3a6c-ae76-431d-8bc9-1f666cf19fac" />
+
+Exploración de contenido
+Los visitantes pueden navegar por distintas publicaciones, descubrir nuevos juegos y ver las opiniones de otros jugadores.
+
+<img width="1528" height="1053" alt="image" src="https://github.com/user-attachments/assets/a73519be-e7b4-4e91-8552-2912f0062342" />
+
+## 💻 Tecnologías Utilizadas
+
+El proyecto fue desarrollado utilizando tecnologías básicas de desarrollo web:
+
+-HTML 
+    Se utiliza para construir la estructura del sitio web, organizar el contenido y definir los elementos principales de        cada página.
+    
+-CSS
+    Se encarga del diseño visual de la plataforma, incluyendo estilos, colores, distribución de los elementos y adaptación      de la interfaz para que sea más atractiva y fácil de usar.
+
+-JavaScript
+    Permite agregar interactividad y funcionalidades dinámicas al sitio, como la creación de publicaciones, interacción         dentro del foro, manejo de perfiles de usuario y otras acciones dentro de la página.
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+
+## 👩‍💻👨‍💻 AUTORES:
+
+* [GÓMEZ TINOCO FERNANDO](https://github.com/FernandoG5)
+* [GUERRERO GARCÍA ÁLVARO ALBERTO](https://github.com/aguerrero29-creator)
+* [GUZMÁN LIZAMA IARA SAMANTHA](https://github.com/IaraLizama)
+* [MEMBRILA GONZÁLEZ FERNANDO EZEQUIEL](https://github.com/EzequielFie)
+* [SANCHEZ GARCÍA OSCAR ALBERTO](https://github.com/Oscar2434)
+
+>>>>>>> 5a463d3b6658ad345d6d19af3a717a8525ebed29
 
 Campos de perfil persistidos en usuarios:
 
