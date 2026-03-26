@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PROJECT_ROOT = __dirname;
 
-app.use('/img', express.static(path.join(__dirname, 'img')));
+app.use('/img', express.static(path.join(PROJECT_ROOT, 'img')));;
 
 app.use(cors());
 app.use(express.json());
