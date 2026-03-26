@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const PROJECT_ROOT = path.resolve(__dirname, '..');
+const PROJECT_ROOT = __dirname;
 
 app.use(cors());
 app.use(express.json());
