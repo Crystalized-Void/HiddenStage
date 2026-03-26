@@ -1,4 +1,3 @@
-/* Foro (minimalista) - paleta y estilo inspirado en principal.css */
 
 :root {
   --bg-1: #f4e8fc;
@@ -481,7 +480,8 @@ textarea {
   gap: 4px;
 }
 
-.editor-toolbar button {
+.editor-toolbar button,
+.editor-btn {
   border-radius: 999px;
   border: 1px solid rgba(124, 105, 168, 0.35);
   background: var(--panel-soft);
@@ -489,6 +489,14 @@ textarea {
   padding: 3px 8px;
   font-size: 12px;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editor-toolbar button:hover,
+.editor-btn:hover {
+  background: var(--accent-3);
+  color: #fff;
+  border-color: var(--accent-2);
 }
 
 #reply-content {
@@ -510,29 +518,6 @@ textarea {
 
 #reply-content:focus {
   border-color: var(--accent);
-}
-
-.editor-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-}
-
-.editor-footer .hint {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.btn-primary {
-  border-radius: 999px;
-  border: none;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  background: var(--accent-3);
-  color: #fff;
-  cursor: pointer;
 }
 
 .error-message {
@@ -609,6 +594,44 @@ textarea {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: var(--panel);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid rgba(124, 105, 168, 0.35);
+  border-radius: 12px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close {
+  color: var(--muted);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--text);
+  text-decoration: none;
 }
 
 /* Foro con el mismo estilo claro y minimalista que principal.css */
@@ -1127,11 +1150,30 @@ textarea {
   justify-content: space-between;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
+}
+
+.editor-footer > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
 }
 
 .editor-footer .hint {
   font-size: 11px;
   color: var(--muted);
+}
+
+.char-count {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+#char-used {
+  font-weight: 600;
+  color: var(--accent-2);
 }
 
 .btn-primary {

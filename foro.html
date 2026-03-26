@@ -21,8 +21,6 @@
       <nav class="main-nav">
         <a class="nav-link active">Foro</a>
         <a class="nav-link" href="index.html">Volver</a>
-        <a class="nav-link" href="#">Noticias</a>
-        <a class="nav-link" href="#">Torneos</a>
       </nav>
       <div class="user-area">
         <span class="user-pill">@DemoUser · Noob</span>
@@ -38,8 +36,6 @@
             <li class="category-item">PlayStation</li>
             <li class="category-item">Xbox</li>
             <li class="category-item">Nintendo</li>
-            <li class="category-item">Retro</li>
-            <li class="category-item">Off-topic</li>
           </ul>
         </div>
 
@@ -49,7 +45,7 @@
             Cero tolerancia a la toxicidad. El Filtro de Hierro bloquea contenido ofensivo
             antes de publicarse. Al registrarte, aceptas estas normas.
           </p>
-          <a href="#" class="rules-link">Leer normas completas</a>
+          <button class="rules-link" onclick="showRulesModal()">Leer normas completas</button>
         </div>
       </aside>
 
@@ -67,8 +63,6 @@
             <option>PlayStation</option>
             <option>Xbox</option>
             <option>Nintendo</option>
-            <option>Retro</option>
-            <option>Off-topic</option>
           </select>
         </div>
 
@@ -84,7 +78,7 @@
             <h2 class="thread-title">Guía definitiva para subir a Diamante</h2>
             <div class="thread-footer">
               <span class="author">@PlayerOne · Pro</span>
-              <span class="stats">120 respuestas · 3.4k vistas</span>
+              <span class="stats">11 respuestas · 38 vistas</span>
             </div>
           </article>
         </div>
@@ -142,26 +136,26 @@
                 </div>
               </div>
               <div class="post-body">
-                Gracias por la guía, me ayudó muchísimo a subir de rango.
+                Gracias por la guía, me ayudó muchísimo a subir de rango🫶.
               </div>
             </article>
           </section>
 
           <section class="reply-editor">
             <div class="editor-toolbar">
-              <button type="button">Negrita</button>
-              <button type="button">Cursiva</button>
-              <button type="button">Lista</button>
-              <button type="button">Cita</button>
-              <button type="button">Imagen</button>
-              <button type="button">Embed YouTube/Twitch</button>
-              <button type="button" id="insert-spoiler">Tag [SPOILER]</button>
+              <button type="button" class="editor-btn" data-action="bold">Negrita</button>
+              <button type="button" class="editor-btn" data-action="italic">Cursiva</button>
+              <button type="button" class="editor-btn" data-action="quote">Cita</button>
+              <button type="button" id="insert-spoiler" class="editor-btn" data-action="spoiler">Tag [SPOILER]</button>
             </div>
-            <textarea id="reply-content" placeholder="Escribe tu respuesta (Markdown soportado)..."></textarea>
+            <textarea id="reply-content" placeholder="Escribe tu respuesta (Markdown soportado)..." maxlength="6000"></textarea>
             <div class="editor-footer">
-              <span class="hint">
-                Recuerda: Cero tolerancia a la toxicidad. El Filtro de Hierro revisa tu mensaje.
-              </span>
+              <div>
+                <span class="hint">
+                  Recuerda: Cero tolerancia a la toxicidad🤬. El Filtro de Hierro revisa tu mensaje.
+                </span>
+                <span class="char-count"><span id="char-used">0</span>/6000</span>
+              </div>
               <button class="btn-primary" id="submit-reply">Publicar respuesta</button>
             </div>
             <div class="error-message" id="reply-error"></div>
@@ -196,6 +190,111 @@
       </aside>
     </main>
   </div>
+
+  <!-- Modal para reglas -->
+  <div id="rules-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeRulesModal()">&times;</span>
+      <h2>Normas Completas del Foro</h2>
+      <p>Aquí van las reglas detalladas que los usuarios deben seguir para evitar ser baneados:</p>
+      <ul>
+        <li>No tolerancia a los insultos o el acoso.</li>
+        <li>Respeta a otros usuarios y sus opiniones.</li>
+        <li>No publiques contenido ofensivo, spam o irrelevante.</li>
+        <li>Usa el filtro de spoiler para contenido sensible.</li>
+        <li>Sigue las guías de publicación y evita duplicados.</li>
+        <li>Cualquier violación puede resultar en advertencias o baneo permanente.</li>
+      </ul>
+      <p>Recuerda: El Filtro de Hierro revisa todos los mensajes antes de publicarse.</p>
+    </div>
+  </div>
+
+  <script>
+    // MODAL REGLAS
+    function showRulesModal() {
+      document.getElementById('rules-modal').style.display = 'block';
+    }
+
+    function closeRulesModal() {
+      document.getElementById('rules-modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('rules-modal')) {
+        closeRulesModal();
+      }
+    }
+
+    // EDITOR MARKDOWN
+    document.addEventListener('DOMContentLoaded', function() {
+      const textarea = document.getElementById('reply-content');
+      const charCount = document.getElementById('char-used');
+      const editorBtns = document.querySelectorAll('.editor-btn');
+
+      // Actualizar contador de caracteres
+      textarea.addEventListener('input', function() {
+        charCount.textContent = this.value.length;
+      });
+
+      // Función para insertar sintaxis Markdown
+      function insertMarkdown(before, after = '') {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end) || 'texto';
+        const before_text = textarea.value.substring(0, start);
+        const after_text = textarea.value.substring(end);
+        
+        textarea.value = before_text + before + selectedText + after + after_text;
+        textarea.selectionStart = start + before.length;
+        textarea.selectionEnd = start + before.length + selectedText.length;
+        textarea.focus();
+      }
+
+      // Manejadores de botones
+      editorBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const action = this.getAttribute('data-action');
+
+          switch(action) {
+            case 'bold':
+              insertMarkdown('**', '**');
+              break;
+            case 'italic':
+              insertMarkdown('*', '*');
+              break;
+            case 'quote':
+              insertMarkdown('> ', '');
+              break;
+            case 'spoiler':
+              insertMarkdown('\n<spoiler>', '</spoiler>\n');
+              break;
+          }
+        });
+      });
+
+      // SPOILER TOGGLE
+      const spoilers = document.querySelectorAll('.spoiler-toggle');
+      spoilers.forEach(button => {
+        button.addEventListener('click', function() {
+          const block = this.parentElement;
+          const content = block.querySelector('.spoiler-content');
+          const isOpen = block.getAttribute('data-open') === 'true';
+          if (isOpen) {
+            content.style.display = 'none';
+            block.setAttribute('data-open', 'false');
+            this.textContent = 'Mostrar SPOILER';
+            block.classList.remove('open');
+          } else {
+            content.style.display = 'block';
+            block.setAttribute('data-open', 'true');
+            this.textContent = 'Ocultar SPOILER';
+            block.classList.add('open');
+          }
+        });
+      });
+    });
+  </script>
 
   <script src="java.js"></script>
 </body>
