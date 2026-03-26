@@ -11,7 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PROJECT_ROOT = __dirname;
 
-const path = require('path'); 
 app.use('/img', express.static(path.join(__dirname, 'img')));
 
 app.use(cors());
