@@ -18,7 +18,8 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <input type="search" id="postSearchInput" placeholder="Buscar..." aria-label="Buscar contenido">
+                <div id="postSearchResults" class="post-search-results" aria-live="polite"></div>
             </div>
 
             <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
@@ -430,6 +431,132 @@
         return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
     }
 
+    function setupPostSearch() {
+        const searchInput = document.getElementById('postSearchInput');
+        const searchResults = document.getElementById('postSearchResults');
+
+        if (!searchInput || !searchResults) {
+            return;
+        }
+
+        const normalizeText = (text) => {
+            if (typeof text !== 'string') {
+                return '';
+            }
+
+            return text
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        };
+
+        const escapeHtml = (text) => String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const getPostExcerpt = (post) => {
+            const source = (typeof post.encabezado === 'string' && post.encabezado.trim())
+                ? post.encabezado
+                : (typeof post.contenido === 'string' ? post.contenido : '');
+
+            const compactText = source.replace(/\s+/g, ' ').trim();
+            if (!compactText) {
+                return 'Sin descripcion';
+            }
+
+            return compactText.length > 85 ? `${compactText.slice(0, 85)}...` : compactText;
+        };
+
+        const hideResults = () => {
+            searchResults.classList.remove('active');
+            searchResults.innerHTML = '';
+        };
+
+        const renderResults = (matches) => {
+            if (matches.length === 0) {
+                searchResults.innerHTML = '<div class="search-empty">No se encontraron publicaciones</div>';
+                searchResults.classList.add('active');
+                return;
+            }
+
+            searchResults.innerHTML = matches
+                .slice(0, 6)
+                .map((post) => {
+                    const title = typeof post.titulo === 'string' ? post.titulo : 'Sin titulo';
+                    const excerpt = getPostExcerpt(post);
+                    const safeTitle = escapeHtml(title);
+                    const safeExcerpt = escapeHtml(excerpt);
+                    const imageMarkup = post.imagenPrincipal
+                        ? `<img src="${post.imagenPrincipal}" alt="${safeTitle}" class="search-result-thumb">`
+                        : '<div class="search-result-thumb search-result-thumb-placeholder"><i class="fas fa-image" aria-hidden="true"></i></div>';
+
+                    return `
+                        <button type="button" class="search-result-item" data-post-id="${post.id}">
+                            ${imageMarkup}
+                            <div class="search-result-text">
+                                <div class="search-result-title">${safeTitle}</div>
+                                <div class="search-result-excerpt">${safeExcerpt}</div>
+                            </div>
+                        </button>
+                    `;
+                })
+                .join('');
+
+            searchResults.classList.add('active');
+        };
+
+        const runSearch = () => {
+            const query = normalizeText(searchInput.value);
+
+            if (!query) {
+                hideResults();
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
+            const matches = posts.filter((post) => normalizeText(post.titulo).includes(query));
+            renderResults(matches);
+        };
+
+        searchInput.addEventListener('input', () => {
+            runSearch();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            runSearch();
+        });
+
+        searchResults.addEventListener('click', (event) => {
+            const selected = event.target.closest('.search-result-item');
+            if (!selected) {
+                return;
+            }
+
+            const postId = selected.dataset.postId;
+            if (!postId) {
+                return;
+            }
+
+            window.location.href = `publicacion.html?id=${postId}`;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!searchResults.contains(event.target) && event.target !== searchInput) {
+                hideResults();
+            }
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                hideResults();
+            }
+        });
+    }
+
     (() => {
         const userPanel = document.querySelector('.user-panel');
         const userTrigger = document.querySelector('.user-trigger');
@@ -606,6 +733,7 @@
 
         // Cargar publicaciones al iniciar
         loadPublications();
+        setupPostSearch();
 
         // Escuchar cambios en storage para actualizar publicaciones
         window.addEventListener('storage', (event) => {
