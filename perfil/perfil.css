@@ -421,6 +421,12 @@ body {
     border-radius: 50%;
     background: #22c55e;
     border: 2px solid #fff;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+}
+
+.avatar-badge.offline {
+    background: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.2);
 }
 
 .profile-sidebar h1 {

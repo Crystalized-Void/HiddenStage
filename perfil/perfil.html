@@ -200,11 +200,13 @@
             const profileHandleText = document.querySelector('[data-profile-handle]');
             const profileBioText = document.querySelector('[data-profile-bio]');
             const profileAvatar = document.querySelector('.avatar');
+            const avatarBadge = document.querySelector('.avatar-badge');
             const profileCover = document.querySelector('.cover');
             const logoutLinks = document.querySelectorAll('[data-logout-link]');
             const socialSlots = document.querySelectorAll('[data-social-slot]');
             const postsList = document.querySelector('[data-post-list]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
+            const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
             let currentSessionUser = null;
 
             const applyTheme = () => {
@@ -308,6 +310,31 @@
                         iconNode.className = iconData.icon;
                     }
                 });
+            };
+
+            const readPresenceFromSettings = () => {
+                try {
+                    const rawSettings = localStorage.getItem(PRIVACY_SETTINGS_KEY);
+                    if (!rawSettings) {
+                        return true;
+                    }
+
+                    const parsedSettings = JSON.parse(rawSettings);
+                    return typeof parsedSettings?.showOnlineStatus === 'boolean'
+                        ? parsedSettings.showOnlineStatus
+                        : true;
+                } catch (error) {
+                    return true;
+                }
+            };
+
+            const renderPresenceBadge = (isOnline) => {
+                if (!avatarBadge) {
+                    return;
+                }
+
+                avatarBadge.classList.toggle('offline', !isOnline);
+                avatarBadge.setAttribute('title', isOnline ? 'En línea' : 'No disponible');
             };
 
             const getPostsStorageKey = () => {
@@ -522,11 +549,17 @@
             };
 
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
+            renderPresenceBadge(readPresenceFromSettings());
 
             if (storedUserRaw) {
                 try {
                     const storedUser = JSON.parse(storedUserRaw);
                     currentSessionUser = storedUser;
+                    const isOnlineFromUser = typeof storedUser?.status_en_linea === 'boolean'
+                        ? storedUser.status_en_linea
+                        : readPresenceFromSettings();
+                    renderPresenceBadge(isOnlineFromUser);
+
                     if (storedUser?.username) {
                         if (userNameText) {
                             userNameText.textContent = storedUser.username;
