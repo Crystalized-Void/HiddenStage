@@ -27,16 +27,16 @@
     <main class="settings-layout">
         <aside class="settings-sidebar">
             <nav class="settings-menu" aria-label="Menú de configuración">
-                <button type="button" class="settings-item active">
+                <button type="button" class="settings-item active" data-section-btn="perfil">
                     <i class="fa-regular fa-user"></i>
                     <span>Perfil</span>
                 </button>
-                <button type="button" class="settings-item">
-                    <i class="fa-regular fa-book-open"></i>
-                    <span>Informacion Personal</span>
+                <button type="button" class="settings-item" data-section-btn="autor">
+                    <i class="fa-solid fa-pen-nib"></i>
+                    <span>Solicitud para Autor</span>
                 </button>
-                <button type="button" class="settings-item">
-                    <i class="fa-regular fa-shield"></i>
+                <button type="button" class="settings-item" data-section-btn="privacidad">
+                    <i class="fa-solid fa-user-shield"></i>
                     <span>Privacidad y Seguridad</span>
                 </button>
             </nav>
@@ -44,11 +44,11 @@
             <div class="support-block">
                 <p>Soporte</p>
                 <div class="support-divider"></div>
-                <button type="button" class="settings-item">
+                <button type="button" class="settings-item" data-section-btn="legal">
                     <i class="fa-solid fa-scale-balanced"></i>
                     <span>Legal y Términos</span>
                 </button>
-                <button type="button" class="settings-item">
+                <button type="button" class="settings-item" data-section-btn="asistencia">
                     <i class="fa-solid fa-headset"></i>
                     <span>Centro de asistencia</span>
                 </button>
@@ -61,8 +61,9 @@
                     <h1>Perfil</h1>
                 </div>
 
-                <div class="profile-grid">
-                    <div class="profile-form">
+                <div class="settings-section active" data-section="perfil">
+                    <div class="profile-grid">
+                        <div class="profile-form">
                         <div class="field-block">
                             <label for="profile-name">Nombre</label>
                             <input id="profile-name" type="text" placeholder="Tu nombre visible">
@@ -114,18 +115,429 @@
                         <div class="profile-actions profile-actions-bottom">
                             <button type="button" class="btn btn-primary" id="save-profile-btn">Guardar cambios</button>
                         </div>
-                    </div>
-
-                    <aside class="profile-photo">
-                        <p>Foto de perfil</p>
-                        <div class="photo-circle" id="profile-photo-preview">
-                            <i class="fa-regular fa-circle-user"></i>
-                            <button type="button" class="edit-chip" aria-label="Editar foto de perfil">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <input type="file" id="profile-photo-input" accept="image/*" hidden>
                         </div>
-                    </aside>
+
+                        <aside class="profile-photo">
+                            <p>Foto de perfil</p>
+                            <div class="photo-circle" id="profile-photo-preview">
+                                <i class="fa-regular fa-circle-user"></i>
+                                <button type="button" class="edit-chip" aria-label="Editar foto de perfil">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <input type="file" id="profile-photo-input" accept="image/*" hidden>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+
+                <div class="settings-section" data-section="autor">
+                    <div class="author-section-wrap">
+                        <div class="author-request" id="author-request-form">
+                            <div class="author-request-head">
+                                <h2>Solicitud para ser Autor</h2>
+                                <p>
+                                    Completa esta solicitud para habilitar la creación de publicaciones (guías,
+                                    trucos, noticias, reseñas y más).
+                                </p>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-fullname">Nombre completo</label>
+                                <input id="author-fullname" type="text" placeholder="Tu nombre y apellidos">
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-contact">Correo de contacto</label>
+                                <input id="author-contact" type="email" placeholder="correo@ejemplo.com">
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-content-type">Tipo de contenido que quieres publicar</label>
+                                <select id="author-content-type">
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="guia">Guías</option>
+                                    <option value="truco">Trucos</option>
+                                    <option value="noticia">Noticias</option>
+                                    <option value="resena">Reseñas</option>
+                                    <option value="mixto">Mixto (varios tipos)</option>
+                                </select>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-experience">Experiencia o enfoque</label>
+                                <textarea id="author-experience" rows="4" placeholder="Cuéntanos en qué juegos o temas tienes experiencia."></textarea>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-motivation">¿Por qué quieres ser Autor?</label>
+                                <textarea id="author-motivation" rows="4" placeholder="Explica cómo aportarías valor a la comunidad."></textarea>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="author-reference-link">Enlace de referencia (opcional)</label>
+                                <input id="author-reference-link" type="url" placeholder="https://...">
+                                <small>Puede ser una red social, portafolio o contenido previo.</small>
+                            </div>
+
+                            <label class="author-terms">
+                                <input id="author-terms" type="checkbox">
+                                <span>Acepto que mi solicitud sea revisada por el equipo de HiddenStage.</span>
+                            </label>
+
+                            <div class="author-request-actions">
+                                <button type="button" class="btn btn-primary" id="submit-author-request-btn">Enviar solicitud</button>
+                            </div>
+
+                            <p class="author-wait-note">
+                                Importante: después de enviar tu solicitud, espera hasta 2 días hábiles para validar tu acceso como Autor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" data-section="privacidad">
+                    <div class="privacy-security-wrap">
+                        <article class="privacy-security-card">
+                            <h2>Privacidad de la Cuenta</h2>
+
+                            <div class="privacy-security-divider"></div>
+
+                            <div class="privacy-setting-row">
+                                <div class="privacy-setting-copy">
+                                    <h3>Visibilidad del perfil</h3>
+                                    <p>Controla si tu perfil se muestra como público o privado.</p>
+                                </div>
+                                <label class="switch-control" for="profile-visibility-toggle">
+                                    <span class="switch-state-text" id="profile-visibility-label">Público</span>
+                                    <input id="profile-visibility-toggle" type="checkbox" checked>
+                                    <span class="switch-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+
+                            <div class="privacy-setting-row">
+                                <div class="privacy-setting-copy">
+                                    <h3>Estado de conexión</h3>
+                                    <p>Permite mostrar en tu perfil si estás en línea.</p>
+                                </div>
+                                <label class="switch-control" for="online-status-toggle">
+                                    <span class="switch-state-text" id="online-status-label">En línea</span>
+                                    <input id="online-status-toggle" type="checkbox" checked>
+                                    <span class="switch-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                        </article>
+
+                        <article class="privacy-security-card">
+                            <h2>Seguridad</h2>
+
+                            <div class="privacy-security-divider"></div>
+
+                            <div class="security-item-list">
+                                <div class="security-item">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <div>
+                                        <h3>Verificación de dos pasos (2FA)</h3>
+                                        <p>La verificación de dos pasos está desactivada.</p>
+                                    </div>
+                                </div>
+                                <div class="security-item">
+                                    <i class="fa-solid fa-key"></i>
+                                    <div>
+                                        <h3>Contraseña</h3>
+                                        <p>Última modificación: 15 ago 2025</p>
+                                    </div>
+                                </div>
+                                <div class="security-item">
+                                    <i class="fa-solid fa-mobile-screen-button"></i>
+                                    <div>
+                                        <h3>Teléfono de recuperación</h3>
+                                        <p>+52 000 000 0000</p>
+                                    </div>
+                                </div>
+                                <div class="security-item">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <div>
+                                        <h3>Correo de recuperación</h3>
+                                        <p>example02@gmail.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="settings-section" data-section="legal">
+                    <div class="privacy-wrap">
+                        <article class="privacy-card">
+                            <h2>Política de Privacidad</h2>
+
+                            <h3>¿Qué datos recolectamos y por qué?</h3>
+                            <p>
+                                En HiddenStage recopilamos únicamente la información necesaria para ofrecerte una
+                                experiencia segura, personalizada y estable. Al crear tu cuenta, almacenar tus
+                                preferencias y entender mejor tu actividad dentro de la plataforma, podemos ayudarte a navegar mejor,
+                                mantener tu perfil actualizado y proteger tu acceso ante usos indebidos.
+                            </p>
+                            <ul class="privacy-list">
+                                <li><strong>Datos de registro:</strong> cuando abres una cuenta, almacenamos tu nombre de usuario, correo electrónico y elementos de perfil para identificarte correctamente dentro de la plataforma.</li>
+                                <li><strong>Datos de interacción:</strong> guardamos acciones como favoritos, reacciones y actividad relacionada con contenido para mejorar recomendaciones y experiencia de comunidad.</li>
+                            </ul>
+
+                            <h3>Derechos del Usuario</h3>
+                            <p>
+                                Como usuario tienes derecho a consultar, corregir o eliminar tus datos personales.
+                                Puedes solicitar la eliminación total de tu cuenta desde el panel de configuración y,
+                                una vez procesada, la información se depura de nuestros registros activos en un plazo
+                                razonable de seguridad administrativa. También puedes pedir aclaraciones sobre el uso de
+                                tus datos escribiéndonos por correo de contacto.
+                            </p>
+                        </article>
+
+                        <article class="privacy-card">
+                            <h2>Términos de Servicio y Uso</h2>
+
+                            <h3>Propiedad de los contenidos</h3>
+                            <p>
+                                Todo contenido editorial propio de HiddenStage, incluyendo guías, análisis,
+                                redacciones, estructura visual y material generado por nuestro equipo, se considera
+                                propiedad intelectual de la plataforma. El uso de este contenido fuera del sitio debe
+                                contar con autorización previa cuando aplique.
+                            </p>
+
+                            <ul class="privacy-list">
+                                <li><strong>Uso de marcas y material de terceros:</strong> imágenes de videojuegos, trailers y logotipos se muestran con fines informativos, críticos o de referencia dentro del contexto editorial.</li>
+                                <li><strong>Redistribución no autorizada:</strong> no está permitido copiar, revender o republicar el contenido original de HiddenStage en otros sitios con fines comerciales sin autorización expresa.</li>
+                                <li><strong>Uso para entrenamiento automatizado:</strong> queda restringido el uso de nuestros textos o bases de contenido para entrenar modelos automáticos sin consentimiento del equipo administrador.</li>
+                            </ul>
+                        </article>
+
+                        <article class="privacy-card">
+                            <h2>Reglas de la Comunidad</h2>
+                            <p>
+                                HiddenStage busca ser una comunidad activa y respetuosa donde las personas puedan
+                                compartir ideas, discutir juegos y aportar contenido útil. Para mantener un ambiente
+                                sano, aplicamos normas de convivencia para comentarios, publicaciones y participación
+                                general en la plataforma.
+                            </p>
+                            <ul class="privacy-list">
+                                <li><strong>Respeto en debates:</strong> se permiten diferencias de opinión, pero no ataques personales, discriminación, amenazas o lenguaje de odio.</li>
+                                <li><strong>Spoilers responsables:</strong> al publicar información sensible sobre historia o finales, utiliza avisos visibles para no arruinar la experiencia de otros usuarios.</li>
+                                <li><strong>Seguridad personal:</strong> no compartas teléfonos, direcciones, contraseñas u otros datos privados en publicaciones o comentarios públicos.</li>
+                                <li><strong>Contenido permitido:</strong> evita publicar material engañoso, spam, publicidad invasiva o contenido que incumpla legislación local aplicable.</li>
+                            </ul>
+                        </article>
+
+                        <article class="privacy-card">
+                            <h2>Descargo de Responsabilidad</h2>
+                            <p>
+                                Aunque cuidamos la calidad del contenido, parte de la información publicada depende de
+                                actualizaciones de terceros, cambios de versiones de videojuegos y condiciones técnicas
+                                de cada usuario. Por ello, las recomendaciones y guías deben tomarse como referencia.
+                            </p>
+                            <ul class="privacy-list">
+                                <li><strong>Precisión de información:</strong> no podemos garantizar exactitud absoluta en todo momento, ya que los juegos y servicios cambian con parches frecuentes.</li>
+                                <li><strong>Recomendaciones técnicas:</strong> cualquier ajuste de hardware, software o configuración sugerido en la plataforma se realiza bajo responsabilidad del usuario.</li>
+                                <li><strong>Disponibilidad del servicio:</strong> pueden existir periodos de mantenimiento, fallas externas o interrupciones ajenas a nuestro control directo.</li>
+                            </ul>
+                        </article>
+
+                        <article class="privacy-card">
+                            <h2>Modificaciones y Contacto</h2>
+                            <p>
+                                Estos términos y lineamientos pueden actualizarse cuando el proyecto evolucione,
+                                cambien procesos internos o se requieran ajustes legales. Cuando esto ocurra,
+                                publicaremos una versión actualizada en este mismo apartado. Para consultas sobre
+                                privacidad, uso de datos o condiciones de servicio puedes escribir a:
+                                <strong>soporte@hiddenstage.io</strong>
+                            </p>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="settings-section" data-section="asistencia">
+                    <div class="help-wrap">
+                        <article class="help-card help-main">
+                            <div class="help-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                                <input
+                                    id="help-search-input"
+                                    type="search"
+                                    placeholder="¿En qué podemos ayudarte?"
+                                    aria-label="Buscar en centro de asistencia"
+                                >
+                            </div>
+
+                            <div class="help-shortcuts">
+                                <button type="button" class="help-shortcut" data-help-topic="cuenta">
+                                    <i class="fa-regular fa-user"></i>
+                                    <span>Mi cuenta</span>
+                                </button>
+                                <button type="button" class="help-shortcut" data-help-topic="guias">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span>Publicar Contenido</span>
+                                </button>
+                                <a class="help-shortcut help-shortcut-link" href="soporte.html" aria-label="Ir a contacto y soporte">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <span>Contacto y Soporte</span>
+                                </a>
+                            </div>
+
+                            <p class="help-topic-caption">
+                                Selecciona una categoría para ver una guía rápida.
+                            </p>
+
+                            <div class="help-topic-panels">
+                                <article class="help-topic-panel" data-help-panel="cuenta">
+                                    <h4>Mi cuenta: guía rápida</h4>
+                                    <ul>
+                                        <li>Edita tu nombre, bio y pronombres en el apartado Perfil.</li>
+                                        <li>Sube foto o banner con tamaño máximo de 1MB por imagen.</li>
+                                        <li>Configura tus redes sociales para que se muestren en tu perfil.</li>
+                                        <li>Controla visibilidad del perfil y estado en línea desde Privacidad y Seguridad.</li>
+                                    </ul>
+                                </article>
+
+                                <article class="help-topic-panel" data-help-panel="guias">
+                                    <h4>Publicar contenido: recomendaciones</h4>
+                                    <ul>
+                                        <li>Usa títulos claros: juego + objetivo de la guía.</li>
+                                        <li>Divide el contenido en pasos cortos y fáciles de seguir.</li>
+                                        <li>Incluye imágenes o video para explicar mejor cada sección.</li>
+                                        <li>Evita spoilers sin aviso y mantén un lenguaje claro para la comunidad.</li>
+                                    </ul>
+                                </article>
+
+                                <article class="help-topic-panel" data-help-panel="soporte">
+                                    <h4>Contacto y soporte</h4>
+                                    <ul>
+                                        <li>Correo oficial: <strong>soporte@hiddenstage.io</strong>.</li>
+                                        <li>Incluye tu usuario y una descripción breve del problema.</li>
+                                        <li>Si aplica, adjunta captura de pantalla para resolver más rápido.</li>
+                                        <li>Tiempo estimado de respuesta: 24 a 72 horas hábiles.</li>
+                                    </ul>
+                                </article>
+                            </div>
+                        </article>
+
+                        <article class="help-card">
+                            <h3>Preguntas Frecuentes</h3>
+
+                            <div class="help-faq-list">
+                                <details class="help-faq-item" data-help-topic="guias" data-help-text="cada cuanto tiempo publican nuevas noticias o reseñas guias tutoriales contenido">
+                                    <summary>¿Cada cuánto tiempo publican nuevas noticias o reseñas?</summary>
+                                    <p>
+                                        Publicamos contenido nuevo de forma constante durante la semana. El ritmo puede variar según lanzamientos,
+                                        eventos y actualizaciones importantes de la comunidad gamer.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="cuenta" data-help-text="como cambio mi foto perfil banner editar cuenta configuracion">
+                                    <summary>¿Cómo cambio mi foto de perfil o banner?</summary>
+                                    <p>
+                                        Ve a Perfil en Configuración, selecciona el ícono de edición sobre la foto o banner y guarda cambios.
+                                        El tamaño máximo permitido por imagen es 1MB.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="guias" data-help-text="como solicito ser autor publicar guias reseñas noticias">
+                                    <summary>¿Cómo solicito ser Autor para publicar contenido?</summary>
+                                    <p>
+                                        En Configuración entra a Solicitud para Autor, completa el formulario y envíalo.
+                                        El equipo revisa solicitudes normalmente en un plazo de hasta 2 días hábiles.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="soporte" data-help-text="olvide contraseña recuperar acceso correo soporte cuenta">
+                                    <summary>Olvidé mi contraseña, ¿cómo recupero el acceso?</summary>
+                                    <p>
+                                        Escríbenos a <strong>soporte@hiddenstage.io</strong> con tu usuario y correo registrado.
+                                        Te ayudaremos con el proceso de recuperación de cuenta.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="cuenta" data-help-text="puedo cambiar mi username nombre usuario">
+                                    <summary>¿Puedo cambiar mi nombre de usuario?</summary>
+                                    <p>
+                                        Sí. En Configuración &gt; Perfil puedes editar tu nombre de usuario y guardarlo.
+                                        Si ya existe, el sistema te pedirá elegir uno diferente.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="guias" data-help-text="que debe tener una buena guia tutorial">
+                                    <summary>¿Qué debe tener una buena guía?</summary>
+                                    <p>
+                                        Te recomendamos incluir objetivo, pasos claros, requisitos, imágenes de apoyo
+                                        y consejos finales para que otros usuarios la entiendan rápido.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="soporte" data-help-text="cuanto tardan en responder soporte">
+                                    <summary>¿Cuánto tardan en responder soporte?</summary>
+                                    <p>
+                                        El tiempo habitual de respuesta es de 24 a 72 horas hábiles,
+                                        dependiendo del volumen de solicitudes.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="cuenta" data-help-text="como cambio mi correo o pronombres en mi cuenta">
+                                    <summary>¿Cómo actualizo mi correo, biografía o pronombres?</summary>
+                                    <p>
+                                        Entra a Configuración &gt; Perfil, edita los campos que quieras y presiona Guardar cambios.
+                                        Los datos se reflejan en tu perfil cuando se completa el guardado.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="cuenta" data-help-text="por que no puedo guardar mi perfil nombre en uso">
+                                    <summary>¿Por qué no me deja guardar el perfil?</summary>
+                                    <p>
+                                        Normalmente ocurre cuando el nombre de usuario ya está en uso o hay conexión inestable.
+                                        Prueba con otro nombre y confirma que el servidor esté activo en localhost:3000.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="guias" data-help-text="puedo editar una publicacion despues de subirla">
+                                    <summary>¿Puedo editar una publicación después de subirla?</summary>
+                                    <p>
+                                        Sí. Puedes actualizar texto e información de tus posts desde tu perfil.
+                                        Te recomendamos revisar ortografía y formato antes de publicar para mejor experiencia de lectura.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="guias" data-help-text="que formato de imagen o video recomiendan para guias">
+                                    <summary>¿Qué formato de contenido recomiendan para guías?</summary>
+                                    <p>
+                                        Usa títulos directos, párrafos cortos, listas por pasos e imágenes ligeras.
+                                        Si incluyes video, agrega una breve explicación para que el usuario entienda el contexto.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="soporte" data-help-text="como reporto bug error problema tecnico">
+                                    <summary>¿Cómo reporto un bug o error técnico?</summary>
+                                    <p>
+                                        Envía correo a <strong>soporte@hiddenstage.io</strong> con: usuario, pantalla donde falla,
+                                        pasos para reproducir y una captura. Eso nos ayuda a resolver más rápido.
+                                    </p>
+                                </details>
+
+                                <details class="help-faq-item" data-help-topic="soporte" data-help-text="como contacto soporte para eliminar cuenta">
+                                    <summary>¿Puedo pedir eliminación de mi cuenta por soporte?</summary>
+                                    <p>
+                                        Sí. Puedes solicitarlo desde configuración o por correo a soporte.
+                                        Si lo haces por mail, incluye tu usuario y correo de registro para validar identidad.
+                                    </p>
+                                </details>
+                            </div>
+
+                            <p id="help-faq-empty" class="help-faq-empty" hidden>
+                                No encontramos resultados con esos términos. Prueba con otra búsqueda o cambia de categoría.
+                            </p>
+
+                            <p class="help-contact-note">
+                                ¿No encontraste tu respuesta? Contáctanos en <strong>soporte@hiddenstage.io</strong> o
+                                <a href="soporte.html">abre un ticket de soporte</a>.
+                            </p>
+                        </article>
+                    </div>
                 </div>
             </div>
         </section>
@@ -161,7 +573,28 @@
             const profileBannerInput = document.getElementById('profile-banner-input');
             const profileBannerEditBtn = profileBannerPreview?.querySelector('.edit-chip');
             const saveProfileBtn = document.getElementById('save-profile-btn');
+            const sectionButtons = document.querySelectorAll('[data-section-btn]');
+            const sections = document.querySelectorAll('[data-section]');
+            const panelTitle = document.querySelector('.panel-head h1');
+            const authorFullNameInput = document.getElementById('author-fullname');
+            const authorContactInput = document.getElementById('author-contact');
+            const authorContentTypeInput = document.getElementById('author-content-type');
+            const authorExperienceInput = document.getElementById('author-experience');
+            const authorMotivationInput = document.getElementById('author-motivation');
+            const authorReferenceLinkInput = document.getElementById('author-reference-link');
+            const authorTermsInput = document.getElementById('author-terms');
+            const submitAuthorRequestBtn = document.getElementById('submit-author-request-btn');
+            const profileVisibilityToggle = document.getElementById('profile-visibility-toggle');
+            const profileVisibilityLabel = document.getElementById('profile-visibility-label');
+            const onlineStatusToggle = document.getElementById('online-status-toggle');
+            const onlineStatusLabel = document.getElementById('online-status-label');
+            const helpSearchInput = document.getElementById('help-search-input');
+            const helpShortcutButtons = document.querySelectorAll('.help-shortcut[data-help-topic]');
+            const helpFaqItems = document.querySelectorAll('.help-faq-item');
+            const helpTopicPanels = document.querySelectorAll('[data-help-panel]');
+            const helpFaqEmpty = document.getElementById('help-faq-empty');
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
+            const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -173,6 +606,235 @@
             let currentUser = null;
             let currentPhotoValue = '';
             let currentBannerValue = '';
+            let activeHelpTopic = '';
+
+            const sectionTitleMap = {
+                perfil: 'Perfil',
+                autor: 'Solicitud para Autor',
+                privacidad: 'Privacidad y Seguridad',
+                legal: 'Legal y Términos',
+                asistencia: 'Centro de Asistencia'
+            };
+
+            const normalizeText = (value) => String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+
+            const filterHelpFaq = (query, topic = '') => {
+                if (!helpFaqItems.length) {
+                    return;
+                }
+
+                const normalizedQuery = normalizeText(query).trim();
+                const normalizedTopic = String(topic || '').trim();
+                const queryTerms = normalizedQuery
+                    ? normalizedQuery.split(/\s+/).filter(Boolean)
+                    : [];
+                let visibleItems = 0;
+
+                helpFaqItems.forEach((item) => {
+                    const searchable = normalizeText(item.dataset.helpText || item.textContent);
+                    const itemTopic = String(item.dataset.helpTopic || '').trim();
+                    const matchesTopic = !normalizedTopic || itemTopic === normalizedTopic;
+                    const matchesSearch = !queryTerms.length || queryTerms.every((term) => searchable.includes(term));
+                    const shouldShow = matchesTopic && matchesSearch;
+                    item.style.display = shouldShow ? '' : 'none';
+
+                    if (!shouldShow) {
+                        item.open = false;
+                    } else {
+                        visibleItems += 1;
+                    }
+                });
+
+                if (helpFaqEmpty) {
+                    helpFaqEmpty.hidden = visibleItems > 0;
+                }
+            };
+
+            const renderHelpTopicPanels = (topic = '') => {
+                if (!helpTopicPanels.length) {
+                    return;
+                }
+
+                const normalizedTopic = String(topic || '').trim();
+
+                helpTopicPanels.forEach((panel) => {
+                    const panelTopic = String(panel.dataset.helpPanel || '').trim();
+                    const shouldShow = Boolean(normalizedTopic) && panelTopic === normalizedTopic;
+                    panel.style.display = shouldShow ? 'block' : 'none';
+                });
+            };
+
+            const setActiveHelpShortcut = (topic = '') => {
+                activeHelpTopic = String(topic || '').trim();
+
+                helpShortcutButtons.forEach((button) => {
+                    const buttonTopic = String(button.dataset.helpTopic || '').trim();
+                    button.classList.toggle('active', Boolean(activeHelpTopic) && buttonTopic === activeHelpTopic);
+                });
+
+                renderHelpTopicPanels(activeHelpTopic);
+                const searchValue = helpSearchInput ? helpSearchInput.value : '';
+                filterHelpFaq(searchValue, activeHelpTopic);
+            };
+
+            if (helpSearchInput) {
+                helpSearchInput.addEventListener('input', () => {
+                    filterHelpFaq(helpSearchInput.value, activeHelpTopic);
+                });
+            }
+
+            if (helpShortcutButtons.length) {
+                const topicMap = {
+                    cuenta: 'cuenta',
+                    guias: 'guias',
+                    soporte: 'soporte'
+                };
+
+                helpShortcutButtons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        const topic = button.dataset.helpTopic || '';
+                        const isSameTopic = activeHelpTopic === topic;
+                        const nextTopic = isSameTopic ? '' : topic;
+                        const suggestedQuery = isSameTopic ? '' : (topicMap[topic] || '');
+
+                        if (helpSearchInput) {
+                            helpSearchInput.value = suggestedQuery;
+                        }
+
+                        setActiveHelpShortcut(nextTopic);
+                    });
+                });
+            }
+
+            renderHelpTopicPanels('');
+
+            const readPrivacySettings = () => {
+                try {
+                    const raw = localStorage.getItem(PRIVACY_SETTINGS_KEY);
+                    if (!raw) {
+                        return {
+                            isPublicProfile: true,
+                            showOnlineStatus: true
+                        };
+                    }
+
+                    const parsed = JSON.parse(raw);
+                    return {
+                        isPublicProfile: typeof parsed?.isPublicProfile === 'boolean'
+                            ? parsed.isPublicProfile
+                            : true,
+                        showOnlineStatus: typeof parsed?.showOnlineStatus === 'boolean'
+                            ? parsed.showOnlineStatus
+                            : true
+                    };
+                } catch (error) {
+                    return {
+                        isPublicProfile: true,
+                        showOnlineStatus: true
+                    };
+                }
+            };
+
+            const syncUserPresenceWithSettings = (settings) => {
+                if (!settings || typeof settings !== 'object') {
+                    return;
+                }
+
+                if (!currentUser || typeof currentUser !== 'object') {
+                    try {
+                        const fallbackUserRaw = localStorage.getItem('hiddenstageUser');
+                        currentUser = fallbackUserRaw ? JSON.parse(fallbackUserRaw) : null;
+                    } catch (error) {
+                        currentUser = null;
+                    }
+                }
+
+                if (!currentUser || typeof currentUser !== 'object') {
+                    return;
+                }
+
+                currentUser = {
+                    ...currentUser,
+                    status_en_linea: settings.showOnlineStatus,
+                    perfil_publico: settings.isPublicProfile
+                };
+                localStorage.setItem('hiddenstageUser', JSON.stringify(currentUser));
+            };
+
+            const writePrivacySettings = (settings) => {
+                localStorage.setItem(PRIVACY_SETTINGS_KEY, JSON.stringify(settings));
+                syncUserPresenceWithSettings(settings);
+            };
+
+            const updatePrivacyLabels = (settings) => {
+                if (profileVisibilityLabel) {
+                    profileVisibilityLabel.textContent = settings.isPublicProfile ? 'Público' : 'Privado';
+                }
+
+                if (onlineStatusLabel) {
+                    onlineStatusLabel.textContent = settings.showOnlineStatus ? 'En línea' : 'No disponible';
+                }
+            };
+
+            const initializePrivacyControls = () => {
+                const settings = readPrivacySettings();
+
+                if (profileVisibilityToggle) {
+                    profileVisibilityToggle.checked = settings.isPublicProfile;
+                    profileVisibilityToggle.addEventListener('change', () => {
+                        const nextSettings = {
+                            ...readPrivacySettings(),
+                            isPublicProfile: profileVisibilityToggle.checked
+                        };
+                        writePrivacySettings(nextSettings);
+                        updatePrivacyLabels(nextSettings);
+                    });
+                }
+
+                if (onlineStatusToggle) {
+                    onlineStatusToggle.checked = settings.showOnlineStatus;
+                    onlineStatusToggle.addEventListener('change', () => {
+                        const nextSettings = {
+                            ...readPrivacySettings(),
+                            showOnlineStatus: onlineStatusToggle.checked
+                        };
+                        writePrivacySettings(nextSettings);
+                        updatePrivacyLabels(nextSettings);
+                    });
+                }
+
+                updatePrivacyLabels(settings);
+                syncUserPresenceWithSettings(settings);
+            };
+
+            initializePrivacyControls();
+
+            const activateSection = (sectionName) => {
+                sectionButtons.forEach((button) => {
+                    const shouldActivate = button.dataset.sectionBtn === sectionName;
+                    button.classList.toggle('active', shouldActivate);
+                });
+
+                sections.forEach((section) => {
+                    const shouldShow = section.dataset.section === sectionName;
+                    section.classList.toggle('active', shouldShow);
+                });
+
+                if (panelTitle) {
+                    panelTitle.textContent = sectionTitleMap[sectionName] || 'Configuración';
+                }
+            };
+
+            sectionButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    activateSection(button.dataset.sectionBtn || 'perfil');
+                });
+            });
+
+            activateSection('perfil');
 
             const renderProfilePhoto = (photoValue) => {
                 if (!profilePhotoPreview) {
@@ -408,6 +1070,70 @@
                         saveProfileBtn.disabled = false;
                         saveProfileBtn.textContent = previousLabel;
                     }
+                });
+            }
+
+            if (
+                submitAuthorRequestBtn &&
+                authorFullNameInput &&
+                authorContactInput &&
+                authorContentTypeInput &&
+                authorExperienceInput &&
+                authorMotivationInput &&
+                authorTermsInput
+            ) {
+                submitAuthorRequestBtn.addEventListener('click', () => {
+                    const fullName = authorFullNameInput.value.trim();
+                    const contactEmail = authorContactInput.value.trim();
+                    const contentType = authorContentTypeInput.value;
+                    const experience = authorExperienceInput.value.trim();
+                    const motivation = authorMotivationInput.value.trim();
+                    const referenceLink = authorReferenceLinkInput
+                        ? authorReferenceLinkInput.value.trim()
+                        : '';
+
+                    if (!fullName || !contactEmail || !contentType || !experience || !motivation) {
+                        alert('Completa todos los campos obligatorios de la solicitud para Autor.');
+                        return;
+                    }
+
+                    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail);
+                    if (!validEmail) {
+                        alert('Ingresa un correo de contacto válido.');
+                        return;
+                    }
+
+                    if (!authorTermsInput.checked) {
+                        alert('Debes aceptar la revisión de tu solicitud para continuar.');
+                        return;
+                    }
+
+                    const authorRequestPayload = {
+                        id_usuario: currentUser?.id_usuario || null,
+                        username: currentUser?.username || '',
+                        fullName,
+                        contactEmail,
+                        contentType,
+                        experience,
+                        motivation,
+                        referenceLink,
+                        requestedAt: new Date().toISOString(),
+                        status: 'pendiente'
+                    };
+
+                    localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
+
+                    alert('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.');
+
+                    authorFullNameInput.value = '';
+                    authorContactInput.value = '';
+                    authorContentTypeInput.value = '';
+                    authorExperienceInput.value = '';
+                    authorMotivationInput.value = '';
+                    if (authorReferenceLinkInput) {
+                        authorReferenceLinkInput.value = '';
+                    }
+                    authorTermsInput.checked = false;
                 });
             }
         })();
