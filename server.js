@@ -3,9 +3,16 @@ const cors = require('cors');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
+const nodemailer = require('nodemailer');
 const path = require('path');
 
-dotenv.config();
+const rootEnvPath = path.join(__dirname, '.env');
+const dbEnvPath = path.join(__dirname, 'database', '.env');
+
+const rootEnvResult = dotenv.config({ path: rootEnvPath });
+if (rootEnvResult.error) {
+    dotenv.config({ path: dbEnvPath });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,7 +21,7 @@ const PROJECT_ROOT = __dirname;
 app.use('/img', express.static(path.join(PROJECT_ROOT, 'img')));;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '6mb' }));
 app.use(express.static(PROJECT_ROOT));
 
 app.get('/', (req, res) => {
@@ -22,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 const MAX_PROFILE_PHOTO_BYTES = 1024 * 1024;
+const MAX_SUPPORT_ATTACHMENT_BYTES = 2 * 1024 * 1024;
 
 const getBase64PayloadBytes = (dataUrl) => {
     if (typeof dataUrl !== 'string') {
@@ -40,6 +48,19 @@ const getBase64PayloadBytes = (dataUrl) => {
 
     const padding = (base64.match(/=+$/) || [''])[0].length;
     return Math.floor((base64.length * 3) / 4) - padding;
+};
+
+const escapeHtml = (value) => String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const createSupportTicketId = () => {
+    const datePart = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+    const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
+    return `HS-${datePart}-${randomPart}`;
 };
 
 const pool = mysql.createPool({
@@ -380,6 +401,137 @@ app.post('/api/posts', async (req, res) => {
         }
 
         return res.status(500).json({ message: 'Error interno al crear publicación' });
+    }
+});
+
+app.post('/api/support-ticket', async (req, res) => {
+    try {
+        const {
+            username,
+            email,
+            category,
+            priority,
+            subject,
+            description,
+            attachment_name,
+            attachment_data
+        } = req.body || {};
+
+        const normalizedUsername = typeof username === 'string' ? username.trim() : '';
+        const normalizedEmail = typeof email === 'string' ? email.trim() : '';
+        const normalizedCategory = typeof category === 'string' ? category.trim() : '';
+        const normalizedPriority = typeof priority === 'string' ? priority.trim() : '';
+        const normalizedSubject = typeof subject === 'string' ? subject.trim() : '';
+        const normalizedDescription = typeof description === 'string' ? description.trim() : '';
+        const normalizedAttachmentName = typeof attachment_name === 'string' ? attachment_name.trim() : '';
+        const normalizedAttachmentData = typeof attachment_data === 'string' ? attachment_data.trim() : '';
+
+        if (!normalizedEmail || !normalizedCategory || !normalizedPriority || !normalizedSubject || !normalizedDescription) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios del ticket.' });
+        }
+
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+        if (!validEmail) {
+            return res.status(400).json({ message: 'El correo de contacto no es válido.' });
+        }
+
+        const mailHost = process.env.MAIL_HOST;
+        const mailPort = Number(process.env.MAIL_PORT || 587);
+        const mailSecure = String(process.env.MAIL_SECURE || 'false').toLowerCase() === 'true';
+        const mailUser = process.env.MAIL_USER;
+        const mailPass = process.env.MAIL_PASS;
+        const mailTo = process.env.MAIL_TO || 'soporte@hiddenstage.io';
+        const mailFrom = process.env.MAIL_FROM || mailUser;
+
+        if (!mailHost || !mailUser || !mailPass || !mailFrom) {
+            return res.status(500).json({ message: 'El servicio de correo no está configurado en el servidor.' });
+        }
+
+        let attachments = [];
+        if (normalizedAttachmentData) {
+            const isValidImageDataUrl = /^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(normalizedAttachmentData);
+            if (!isValidImageDataUrl) {
+                return res.status(400).json({ message: 'El adjunto no tiene un formato de imagen válido.' });
+            }
+
+            const attachmentBytes = getBase64PayloadBytes(normalizedAttachmentData);
+            if (attachmentBytes > MAX_SUPPORT_ATTACHMENT_BYTES) {
+                return res.status(413).json({ message: 'La captura supera el máximo permitido de 2MB.' });
+            }
+
+            const commaIndex = normalizedAttachmentData.indexOf(',');
+            const mimePart = normalizedAttachmentData.slice(5, normalizedAttachmentData.indexOf(';'));
+            const ext = mimePart.split('/')[1] || 'png';
+            const base64Payload = normalizedAttachmentData.slice(commaIndex + 1);
+
+            attachments = [
+                {
+                    filename: normalizedAttachmentName || `captura-ticket.${ext}`,
+                    content: base64Payload,
+                    encoding: 'base64',
+                    contentType: mimePart
+                }
+            ];
+        }
+
+        const ticketId = createSupportTicketId();
+        const ticketDate = new Date().toLocaleString('es-MX', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const transporter = nodemailer.createTransport({
+            host: mailHost,
+            port: mailPort,
+            secure: mailSecure,
+            auth: {
+                user: mailUser,
+                pass: mailPass
+            }
+        });
+
+        await transporter.sendMail({
+            from: `HiddenStage Soporte <${mailFrom}>`,
+            to: mailTo,
+            replyTo: normalizedEmail,
+            subject: `[${ticketId}] ${normalizedSubject}`,
+            text: [
+                `Nuevo ticket de soporte - ${ticketId}`,
+                `Fecha: ${ticketDate}`,
+                `Usuario: ${normalizedUsername || 'No especificado'}`,
+                `Correo: ${normalizedEmail}`,
+                `Categoría: ${normalizedCategory}`,
+                `Prioridad: ${normalizedPriority}`,
+                `Asunto: ${normalizedSubject}`,
+                '',
+                'Descripción:',
+                normalizedDescription
+            ].join('\n'),
+            html: `
+                <h2>Nuevo ticket de soporte</h2>
+                <p><strong>Folio:</strong> ${escapeHtml(ticketId)}</p>
+                <p><strong>Fecha:</strong> ${escapeHtml(ticketDate)}</p>
+                <p><strong>Usuario:</strong> ${escapeHtml(normalizedUsername || 'No especificado')}</p>
+                <p><strong>Correo:</strong> ${escapeHtml(normalizedEmail)}</p>
+                <p><strong>Categoría:</strong> ${escapeHtml(normalizedCategory)}</p>
+                <p><strong>Prioridad:</strong> ${escapeHtml(normalizedPriority)}</p>
+                <p><strong>Asunto:</strong> ${escapeHtml(normalizedSubject)}</p>
+                <hr>
+                <p><strong>Descripción:</strong></p>
+                <p>${escapeHtml(normalizedDescription).replace(/\n/g, '<br>')}</p>
+            `,
+            attachments
+        });
+
+        return res.status(201).json({
+            message: 'Ticket enviado correctamente por correo.',
+            ticketId
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'No se pudo enviar el ticket por correo.' });
     }
 });
 
