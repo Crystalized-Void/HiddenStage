@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -364,3 +365,371 @@
     </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Soporte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="soporte.css">
+</head>
+<body>
+    <main class="support-page">
+        <section class="support-shell">
+            <header class="support-head">
+                <a class="back-link" href="configuracion.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Volver a configuración</span>
+                </a>
+                <h1>Contacto y Soporte</h1>
+                <p>Cuéntanos qué problema tienes y te generamos un folio de seguimiento.</p>
+            </header>
+
+            <section class="support-grid">
+                <article class="support-card">
+                    <h2>Abrir ticket</h2>
+                    <form id="support-form" class="support-form" novalidate>
+                        <div class="field-row">
+                            <label for="support-username">Usuario</label>
+                            <input id="support-username" type="text" placeholder="Tu usuario en HiddenStage">
+                        </div>
+
+                        <div class="field-row">
+                            <label for="support-email">Correo de contacto</label>
+                            <input id="support-email" type="email" placeholder="tu_correo@ejemplo.com" required>
+                        </div>
+
+                        <div class="field-row two-col">
+                            <div>
+                                <label for="support-category">Tipo de problema</label>
+                                <select id="support-category" required>
+                                    <option value="">Selecciona</option>
+                                    <option value="acceso">Acceso / Cuenta</option>
+                                    <option value="perfil">Perfil y configuración</option>
+                                    <option value="publicaciones">Publicaciones y contenido</option>
+                                    <option value="error-tecnico">Error técnico</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="support-priority">Prioridad</label>
+                                <select id="support-priority" required>
+                                    <option value="">Selecciona</option>
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <label for="support-subject">Asunto</label>
+                            <input id="support-subject" type="text" placeholder="Ejemplo: No puedo guardar mi perfil" required>
+                        </div>
+
+                        <div class="field-row">
+                            <label for="support-description">Descripción del problema</label>
+                            <textarea id="support-description" rows="6" placeholder="Explícanos qué pasó, en qué pantalla y qué intentaste hacer." required></textarea>
+                            <small>Tip: entre más detalle compartas, más rápido podemos ayudarte.</small>
+                        </div>
+
+                        <div class="field-row">
+                            <label for="support-attachment">Captura del problema (opcional)</label>
+                            <input id="support-attachment" type="file" accept="image/*">
+                            <small>Puedes subir una imagen PNG, JPG o WEBP de máximo 2MB.</small>
+
+                            <div id="support-attachment-preview" class="attachment-preview" hidden>
+                                <img id="support-attachment-image" alt="Vista previa de captura">
+                                <button id="support-attachment-remove" type="button" class="attachment-remove-btn">
+                                    Quitar imagen
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="field-actions">
+                            <button id="support-submit-btn" type="submit" class="btn-primary">
+                                <i class="fa-regular fa-paper-plane"></i>
+                                <span>Enviar ticket</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <p id="support-result" class="support-result" hidden></p>
+                </article>
+
+                <aside class="support-card support-info">
+                    <h2>Antes de enviar</h2>
+                    <ul>
+                        <li>Verifica que puedas acceder correctamente a tu cuenta desde hiddenstage.io.</li>
+                        <li>Incluye una captura y explica qué hiciste antes del error (por ejemplo: entré a mi perfil, di clic en Guardar y apareció un mensaje).</li>
+                        <li>Si olvidaste contraseña, escribe desde tu correo registrado.</li>
+                    </ul>
+
+                    <div class="support-contact-box">
+                        <h3>Correo directo</h3>
+                        <a href="mailto:soporte@hiddenstage.io">soporte@hiddenstage.io</a>
+                        <p>Tiempo estimado de respuesta: 24 a 72 horas hábiles.</p>
+                    </div>
+                </aside>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            const STORAGE_KEY = 'hiddenstageSupportTickets';
+            const LOCAL_API_ORIGIN = 'http://localhost:3000';
+            const isLocalFrontend =
+                window.location.protocol === 'file:' ||
+                ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+            const API_BASE = isLocalFrontend && !isBackendOrigin
+                ? LOCAL_API_ORIGIN
+                : '';
+            const userRaw = localStorage.getItem('hiddenstageUser');
+
+            const supportForm = document.getElementById('support-form');
+            const userInput = document.getElementById('support-username');
+            const emailInput = document.getElementById('support-email');
+            const categoryInput = document.getElementById('support-category');
+            const priorityInput = document.getElementById('support-priority');
+            const subjectInput = document.getElementById('support-subject');
+            const descriptionInput = document.getElementById('support-description');
+            const submitButton = document.getElementById('support-submit-btn');
+            const resultBox = document.getElementById('support-result');
+            const attachmentInput = document.getElementById('support-attachment');
+            const attachmentPreview = document.getElementById('support-attachment-preview');
+            const attachmentImage = document.getElementById('support-attachment-image');
+            const attachmentRemoveBtn = document.getElementById('support-attachment-remove');
+            const MAX_ATTACHMENT_BYTES = 2 * 1024 * 1024;
+
+            let currentAttachmentName = '';
+            let currentAttachmentData = '';
+
+            const readTickets = () => {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) {
+                        return [];
+                    }
+
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const createTicketId = () => {
+                const datePart = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+                const randomPart = Math.random().toString(36).slice(2, 7).toUpperCase();
+                return `HS-${datePart}-${randomPart}`;
+            };
+
+            if (userRaw) {
+                try {
+                    const user = JSON.parse(userRaw);
+                    if (userInput && user?.username) {
+                        userInput.value = user.username;
+                    }
+                    if (emailInput && user?.email) {
+                        emailInput.value = user.email;
+                    }
+                } catch (error) {
+                    // If storage data is malformed, we simply keep manual input.
+                }
+            }
+
+            if (!supportForm) {
+                return;
+            }
+
+            const clearAttachment = () => {
+                currentAttachmentName = '';
+                currentAttachmentData = '';
+
+                if (attachmentInput) {
+                    attachmentInput.value = '';
+                }
+
+                if (attachmentImage) {
+                    attachmentImage.removeAttribute('src');
+                }
+
+                if (attachmentPreview) {
+                    attachmentPreview.hidden = true;
+                }
+            };
+
+            if (attachmentInput) {
+                attachmentInput.addEventListener('change', () => {
+                    const selected = attachmentInput.files?.[0];
+
+                    if (!selected) {
+                        clearAttachment();
+                        return;
+                    }
+
+                    if (!selected.type.startsWith('image/')) {
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result error';
+                            resultBox.textContent = 'Adjunta un archivo de imagen válido (PNG, JPG o WEBP).';
+                        }
+                        clearAttachment();
+                        return;
+                    }
+
+                    if (selected.size > MAX_ATTACHMENT_BYTES) {
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result error';
+                            resultBox.textContent = 'La imagen supera el límite de 2MB.';
+                        }
+                        clearAttachment();
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        currentAttachmentName = selected.name;
+                        currentAttachmentData = String(reader.result || '');
+
+                        if (attachmentImage) {
+                            attachmentImage.src = currentAttachmentData;
+                        }
+
+                        if (attachmentPreview) {
+                            attachmentPreview.hidden = false;
+                        }
+                    };
+                    reader.readAsDataURL(selected);
+                });
+            }
+
+            if (attachmentRemoveBtn) {
+                attachmentRemoveBtn.addEventListener('click', () => {
+                    clearAttachment();
+                });
+            }
+
+            supportForm.addEventListener('submit', (event) => {
+                const sendTicket = async () => {
+                    const username = String(userInput?.value || '').trim();
+                    const email = String(emailInput?.value || '').trim();
+                    const category = String(categoryInput?.value || '').trim();
+                    const priority = String(priorityInput?.value || '').trim();
+                    const subject = String(subjectInput?.value || '').trim();
+                    const description = String(descriptionInput?.value || '').trim();
+
+                    if (!email || !category || !priority || !subject || !description) {
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result error';
+                            resultBox.textContent = 'Completa los campos obligatorios para enviar el ticket.';
+                        }
+                        return;
+                    }
+
+                    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                    if (!validEmail) {
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result error';
+                            resultBox.textContent = 'Ingresa un correo válido.';
+                        }
+                        return;
+                    }
+
+                    const originalButtonText = submitButton?.textContent || 'Enviar ticket';
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Enviando...';
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE}/api/support-ticket`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                username,
+                                email,
+                                category,
+                                priority,
+                                subject,
+                                description,
+                                attachment_name: currentAttachmentName,
+                                attachment_data: currentAttachmentData
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            if (resultBox) {
+                                resultBox.hidden = false;
+                                resultBox.className = 'support-result error';
+                                resultBox.textContent = data.message || 'No se pudo enviar el ticket por correo.';
+                            }
+                            return;
+                        }
+
+                        const ticket = {
+                            id: data.ticketId || createTicketId(),
+                            username,
+                            email,
+                            category,
+                            priority,
+                            subject,
+                            description,
+                            attachment_name: currentAttachmentName,
+                            attachment_data: currentAttachmentData,
+                            createdAt: new Date().toISOString(),
+                            status: 'recibido'
+                        };
+
+                        const currentTickets = readTickets();
+                        currentTickets.unshift(ticket);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentTickets));
+
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result success';
+                            resultBox.textContent = `Ticket enviado correctamente. Tu folio es ${ticket.id}.`;
+                        }
+
+                        subjectInput.value = '';
+                        descriptionInput.value = '';
+                        categoryInput.value = '';
+                        priorityInput.value = '';
+                        clearAttachment();
+                    } catch (error) {
+                        if (resultBox) {
+                            resultBox.hidden = false;
+                            resultBox.className = 'support-result error';
+                            resultBox.textContent = 'No se pudo conectar con el servidor para enviar tu ticket.';
+                        }
+                    } finally {
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalButtonText;
+                        }
+                    }
+                };
+
+                event.preventDefault();
+                sendTicket();
+            });
+        })();
+    </script>
+</body>
+</html>
+>>>>>>> Stashed changes

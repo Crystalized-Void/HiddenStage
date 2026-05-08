@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,118 +11,146 @@
     <link rel="stylesheet" href="principal.css">
 </head>
 <body id="inicio">
-    <header class="topbar">
-        <div class="topbar-main">
-            <a class="brand" aria-label="HiddenStage Inicio">
-                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo" onclick="Menu()">
+    <header class="barra-superior">
+        <div class="barra-superior-principal">
+            <a class="marca" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="logo-marca" onclick="alternarMenuLateral()">
             </a>
 
+<<<<<<< Updated upstream
             <div class="topbar-search">
                 <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+=======
+            <div class="busqueda-superior">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido" data-post-search-input data-i18n-placeholder="searchPlaceholder" data-i18n-aria-label="searchAria" autocomplete="off">
+                <button type="button" class="boton-limpiar-busqueda" data-post-search-clear aria-label="Limpiar búsqueda" title="Limpiar búsqueda" data-i18n-aria-label="clearSearch" data-i18n-title="clearSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="resultados-busqueda" data-post-resultados-busqueda aria-live="polite"></div>
+>>>>>>> Stashed changes
             </div>
 
-            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
+            <button type="button" class="boton-crear-publicacion" aria-label="Crear publicación" title="Crear publicación" data-i18n-aria-label="createPost" data-i18n-title="createPost" onclick="alternarModalCrearPublicacion()">
                 <i class="fas fa-plus"></i>
             </button>
 
-            <div class="user-panel">
-                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
-                    <span data-user-name></span>
-                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+            <div class="panel-usuario">
+                <button type="button" class="disparador-usuario" aria-expanded="false" aria-controls="user-menu">
+                    <span data-nombre-usuario></span>
+                    <span class="avatar-superior-usuario" data-user-avatar aria-hidden="true">
                         <i class="fa-solid fa-user"></i>
                     </span>
                 </button>
 
-                <div id="user-menu" class="user-dropdown">
-                    <div class="user-name">
+                <div id="user-menu" class="desplegable-usuario">
+                    <div class="nombre-usuario">
                         <span data-user-fullname>NOMBRE USUARIO</span>
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <a href="#" data-open-profile-menu>PERFIL</a>
-                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
-                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
-                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
+                    <a href="#" data-open-profile-menu data-i18n="profileUpper">PERFIL</a>
+                    <a href="../configuracion/configuracion.html" data-i18n="editProfileUpper">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html" data-i18n="settingsUpper">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-enlace-cerrar-sesion data-i18n="logoutUpper">CERRAR SESIÓN</a>
                 </div>
             </div>
         </div>
     </header>
-<div class="page-shell">
-<nav class="nav-bar">
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+<div class="envoltura-pagina">
+<nav class="barra-navegacion">
+    <a href="#inicio"><i class="fas fa-home"></i><span data-i18n="home">Inicio</span></a>
+    <a href="#relevancia"><i class="fas fa-star"></i><span data-i18n="relevance">Relevancia</span></a>
+    <a href="#reciente"><i class="fas fa-clock"></i><span data-i18n="new">Recientes</span></a>
+    <a href="#noticias"><i class="fas fa-book"></i><span data-i18n="guides">Noticias</span></a>
+    <a href="#tips"><i class="fas fa-lightbulb"></i><span data-i18n="tips">Tips</span></a>
+    <a href="#"><i class="fas fa-comments"></i><span data-i18n="forum">Foro</span></a>
+    <a href="generos.html"><i class="fas fa-gamepad"></i><span data-i18n="genres">Generos</span></a>
 </nav>
-<div id="sideMenu" class="side-menu">
-    <div class="menu-header">
-        <img src="../img/LogoHS.png" onclick="Menu()">
-        <i class="fas fa-times close-icon" onclick="Menu()"></i>
+<div id="sideMenu" class="menu-lateral">
+    <div class="encabezado-menu">
+        <img src="../img/LogoHS.png" onclick="alternarMenuLateral()">
+        <i class="fas fa-times icono-cerrar" onclick="alternarMenuLateral()"></i>
     </div>
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#inicio"><i class="fas fa-home"></i><span data-i18n="home">Inicio</span></a>
+    <a href="#relevancia"><i class="fas fa-star"></i><span data-i18n="relevance">Relevancia</span></a>
+    <a href="#reciente"><i class="fas fa-clock"></i><span data-i18n="recent">Reciente</span></a>
+    <a href="#noticias"><i class="fas fa-book"></i><span data-i18n="guides">Noticias</span></a>
+    <a href="#tips"><i class="fas fa-lightbulb"></i><span data-i18n="tips">Tips</span></a>
+    <a href="#"><i class="fas fa-comments"></i><span data-i18n="forum">Foro</span></a>
+    <a href="generos.html"><i class="fas fa-gamepad"></i><span data-i18n="genres">Generos</span></a>
 </div>
-<div id="sideProfile" class="side-profile">
-    <div class="menu-header">
-        <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+<div id="sideProfile" class="perfil-lateral">
+    <div class="encabezado-menu">
+        <i class="fas fa-times icono-cerrar-izquierda" onclick="alternarPanelPerfil()"></i>
     </div>
-    <div class="side-profile-header">
-        <div class="side-profile-avatar" data-side-avatar aria-hidden="true">
+    <div class="encabezado-perfil-lateral">
+        <div class="avatar-perfil-lateral" data-side-avatar aria-hidden="true">
             <i class="fa-solid fa-user"></i>
         </div>
-        <div class="side-profile-meta">
+        <div class="meta-perfil-lateral">
             <strong data-side-username>Invitado</strong>
             <span data-side-handle>@hiddenstage</span>
         </div>
     </div>
-    <span class="menu-section-title">Cuenta</span>
-    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
-    <button type="button" class="theme-toggle-link" data-theme-toggle>
+    <span class="titulo-seccion-menu" data-i18n="accountSection">Cuenta</span>
+    <a href="../perfil/perfil.html"><i class="fas fa-user"></i><span data-i18n="yourProfile">Tu perfil</span></a>
+    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i><span data-i18n="settings">Ajustes</span></a>
+    <button type="button" class="enlace-alternar-tema" data-theme-toggle>
         <i class="fas fa-moon" data-theme-icon></i>
         <span data-theme-label>Tema oscuro</span>
     </button>
-    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-    <span class="menu-section-title">Sesión</span>
-    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    <div class="menu-idioma" data-menu-idioma>
+        <button type="button" class="enlace-alternar-idioma" data-language-toggle aria-expanded="false">
+            <span class="contenido-alternar-idioma">
+                <i class="fas fa-language"></i>
+                <span data-i18n="language">Lenguaje</span>
+            </span>
+            <i class="fas fa-chevron-down chevron-idioma" aria-hidden="true"></i>
+        </button>
+        <div class="opciones-idioma" data-opciones-idioma>
+            <button type="button" class="opcion-idioma" data-opcion-idioma="es">
+                <span class="bandera" aria-hidden="true">🇪🇸</span>
+                <span data-i18n="spanish">Español</span>
+            </button>
+            <button type="button" class="opcion-idioma" data-opcion-idioma="en">
+                <span class="bandera" aria-hidden="true">🇬🇧</span>
+                <span data-i18n="english">Ingles</span>
+            </button>
+        </div>
+    </div>
+    <a href="../inicio_de_sesion/index.html" class="enlace-lateral-secundario"><i class="fas fa-exchange-alt"></i><span data-i18n="switchAccount">Cambiar de cuenta</span></a>
+    <span class="titulo-seccion-menu" data-i18n="sessionSection">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="enlace-cerrar-sesion" data-enlace-cerrar-sesion><i class="fas fa-sign-out-alt"></i><span data-i18n="logout">Cerrar sesión</span></a>
+    <a href="#" onclick="alternarPanelPerfil()"><i class="fas fa-arrow-left"></i><span data-i18n="goBack">Regresar</span></a>
 </div>
     
-<main id="relevancia" class="container">
-    <section class="featured">
-        <div class="featured-image">
+<main id="relevancia" class="contenedor-principal">
+    <section class="destacado">
+        <div class="imagen-destacada">
             <img src="../img/Imagendeprueba.png" alt="Post Destacado">
         </div>
-        <div class="featured-text">
+        <div class="texto-destacado">
             <h2><i class="fas fa-star"></i> Team Cherry nos la hace otra vez</h2>
             <p>Team Cherry confirma que el nuevo DLC de silksong sera un juego nuevo</p>
         </div>
     </section>
-    <aside class="sidebar">
-        <div class="sidepost">
+    <aside class="barra-lateral">
+        <div class="post-lateral">
             <img src="" alt="Publicación 1">
-            <div class="post-info">
+            <div class="info-post">
                 <h4>Publicación 1</h4>
                 <p>Contenido breve</p>
             </div>
         </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 2">
-            <div class="post-info">
-                <h4>Publicación 2</h4>
+        <div class="post-lateral">
+            <img src="" alt="Publicacion 2">
+            <div class="info-post">
+                <h4>Publicacion 2</h4>
                 <p>Contenido breve</p>
             </div>
         </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 3">
-            <div class="post-info">
+        <div class="post-lateral">
+            <img src="" alt="Publicacion 3">
+            <div class="info-post">
                 <h4>Publicación 3</h4>
                 <p>Contenido breve</p>
             </div>
@@ -131,180 +159,180 @@
 </main>
 
 <section class="Populares">
-    <h2><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
-        <div class="cards">
+    <h2><i class="fas fa-fire"></i><span data-i18n="mostRelevant"> MAS RELEVANTES </span></h2>
+        <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="reciente" class="Recientes">
-    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
-        <div class="cards">
+    <h2><i class="fas fa-newspaper"></i><span data-i18n="latest"> LO MÁS RECIENTE </span></h2>
+        <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
-            <img src="">
-        </div>
-    </div>
-</section>
-
-<section id="guias" class="Guias">
-    <h2><i class="fas fa-book"></i> GUIAS </h2>
-        <div class="cards">
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
-<section id="trucos" class="Trucos">
-    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
-    <div class="cards">
+<section id="noticias" class="Noticias">
+    <h2><i class="fas fa-book"></i><span data-i18n="guidesUpper"> NOTICIAS </span></h2>
+        <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="tips" class="Tips">
+    <h2><i class="fas fa-lightbulb"></i><span data-i18n="tipsUpper"> TIPS </span></h2>
+    <div class="tarjetas">
+
+        <div class="tarjeta">
+            <img src="">
+        </div>
+
+        <div class="tarjeta">
+            <img src="">
+        </div>
+
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="carreras" class="Carreras">
-    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
-    <div class="cards">
+    <h2><i class="fas fa-bandera-checkered"></i><span data-i18n="racesUpper"> CARRERAS </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="plataformas" class="Plataformas">
-    <h2><i class="fas fa-server"></i> PLATAFORMAS </h2>
-    <div class="cards">
+    <h2><i class="fas fa-server"></i><span data-i18n="platformsUpper"> PLATAFORMAS </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="romance" class="Romance">
-    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
-    <div class="cards">
+    <h2><i class="fas fa-heart"></i><span data-i18n="romanceUpper"> TERROR </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
-<section id="porturnos" class="Porturnos">
-    <h2><i class="fas fa-mask"></i> POR TURNOS </h2>
-    <div class="cards">
+<section id="porturnos" class="PorTurnos">
+    <h2><i class="fas fa-mask"></i><span data-i18n="turnBasedUpper"> POR TURNOS </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="accion" class="Accion">
-    <h2><i class="fas fa-explosion"></i> ACCIÓN </h2>
-    <div class="cards">
+    <h2><i class="fas fa-explosion"></i><span data-i18n="actionUpper"> ACCION </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="aventuras" class="Aventuras">
-    <h2><i class="fas fa-map"></i> AVENTURAS </h2>
-    <div class="cards">
+    <h2><i class="fas fa-map"></i><span data-i18n="adventuresUpper"> AVENTURAS </span></h2>
+    <div class="tarjetas">
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
 
-        <div class="card">
+        <div class="tarjeta">
             <img src="">
         </div>
     </div>
@@ -312,112 +340,492 @@
 </div>
 
 <!-- Modal: Crear Publicación -->
-<div id="createModal" class="modal-create-post">
-    <div class="modal-overlay" onclick="toggleCreateModal()"></div>
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Crear publicación</h2>
-            <button class="modal-close" onclick="toggleCreateModal()">
+<div id="createModal" class="modal-crear-publicacion">
+    <div class="superposicion-modal" onclick="alternarModalCrearPublicacion()"></div>
+    <div class="contenido-modal">
+        <div class="encabezado-modal">
+            <h2 data-i18n="createPost">Crear publicacion</h2>
+            <button class="cerrar-modal" onclick="alternarModalCrearPublicacion()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
-            <button class="create-option" onclick="redirectToCreatePost()">
+        <div class="cuerpo-modal">
+            <button class="opcion-crear" onclick="redirigirCrearPublicacion()">
                 <i class="fas fa-pen"></i>
-                <span>Crear nota</span>
+                <span data-i18n="createNote">Crear nota</span>
             </button>
         </div>
     </div>
 </div>
 
 <script>
+    // #configuracion
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
+    const LANGUAGE_KEY = 'hiddenstageLanguage';
+    const POSTS_KEY = 'hiddenstagePosts';
+    const SAVED_POSTS_KEY = 'hiddenstageSavedPosts';
+    const UI_TRANSLATIONS = {
+        es: {
+            searchPlaceholder: 'Buscar...',
+            searchAria: 'Buscar contenido',
+            clearSearch: 'Limpiar busqueda',
+            createPost: 'Crear publicacion',
+            createNote: 'Crear nota',
+            profileUpper: 'PERFIL',
+            editProfileUpper: 'EDITAR PERFIL',
+            settingsUpper: 'CONFIGURACION',
+            logoutUpper: 'CERRAR SESION',
+            home: 'Inicio',
+            relevance: 'Relevancia',
+            new: 'Nuevo',
+            recent: 'Reciente',
+            guides: 'Noticias',
+            tips: 'Tips',
+            forum: 'Foro',
+            genres: 'Generos',
+            accountSection: 'Cuenta',
+            yourProfile: 'Tu perfil',
+            settings: 'Ajustes',
+            language: 'Lenguaje',
+            spanish: 'Espanol',
+            english: 'Ingles',
+            switchAccount: 'Cambiar de cuenta',
+            sessionSection: 'Sesion',
+            logout: 'Cerrar sesion',
+            goBack: 'Regresar',
+            mostRelevant: ' MAS RELEVANTES ',
+            latest: ' NOVEDADES ',
+            guidesUpper: ' NOTICIAS ',
+            tipsUpper: ' TIPS ',
+            racesUpper: ' CARRERAS ',
+            platformsUpper: ' PLATAFORMAS ',
+            romanceUpper: ' ROMANCE ',
+            turnBasedUpper: ' POR TURNOS ',
+            actionUpper: ' ACCION ',
+            adventuresUpper: ' AVENTURAS ',
+            darkTheme: 'Tema oscuro',
+            lightTheme: 'Tema claro',
+            loginToPostAlert: 'Debes iniciar sesion para crear una publicacion',
+            searchEmpty: 'No se encontraron publicaciones.'
+        },
+        en: {
+            searchPlaceholder: 'Search...',
+            searchAria: 'Search content',
+            clearSearch: 'Clear search',
+            createPost: 'Create post',
+            createNote: 'Create note',
+            profileUpper: 'PROFILE',
+            editProfileUpper: 'EDIT PROFILE',
+            settingsUpper: 'SETTINGS',
+            logoutUpper: 'LOG OUT',
+            home: 'Home',
+            relevance: 'Relevance',
+            new: 'New',
+            recent: 'Recent',
+            guides: 'Guides',
+            tips: 'Tips',
+            forum: 'Forum',
+            genres: 'Genres',
+            accountSection: 'Account',
+            yourProfile: 'Your profile',
+            settings: 'Settings',
+            language: 'Language',
+            spanish: 'Spanish',
+            english: 'English',
+            switchAccount: 'Switch account',
+            sessionSection: 'Session',
+            logout: 'Log out',
+            goBack: 'Go back',
+            mostRelevant: ' MOST RELEVANT ',
+            latest: ' LATEST ',
+            guidesUpper: ' GUIDES ',
+            tipsUpper: ' TIPS ',
+            racesUpper: ' RACING ',
+            platformsUpper: ' PLATFORMS ',
+            romanceUpper: ' ROMANCE ',
+            turnBasedUpper: ' TURN-BASED ',
+            actionUpper: ' ACTION ',
+            adventuresUpper: ' ADVENTURES ',
+            darkTheme: 'Dark theme',
+            lightTheme: 'Light theme',
+            loginToPostAlert: 'You need to sign in to create a post',
+            searchEmpty: 'No posts found.'
+        }
+    };
 
-    function Menu() {
+    // #utilidades_traduccion
+    function leerIdiomaPreferido() {
+        const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
+        return storedLanguage === 'en' ? 'en' : 'es';
+    }
+
+    function traducirTextoInterfaz(key, language) {
+        const safeLanguage = language === 'en' ? 'en' : 'es';
+        return UI_TRANSLATIONS[safeLanguage]?.[key] || UI_TRANSLATIONS.es[key] || key;
+    }
+
+    // #menu_principal
+    function alternarMenuLateral() {
         document.getElementById('sideMenu').classList.toggle('active');
     }
 
-    function AjustesPerfil() {
+    function alternarPanelPerfil() {
         document.getElementById('sideProfile').classList.toggle('active');
     }
 
-    function toggleUserMenu() {
-        AjustesPerfil();
+    function alternarMenuUsuario() {
+        alternarPanelPerfil();
     }
 
-    function Generos() {
+    // #navegacion
+    function irAGeneros() {
         window.location.href = 'generos.html';
     }
 
-    function toggleCreateModal() {
+    // #modal_crear_publicacion
+    function alternarModalCrearPublicacion() {
         const modal = document.getElementById('createModal');
         if (modal) {
             modal.classList.toggle('active');
         }
     }
 
-    function redirectToCreatePost() {
+    function redirigirCrearPublicacion() {
         const storedUser = localStorage.getItem('hiddenstageUser');
         if (!storedUser) {
-            alert('Debes iniciar sesión para crear una publicación');
+            alert(traducirTextoInterfaz('loginToPostAlert', leerIdiomaPreferido()));
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
         window.location.href = 'crearPublicacion.html';
     }
 
+    // #datos_publicaciones
+    function leerPublicacionesGuardadas() {
+        try {
+            const rawPosts = localStorage.getItem(POSTS_KEY);
+            if (!rawPosts) {
+                return [];
+            }
+
+            const parsedPosts = JSON.parse(rawPosts);
+            return Array.isArray(parsedPosts) ? parsedPosts : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function normalizarTextoBusqueda(value) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+        return String(value)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    // Mapeo de categorías antiguas a las nuevas claves
+    const CATEGORY_LEGACY_MAP = {
+        guias: 'noticias',
+        trucos: 'tips'
+    };
+
+    function normalizarCategoria(categoria) {
+        if (!categoria) return '';
+        const key = String(categoria).toLowerCase();
+        return CATEGORY_LEGACY_MAP[key] || key;
+    }
+
+    // #busqueda
+    function renderizarResultadosBusqueda(rawQuery) {
+        const searchResults = document.querySelector('[data-post-resultados-busqueda]');
+        if (!searchResults) {
+            return;
+        }
+
+        const query = normalizarTextoBusqueda(rawQuery);
+        searchResults.innerHTML = '';
+
+        if (!query) {
+            searchResults.classList.remove('active');
+            return;
+        }
+
+        const posts = leerPublicacionesGuardadas();
+        const matches = posts
+            .filter((post) => {
+                const searchable = [
+                    post?.titulo,
+                    post?.encabezado,
+                    post?.username,
+                    post?.categoria
+                ].map((text) => normalizarTextoBusqueda(text)).join(' ');
+
+                return searchable.includes(query);
+            })
+            .sort((a, b) => new Date(b?.fecha || 0).getTime() - new Date(a?.fecha || 0).getTime())
+            .slice(0, 8);
+
+        if (!matches.length) {
+            searchResults.innerHTML = `<p class="vacio-resultados-busqueda">${traducirTextoInterfaz('searchEmpty', leerIdiomaPreferido())}</p>`;
+            searchResults.classList.add('active');
+            return;
+        }
+
+        matches.forEach((post) => {
+            const postIsSaved = estaPublicacionGuardada(post?.id);
+            const thumbImage = typeof post?.imagenPrincipal === 'string' ? post.imagenPrincipal.trim() : '';
+            const avatarInitials = (post?.username || 'US').substring(0, 2).toUpperCase();
+            const avatarStyle = post?.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
+
+            const item = document.createElement('div');
+            item.className = 'item-resultado-busqueda';
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', '0');
+            item.innerHTML = `
+                <div class="izquierda-resultado-busqueda">
+                    ${thumbImage
+                        ? `<img src="${thumbImage}" alt="Miniatura de publicación" class="miniatura-resultado-busqueda">`
+                        : '<div class="miniatura-resultado-busqueda miniatura-resultado-busqueda-vacia"></div>'
+                    }
+                </div>
+                <div class="cuerpo-resultado-busqueda">
+                    <span class="titulo-resultado-busqueda">${post?.titulo || 'Sin título'}</span>
+                    <span class="meta-resultado-busqueda">${post?.username || 'Usuario'}${post?.categoria ? ` • ${post.categoria}` : ''}</span>
+                    <span class="autor-resultado-busqueda">
+                        <span class="avatar-resultado-busqueda" style="${avatarStyle}">${!post?.userAvatar ? avatarInitials : ''}</span>
+                        <span>${post?.encabezado || 'Sin descripción disponible.'}</span>
+                    </span>
+                </div>
+                <button type="button" class="guardar-resultado-busqueda ${postIsSaved ? 'saved' : ''}" aria-label="Guardar publicación" title="${postIsSaved ? 'Quitar de guardados' : 'Guardar publicación'}">
+                    <i class="${postIsSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                </button>
+            `;
+
+            const openPost = () => {
+                if (!post?.id) {
+                    return;
+                }
+
+                window.location.href = `publicacion.html?id=${post.id}`;
+            };
+
+            item.addEventListener('click', openPost);
+
+            item.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openPost();
+                }
+            });
+
+            const saveButton = item.querySelector('.guardar-resultado-busqueda');
+            if (saveButton) {
+                saveButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const nowSaved = alternarPublicacionGuardada(post);
+                    saveButton.classList.toggle('saved', nowSaved);
+                    saveButton.title = nowSaved ? 'Quitar de guardados' : 'Guardar publicación';
+                    const icon = saveButton.querySelector('i');
+                    if (icon) {
+                        icon.className = `${nowSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark`;
+                    }
+                    cargarPublicaciones();
+                });
+            }
+
+            searchResults.appendChild(item);
+        });
+
+        searchResults.classList.add('active');
+    }
+
+    function configurarBarraBusqueda() {
+        const searchInput = document.querySelector('[data-post-search-input]');
+        const searchResults = document.querySelector('[data-post-resultados-busqueda]');
+        const searchClearButton = document.querySelector('[data-post-search-clear]');
+
+        if (!searchInput || !searchResults) {
+            return;
+        }
+
+        const searchContainer = searchInput.closest('.busqueda-superior');
+
+        const updateClearButtonVisibility = () => {
+            if (!searchClearButton) {
+                return;
+            }
+
+            const hasText = searchInput.value.trim().length > 0;
+            searchClearButton.classList.toggle('active', hasText);
+            searchClearButton.setAttribute('aria-hidden', hasText ? 'false' : 'true');
+        };
+
+        searchInput.addEventListener('input', () => {
+            renderizarResultadosBusqueda(searchInput.value);
+            updateClearButtonVisibility();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            renderizarResultadosBusqueda(searchInput.value);
+            updateClearButtonVisibility();
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        if (searchClearButton) {
+            searchClearButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                searchInput.value = '';
+                renderizarResultadosBusqueda('');
+                updateClearButtonVisibility();
+                searchInput.focus();
+            });
+        }
+
+        document.addEventListener('click', (event) => {
+            if (!searchContainer?.contains(event.target)) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        updateClearButtonVisibility();
+    }
+
+    // #guardados
+    function leerPublicacionesGuardadasFavoritas() {
+        try {
+            const rawSavedPosts = localStorage.getItem(SAVED_POSTS_KEY);
+            if (!rawSavedPosts) {
+                return [];
+            }
+
+            const parsedSavedPosts = JSON.parse(rawSavedPosts);
+            return Array.isArray(parsedSavedPosts) ? parsedSavedPosts : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function escribirPublicacionesGuardadas(savedPosts) {
+        localStorage.setItem(SAVED_POSTS_KEY, JSON.stringify(savedPosts));
+    }
+
+    function estaPublicacionGuardada(postId) {
+        const savedPosts = leerPublicacionesGuardadasFavoritas();
+        return savedPosts.some((post) => Number(post?.id) === Number(postId));
+    }
+
+    function alternarPublicacionGuardada(post) {
+        const savedPosts = leerPublicacionesGuardadasFavoritas();
+        const normalizedPostId = Number(post?.id);
+        const existingIndex = savedPosts.findIndex((item) => Number(item?.id) === normalizedPostId);
+
+        if (existingIndex >= 0) {
+            savedPosts.splice(existingIndex, 1);
+            escribirPublicacionesGuardadas(savedPosts);
+            return false;
+        }
+
+        savedPosts.push({
+            id: normalizedPostId,
+            titulo: post?.titulo || '',
+            encabezado: post?.encabezado || '',
+            username: post?.username || 'Usuario',
+            fecha: post?.fecha || new Date().toISOString(),
+            categoria: post?.categoria || '',
+            imagenPrincipal: post?.imagenPrincipal || '',
+            savedAt: new Date().toISOString()
+        });
+
+        escribirPublicacionesGuardadas(savedPosts);
+        return true;
+    }
+
     // Cargar publicaciones desde localStorage
-    function loadPublications() {
-        const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
-        const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
+    // #render_publicaciones
+    function cargarPublicaciones() {
+        const posts = leerPublicacionesGuardadas();
+            const categories = ['noticias', 'tips', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
 
         categories.forEach(category => {
             const section = document.getElementById(category);
             if (!section) return;
 
-            const cards = section.querySelector('.cards');
-            if (!cards) return;
+            const tarjetas = section.querySelector('.tarjetas');
+            if (!tarjetas) return;
 
             // Limpiar tarjetas existentes
-            cards.innerHTML = '';
+            tarjetas.innerHTML = '';
 
-            // Filtrar publicaciones por categoría
-            const categoryPosts = posts.filter(p => p.categoria === category);
+            // Filtrar publicaciones por categoría (normalizando claves legacy)
+            const categoryPosts = posts.filter(p => normalizarCategoria(p.categoria) === category);
 
             if (categoryPosts.length === 0) {
-                cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+                tarjetas.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
                 return;
             }
 
             // Crear tarjetas de publicación
             categoryPosts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.onclick = () => window.location.href = `publicacion.html?id=${post.id}`;
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'post-tarjeta';
+                tarjeta.onclick = () => window.location.href = `publicacion.html?id=${post.id}`;
+                const postIsSaved = estaPublicacionGuardada(post.id);
                 
                 const avatarInitials = post.username.substring(0, 2).toUpperCase();
                 const avatarStyle = post.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
                 
-                card.innerHTML = `
-                    ${post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="" class="post-card-image">` : '<div class="post-card-image"></div>'}
-                    <div class="post-card-content">
-                        <div class="post-card-title">${post.titulo}</div>
-                        <div class="post-card-heading">${post.encabezado}</div>
-                        <div class="post-card-meta">
-                            <div class="post-card-avatar" style="${avatarStyle}">${!post.userAvatar ? avatarInitials : ''}</div>
+                tarjeta.innerHTML = `
+                    ${post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="" class="post-tarjeta-image">` : '<div class="post-tarjeta-image"></div>'}
+                    <div class="post-tarjeta-content">
+                        <div class="post-tarjeta-header">
+                            <div class="post-tarjeta-main">
+                                <div class="post-tarjeta-title">${post.titulo}</div>
+                                <div class="post-tarjeta-heading">${post.encabezado}</div>
+                            </div>
+                            <button type="button" class="post-save-btn ${postIsSaved ? 'saved' : ''}" aria-label="Guardar publicación" title="${postIsSaved ? 'Quitar de guardados' : 'Guardar publicación'}">
+                                <i class="${postIsSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <div class="post-tarjeta-meta">
+                            <div class="post-tarjeta-avatar" style="${avatarStyle}">${!post.userAvatar ? avatarInitials : ''}</div>
                             <span>${post.username}</span>
                             <span>•</span>
-                            <span>${formatPostDate(post.fecha)}</span>
+                            <span>${formatearFechaPublicacion(post.fecha)}</span>
                         </div>
                     </div>
                 `;
-                cards.appendChild(card);
+
+                const saveButton = tarjeta.querySelector('.post-save-btn');
+                if (saveButton) {
+                    saveButton.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const nowSaved = alternarPublicacionGuardada(post);
+                        saveButton.classList.toggle('saved', nowSaved);
+                        saveButton.title = nowSaved ? 'Quitar de guardados' : 'Guardar publicación';
+                        const saveIcon = saveButton.querySelector('i');
+                        if (saveIcon) {
+                            saveIcon.className = `${nowSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark`;
+                        }
+                    });
+                }
+
+                tarjetas.appendChild(tarjeta);
             });
         });
     }
 
-    function formatPostDate(isoDate) {
+    function formatearFechaPublicacion(isoDate) {
         const date = new Date(isoDate);
         const now = new Date();
         const diff = now - date;
@@ -430,10 +838,14 @@
         return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
     }
 
+<<<<<<< Updated upstream
+=======
+    // #pagina_inicializacion
+>>>>>>> Stashed changes
     (() => {
-        const userPanel = document.querySelector('.user-panel');
-        const userTrigger = document.querySelector('.user-trigger');
-        const userNameText = document.querySelector('[data-user-name]');
+        const userPanel = document.querySelector('.panel-usuario');
+        const userTrigger = document.querySelector('.disparador-usuario');
+        const userNameText = document.querySelector('[data-nombre-usuario]');
         const userFullNameText = document.querySelector('[data-user-fullname]');
         const userTopAvatar = document.querySelector('[data-user-avatar]');
         const sideAvatar = document.querySelector('[data-side-avatar]');
@@ -441,12 +853,17 @@
         const sideHandle = document.querySelector('[data-side-handle]');
         const openProfileMenuLink = document.querySelector('[data-open-profile-menu]');
         const sideProfile = document.getElementById('sideProfile');
-        const logoutLinks = document.querySelectorAll('[data-logout-link]');
+        const logoutLinks = document.querySelectorAll('[data-enlace-cerrar-sesion]');
         const themeToggleButton = document.querySelector('[data-theme-toggle]');
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
+        const languageMenu = document.querySelector('[data-menu-idioma]');
+        const languageToggleButton = document.querySelector('[data-language-toggle]');
+        const languageOptionsContainer = document.querySelector('[data-opciones-idioma]');
+        const languageOptions = document.querySelectorAll('[data-opcion-idioma]');
+        let currentLanguage = leerIdiomaPreferido();
 
-        const normalizeUsername = (username) => {
+        const normalizarNombreUsuario = (username) => {
             if (typeof username !== 'string') {
                 return 'Invitado';
             }
@@ -455,9 +872,9 @@
             return cleaned || 'Invitado';
         };
 
-        const buildHandle = (username) => `@${username.toLowerCase().replace(/\s+/g, '_')}`;
+        const construirAlias = (username) => `@${username.toLowerCase().replace(/\s+/g, '_')}`;
 
-        const applyAvatar = (element, photo) => {
+        const aplicarAvatar = (element, photo) => {
             if (!element) {
                 return;
             }
@@ -471,7 +888,7 @@
             }
         };
 
-        const readStoredUser = () => {
+        const leerUsuarioGuardado = () => {
             try {
                 const raw = localStorage.getItem(SESSION_KEY);
                 return raw ? JSON.parse(raw) : null;
@@ -480,9 +897,9 @@
             }
         };
 
-        const renderSessionUser = () => {
-            const storedUser = readStoredUser();
-            const username = normalizeUsername(storedUser?.username);
+        const renderizarUsuarioSesion = () => {
+            const storedUser = leerUsuarioGuardado();
+            const username = normalizarNombreUsuario(storedUser?.username);
             const photo = typeof storedUser?.foto_perfil === 'string' ? storedUser.foto_perfil.trim() : '';
 
             if (userNameText) {
@@ -498,20 +915,44 @@
             }
 
             if (sideHandle) {
-                sideHandle.textContent = buildHandle(username);
+                sideHandle.textContent = construirAlias(username);
             }
 
-            applyAvatar(userTopAvatar, photo);
-            applyAvatar(sideAvatar, photo);
+            aplicarAvatar(userTopAvatar, photo);
+            aplicarAvatar(sideAvatar, photo);
         };
 
-        const applyTheme = (themeName) => {
+        const aplicarTraduccionesInterfaz = (languageName) => {
+            document.querySelectorAll('[data-i18n]').forEach((element) => {
+                const key = element.dataset.i18n;
+                element.textContent = traducirTextoInterfaz(key, languageName);
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+                const key = element.dataset.i18nPlaceholder;
+                element.setAttribute('placeholder', traducirTextoInterfaz(key, languageName));
+            });
+
+            document.querySelectorAll('[data-i18n-title]').forEach((element) => {
+                const key = element.dataset.i18nTitle;
+                element.setAttribute('title', traducirTextoInterfaz(key, languageName));
+            });
+
+            document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+                const key = element.dataset.i18nAriaLabel;
+                element.setAttribute('aria-label', traducirTextoInterfaz(key, languageName));
+            });
+        };
+
+        const aplicarTema = (themeName) => {
             const isDarkTheme = themeName === 'dark';
 
             document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
 
             if (themeLabel) {
-                themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
+                themeLabel.textContent = isDarkTheme
+                    ? traducirTextoInterfaz('lightTheme', currentLanguage)
+                    : traducirTextoInterfaz('darkTheme', currentLanguage);
             }
 
             if (themeIcon) {
@@ -519,18 +960,44 @@
             }
         };
 
-        const readStoredTheme = () => {
+        const leerTemaGuardado = () => {
             const storedTheme = localStorage.getItem(THEME_KEY);
             return storedTheme === 'dark' ? 'dark' : 'light';
         };
 
-        const toggleTheme = () => {
+        const alternarTema = () => {
             const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
             localStorage.setItem(THEME_KEY, nextTheme);
-            applyTheme(nextTheme);
+            aplicarTema(nextTheme);
         };
 
-        const closeUserMenu = () => {
+        const aplicarIdioma = (languageName) => {
+            const normalizedLanguage = languageName === 'en' ? 'en' : 'es';
+            currentLanguage = normalizedLanguage;
+            document.documentElement.lang = normalizedLanguage;
+            aplicarTraduccionesInterfaz(normalizedLanguage);
+            aplicarTema(leerTemaGuardado());
+
+            languageOptions.forEach((option) => {
+                option.classList.toggle('active', option.dataset.opcionIdioma === normalizedLanguage);
+            });
+        };
+
+        const leerIdiomaGuardado = () => {
+            const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
+            return storedLanguage === 'en' ? 'en' : 'es';
+        };
+
+        const establecerMenuIdiomaExpandido = (isExpanded) => {
+            if (!languageMenu || !languageToggleButton) {
+                return;
+            }
+
+            languageMenu.classList.toggle('active', isExpanded);
+            languageToggleButton.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        };
+
+        const cerrarMenuUsuario = () => {
             if (!userPanel) {
                 return;
             }
@@ -538,16 +1005,18 @@
             userPanel.setAttribute('aria-expanded', 'false');
         };
 
-        renderSessionUser();
-        applyTheme(readStoredTheme());
+        renderizarUsuarioSesion();
+        aplicarTema(leerTemaGuardado());
+        aplicarIdioma(leerIdiomaGuardado());
+        configurarBarraBusqueda();
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
-                renderSessionUser();
+                renderizarUsuarioSesion();
             }
         });
 
-        window.addEventListener('focus', renderSessionUser);
+        window.addEventListener('focus', renderizarUsuarioSesion);
 
         if (openProfileMenuLink) {
             openProfileMenuLink.addEventListener('click', (event) => {
@@ -555,7 +1024,7 @@
                 if (sideProfile) {
                     sideProfile.classList.add('active');
                 }
-                closeUserMenu();
+                cerrarMenuUsuario();
             });
         }
 
@@ -567,9 +1036,32 @@
 
         if (themeToggleButton) {
             themeToggleButton.addEventListener('click', () => {
-                toggleTheme();
+                alternarTema();
             });
         }
+
+        if (languageToggleButton) {
+            languageToggleButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const willExpand = !languageMenu?.classList.contains('active');
+                establecerMenuIdiomaExpandido(willExpand);
+            });
+        }
+
+        if (languageOptionsContainer) {
+            languageOptionsContainer.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+        }
+
+        languageOptions.forEach((option) => {
+            option.addEventListener('click', () => {
+                const selectedLanguage = option.dataset.opcionIdioma === 'en' ? 'en' : 'es';
+                localStorage.setItem(LANGUAGE_KEY, selectedLanguage);
+                aplicarIdioma(selectedLanguage);
+                establecerMenuIdiomaExpandido(false);
+            });
+        });
 
         if (!userPanel || !userTrigger) {
             return;
@@ -584,7 +1076,7 @@
 
         document.addEventListener('click', (event) => {
             if (!userPanel.contains(event.target)) {
-                closeUserMenu();
+                cerrarMenuUsuario();
             }
 
             if (sideProfile && sideProfile.classList.contains('active')) {
@@ -593,27 +1085,39 @@
                 const clickedTopTrigger = userTrigger.contains(event.target);
                 if (!clickedInsideProfileMenu && !clickedProfileTrigger && !clickedTopTrigger) {
                     sideProfile.classList.remove('active');
+                    establecerMenuIdiomaExpandido(false);
                 }
             }
         });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                closeUserMenu();
+                cerrarMenuUsuario();
                 sideProfile?.classList.remove('active');
+                establecerMenuIdiomaExpandido(false);
             }
         });
 
         // Cargar publicaciones al iniciar
+<<<<<<< Updated upstream
         loadPublications();
+=======
+        cargarPublicaciones();
+>>>>>>> Stashed changes
 
         // Escuchar cambios en storage para actualizar publicaciones
         window.addEventListener('storage', (event) => {
-            if (event.key === 'hiddenstagePosts') {
-                loadPublications();
+            if (event.key === POSTS_KEY || event.key === SAVED_POSTS_KEY) {
+                cargarPublicaciones();
+                const searchInput = document.querySelector('[data-post-search-input]');
+                renderizarResultadosBusqueda(searchInput?.value || '');
             }
         });
     })();
 </script>
 </body>
 </html>
+
+
+
+

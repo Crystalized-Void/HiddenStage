@@ -13,10 +13,10 @@
 <body>
     <header class="topbar">
         <div class="topbar-main">
-            <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
+            <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Home">
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
-            <h1 class="page-title">Crear Publicación</h1>
+            <h1 class="page-title" data-i18n="pageTitle">Crear Publicación</h1>
             <div class="spacer"></div>
         </div>
     </header>
@@ -26,12 +26,13 @@
             <form id="postForm" class="post-form">
                 <!-- Título -->
                 <div class="form-group">
-                    <label for="titulo">Título de la publicación *</label>
+                    <label for="titulo" data-i18n="postTitleLabel">Título de la publicación *</label>
                     <input 
                         type="text" 
                         id="titulo" 
                         name="titulo" 
                         placeholder="Ej: Los mejores juegos de 2026"
+                        data-i18n-placeholder="postTitlePlaceholder"
                         required
                         maxlength="100"
                     >
@@ -40,12 +41,13 @@
 
                 <!-- Encabezado/Resumen -->
                 <div class="form-group">
-                    <label for="encabezado">Encabezado o resumen *</label>
+                    <label for="encabezado" data-i18n="headlineLabel">Encabezado o resumen *</label>
                     <input 
                         type="text" 
                         id="encabezado" 
                         name="encabezado" 
                         placeholder="Breve descripción que aparecerá en la vista previa"
+                        data-i18n-placeholder="headlinePlaceholder"
                         required
                         maxlength="200"
                     >
@@ -54,23 +56,23 @@
 
                 <!-- Categoría -->
                 <div class="form-group">
-                    <label for="categoria">Categoría *</label>
+                    <label for="categoria" data-i18n="categoryLabel">Categoría *</label>
                     <select id="categoria" name="categoria" required>
-                        <option value="">-- Selecciona una categoría --</option>
-                        <option value="guias">Guías</option>
-                        <option value="trucos">Trucos</option>
-                        <option value="carreras">Carreras</option>
-                        <option value="plataformas">Plataformas</option>
-                        <option value="romance">Romance</option>
-                        <option value="porturnos">Por Turnos</option>
-                        <option value="accion">Acción</option>
-                        <option value="aventuras">Aventuras</option>
+                        <option value="" data-i18n="selectCategory">-- Selecciona una categoría --</option>
+                        <option value="noticias" data-i18n="categoryNews">Noticias</option>
+                        <option value="tips" data-i18n="categoryTips">Tips</option>
+                        <option value="carreras" data-i18n="categoryRacing">Carreras</option>
+                        <option value="plataformas" data-i18n="categoryPlatforms">Plataformas</option>
+                        <option value="romance" data-i18n="categoryRomance">Romance</option>
+                        <option value="porturnos" data-i18n="categoryTurnBased">Por Turnos</option>
+                        <option value="accion" data-i18n="categoryAction">Acción</option>
+                        <option value="aventuras" data-i18n="categoryAdventures">Aventuras</option>
                     </select>
                 </div>
 
                 <!-- Imagen Principal -->
                 <div class="form-group">
-                    <label for="imagenPrincipal">Imagen principal (portada)</label>
+                    <label for="imagenPrincipal" data-i18n="mainImageLabel">Imagen principal (portada)</label>
                     <div class="image-upload">
                         <input 
                             type="file" 
@@ -80,7 +82,7 @@
                         >
                         <label for="imagenPrincipal" class="upload-label">
                             <i class="fas fa-image"></i>
-                            <span>Haz clic para subir imagen</span>
+                            <span data-i18n="uploadImageText">Haz clic para subir imagen</span>
                         </label>
                     </div>
                     <div id="imagenPreview" class="image-preview"></div>
@@ -88,7 +90,7 @@
 
                 <!-- Galería de Imágenes -->
                 <div class="form-group">
-                    <label for="imagenGaleria">Galería de imágenes (múltiples)</label>
+                    <label for="imagenGaleria" data-i18n="galleryLabel">Galería de imágenes (múltiples)</label>
                     <div class="image-upload multiple">
                         <input 
                             type="file" 
@@ -99,7 +101,7 @@
                         >
                         <label for="imagenGaleria" class="upload-label">
                             <i class="fas fa-images"></i>
-                            <span>Haz clic para subir múltiples imágenes</span>
+                            <span data-i18n="uploadGalleryText">Haz clic para subir múltiples imágenes</span>
                         </label>
                     </div>
                     <div id="galeriaPreview" class="gallery-preview"></div>
@@ -107,19 +109,21 @@
 
                 <!-- Enlaces -->
                 <div class="form-group">
-                    <label>Enlaces útiles</label>
+                    <label data-i18n="usefulLinksLabel">Enlaces útiles</label>
                     <div id="linksContainer">
                         <div class="link-input-group">
                             <input 
                                 type="text" 
                                 class="link-title" 
                                 placeholder="Nombre del enlace"
+                                data-i18n-placeholder="linkNamePlaceholder"
                                 maxlength="50"
                             >
                             <input 
                                 type="url" 
                                 class="link-url" 
                                 placeholder="https://ejemplo.com"
+                                data-i18n-placeholder="linkUrlPlaceholder"
                             >
                             <button type="button" class="btn-remove-link" onclick="removeLink(this)">
                                 <i class="fas fa-trash"></i>
@@ -127,17 +131,18 @@
                         </div>
                     </div>
                     <button type="button" class="btn-add-link" onclick="addLink()">
-                        <i class="fas fa-plus"></i> Agregar enlace
+                        <i class="fas fa-plus"></i> <span data-i18n="addLink">Agregar enlace</span>
                     </button>
                 </div>
 
                 <!-- Contenido de la Publicación -->
                 <div class="form-group">
-                    <label for="contenido">Desarrollo textual de la publicación *</label>
+                    <label for="contenido" data-i18n="postContentLabel">Desarrollo textual de la publicación *</label>
                     <textarea 
                         id="contenido" 
                         name="contenido" 
                         placeholder="Escribe el contenido completo de tu publicación aquí..."
+                        data-i18n-placeholder="postContentPlaceholder"
                         required
                         rows="15"
                         maxlength="5000"
@@ -147,10 +152,10 @@
 
                 <!-- Botones de Acción -->
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()" data-i18n="cancel">
                         <i class="fas fa-arrow-left"></i> Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" data-i18n="publish">
                         <i class="fas fa-check"></i> Publicar
                     </button>
                 </div>
@@ -159,21 +164,119 @@
     </main>
 
     <script>
+        const LANGUAGE_KEY = 'hiddenstageLanguage';
+        const UI_TRANSLATIONS = {
+            es: {
+                pageTitle: 'Crear Publicación',
+                postTitleLabel: 'Título de la publicación *',
+                postTitlePlaceholder: 'Ej: Los mejores juegos de 2026',
+                headlineLabel: 'Encabezado o resumen *',
+                headlinePlaceholder: 'Breve descripción que aparecerá en la vista previa',
+                categoryLabel: 'Categoría *',
+                selectCategory: '-- Selecciona una categoría --',
+                categoryNews: 'Noticias',
+                categoryTips: 'Tips',
+                categoryRacing: 'Carreras',
+                categoryPlatforms: 'Plataformas',
+                categoryRomance: 'Romance',
+                categoryTurnBased: 'Por Turnos',
+                categoryAction: 'Acción',
+                categoryAdventures: 'Aventuras',
+                mainImageLabel: 'Imagen principal (portada)',
+                uploadImageText: 'Haz clic para subir imagen',
+                galleryLabel: 'Galería de imágenes (múltiples)',
+                uploadGalleryText: 'Haz clic para subir múltiples imágenes',
+                usefulLinksLabel: 'Enlaces útiles',
+                linkNamePlaceholder: 'Nombre del enlace',
+                linkUrlPlaceholder: 'https://ejemplo.com',
+                addLink: 'Agregar enlace',
+                postContentLabel: 'Desarrollo textual de la publicación *',
+                postContentPlaceholder: 'Escribe el contenido completo de tu publicación aquí...',
+                cancel: 'Cancelar',
+                publish: 'Publicar',
+                loginAlert: 'Debes iniciar sesión para crear una publicación'
+            },
+            en: {
+                pageTitle: 'Create Post',
+                postTitleLabel: 'Post title *',
+                postTitlePlaceholder: 'Ex: Best games of 2026',
+                headlineLabel: 'Headline or summary *',
+                headlinePlaceholder: 'Short description that appears in preview',
+                categoryLabel: 'Category *',
+                selectCategory: '-- Select a category --',
+                categoryNews: 'News',
+                categoryTips: 'Tips',
+                categoryRacing: 'Racing',
+                categoryPlatforms: 'Platformers',
+                categoryRomance: 'Romance',
+                categoryTurnBased: 'Turn-based',
+                categoryAction: 'Action',
+                categoryAdventures: 'Adventures',
+                mainImageLabel: 'Main image (cover)',
+                uploadImageText: 'Click to upload image',
+                galleryLabel: 'Image gallery (multiple)',
+                uploadGalleryText: 'Click to upload multiple images',
+                usefulLinksLabel: 'Useful links',
+                linkNamePlaceholder: 'Link name',
+                linkUrlPlaceholder: 'https://example.com',
+                addLink: 'Add link',
+                postContentLabel: 'Post content *',
+                postContentPlaceholder: 'Write your full post content here...',
+                cancel: 'Cancel',
+                publish: 'Publish',
+                loginAlert: 'You must log in to create a post'
+            }
+        };
+
+        function traducirTextoInterfaz(key, language) {
+            const safeLanguage = language === 'en' ? 'en' : 'es';
+            return UI_TRANSLATIONS[safeLanguage]?.[key] || UI_TRANSLATIONS.es[key] || key;
+        }
+
+        function aplicarTraduccionesInterfaz(languageName) {
+            document.querySelectorAll('[data-i18n]').forEach((element) => {
+                const key = element.dataset.i18n;
+                element.textContent = traducirTextoInterfaz(key, languageName);
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+                const key = element.dataset.i18nPlaceholder;
+                element.setAttribute('placeholder', traducirTextoInterfaz(key, languageName));
+            });
+
+            document.querySelectorAll('option[data-i18n]').forEach((opt) => {
+                const key = opt.dataset.i18n;
+                opt.textContent = traducirTextoInterfaz(key, languageName);
+            });
+        }
+
+        function leerIdiomaGuardado() {
+            const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
+            return storedLanguage === 'en' ? 'en' : 'es';
+        }
+
+        function aplicarIdioma(languageName) {
+            const normalized = languageName === 'en' ? 'en' : 'es';
+            document.documentElement.lang = normalized;
+            aplicarTraduccionesInterfaz(normalized);
+        }
+
         const SESSION_KEY = 'hiddenstageUser';
         const POSTS_KEY = 'hiddenstagePosts';
         const THEME_KEY = 'hiddenstageTheme';
 
-        // Aplicar tema
+        // Apply theme
         const applyTheme = () => {
             const storedTheme = localStorage.getItem(THEME_KEY);
             document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
         };
 
         applyTheme();
+        aplicarIdioma(leerIdiomaGuardado());
 
-        // Verificar sesión
+        // Check session
         if (!localStorage.getItem(SESSION_KEY)) {
-            alert('Debes iniciar sesión para crear una publicación');
+            alert(traducirTextoInterfaz('loginAlert', leerIdiomaGuardado()));
             window.location.href = '../inicio_de_sesion/index.html';
         }
 
@@ -253,13 +356,14 @@
             const newLink = document.createElement('div');
             newLink.className = 'link-input-group';
             newLink.innerHTML = `
-                <input type="text" class="link-title" placeholder="Nombre del enlace" maxlength="50">
-                <input type="url" class="link-url" placeholder="https://ejemplo.com">
+                <input type="text" class="link-title" placeholder="Nombre del enlace" data-i18n-placeholder="linkNamePlaceholder" maxlength="50">
+                <input type="url" class="link-url" placeholder="https://ejemplo.com" data-i18n-placeholder="linkUrlPlaceholder">
                 <button type="button" class="btn-remove-link" onclick="removeLink(this)">
                     <i class="fas fa-trash"></i>
                 </button>
             `;
             container.appendChild(newLink);
+            aplicarTraduccionesInterfaz(leerIdiomaGuardado());
         }
 
         function removeLink(btn) {
@@ -325,7 +429,7 @@
             posts.push(post);
             localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
 
-            alert('¡Publicación creada exitosamente!');
+            alert('Post created successfully!');
             window.location.href = 'pagina_principal.html#' + post.categoria;
         });
     </script>
