@@ -18,11 +18,7 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido" data-post-search-input autocomplete="off">
-                <button type="button" class="search-clear-btn" data-post-search-clear aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="search-results" data-post-search-results aria-live="polite"></div>
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
             </div>
 
             <div class="user-panel">
@@ -82,8 +78,8 @@
 
         <section class="profile-tabs-strip">
             <nav class="tabs">
-                <button type="button" class="tab active" data-tab="posts">PUBLICACIONES</button>
-                <button type="button" class="tab" data-tab="coleccion">COLECCIÓN</button>
+                <button type="button" class="tab active" data-tab="posts">POST</button>
+                <button type="button" class="tab" data-tab="coleccion">COLECCION</button>
                 <button type="button" class="tab" data-tab="guardados">GUARDADOS</button>
             </nav>
         </section>
@@ -100,7 +96,7 @@
                 <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
                 <p class="joined">Se unió el 13 de febrero del 2026</p>
 
-                <h2>Redes sociales</h2>
+                <h2>Socials</h2>
                 <div class="social-grid">
                     <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
                     <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
@@ -136,7 +132,7 @@
 
                 <div class="tab-panel hidden" data-panel="coleccion">
                     <section class="collection-panel">
-                        <h3>COLECCIÓN DE VIDEOJUEGOS</h3>
+                        <h3>COLECCION DE VIDEOJUEGOS</h3>
                         <div class="collection-grid">
                             <article class="collection-card"></article>
                             <article class="collection-card"></article>
@@ -148,7 +144,23 @@
                 </div>
 
                 <div class="tab-panel hidden" data-panel="guardados">
-                    <div class="post-list" data-saved-list></div>
+                    <div class="post-list">
+                        <article class="post-card">
+                            <div class="post-text">
+                                <h3>GUARDADO: GUÍA DE RANKED</h3>
+                                <p>Consejos rápidos para mejorar toma de decisiones en rondas decisivas y subir de rango más estable.</p>
+                            </div>
+                            <div class="post-thumb"></div>
+                        </article>
+
+                        <article class="post-card">
+                            <div class="post-text">
+                                <h3>GUARDADO: CONFIGURACIÓN PRO</h3>
+                                <p>Ajustes recomendados de sensibilidad, crosshair y comunicación para obtener mejor consistencia.</p>
+                            </div>
+                            <div class="post-thumb"></div>
+                        </article>
+                    </div>
                 </div>
             </section>
         </section>
@@ -161,68 +173,6 @@
 
         (() => {
             const THEME_KEY = 'hiddenstageTheme';
-            const LANGUAGE_KEY = 'hiddenstageLanguage';
-            const POSTS_KEY = 'hiddenstagePosts';
-            const UI_TRANSLATIONS = {
-                es: {
-                    searchPlaceholder: 'Buscar...',
-                    searchAria: 'Buscar contenido',
-                    clearSearch: 'Limpiar busqueda',
-                    profileUpper: 'PERFIL',
-                    editProfileUpper: 'EDITAR PERFIL',
-                    settingsUpper: 'CONFIGURACION',
-                    logoutUpper: 'CERRAR SESION',
-                    accountSection: 'Cuenta',
-                    yourProfile: 'Tu perfil',
-                    settings: 'Ajustes',
-                    switchAccount: 'Cambiar de cuenta',
-                    sessionSection: 'Sesion',
-                    logout: 'Cerrar sesion',
-                    goBack: 'Regresar',
-                    postsTab: 'PUBLICACIONES',
-                    collectionTab: 'COLECCION',
-                    savedTab: 'GUARDADOS',
-                    socialsTitle: 'Redes sociales',
-                    followingTitle: 'Seguidos:',
-                    seeMore: 'ver mas',
-                    createPostPage: 'Crear post en nueva pagina',
-                    collectionTitle: 'COLECCION DE VIDEOJUEGOS',
-                    darkTheme: 'Tema oscuro',
-                    lightTheme: 'Tema claro',
-                    noSocial: 'Sin red social',
-                    online: 'En linea',
-                    offline: 'No disponible'
-                },
-                en: {
-                    searchPlaceholder: 'Search...',
-                    searchAria: 'Search content',
-                    clearSearch: 'Clear search',
-                    profileUpper: 'PROFILE',
-                    editProfileUpper: 'EDIT PROFILE',
-                    settingsUpper: 'SETTINGS',
-                    logoutUpper: 'LOG OUT',
-                    accountSection: 'Account',
-                    yourProfile: 'Your profile',
-                    settings: 'Settings',
-                    switchAccount: 'Switch account',
-                    sessionSection: 'Session',
-                    logout: 'Log out',
-                    goBack: 'Go back',
-                    postsTab: 'POSTS',
-                    collectionTab: 'COLLECTION',
-                    savedTab: 'SAVED',
-                    socialsTitle: 'Socials',
-                    followingTitle: 'Following:',
-                    seeMore: 'see more',
-                    createPostPage: 'Create post on new page',
-                    collectionTitle: 'VIDEO GAME COLLECTION',
-                    darkTheme: 'Dark theme',
-                    lightTheme: 'Light theme',
-                    noSocial: 'No social link',
-                    online: 'Online',
-                    offline: 'Unavailable'
-                }
-            };
             const LOCAL_API_ORIGIN = 'http://localhost:3000';
             const isLocalFrontend =
                 window.location.protocol === 'file:' ||
@@ -255,98 +205,9 @@
             const logoutLinks = document.querySelectorAll('[data-logout-link]');
             const socialSlots = document.querySelectorAll('[data-social-slot]');
             const postsList = document.querySelector('[data-post-list]');
-            const savedList = document.querySelector('[data-saved-list]');
-            const searchInput = document.querySelector('[data-post-search-input]');
-            const searchResults = document.querySelector('[data-post-search-results]');
-            const searchClearButton = document.querySelector('[data-post-search-clear]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
             const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
-<<<<<<< Updated upstream
-=======
-            const SAVED_POSTS_KEY = 'hiddenstageSavedPosts';
->>>>>>> Stashed changes
             let currentSessionUser = null;
-            let currentLanguage = 'es';
-
-            const readStoredLanguage = () => {
-                const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-                return storedLanguage === 'en' ? 'en' : 'es';
-            };
-
-            const translateUiText = (key, language) => {
-                const safeLanguage = language === 'en' ? 'en' : 'es';
-                return UI_TRANSLATIONS[safeLanguage]?.[key] || UI_TRANSLATIONS.es[key] || key;
-            };
-
-            const applyInterfaceTranslations = (languageName) => {
-                const safeLanguage = languageName === 'en' ? 'en' : 'es';
-
-                const setText = (selector, key) => {
-                    const element = document.querySelector(selector);
-                    if (element) {
-                        element.textContent = translateUiText(key, safeLanguage);
-                    }
-                };
-
-                const setTrailingText = (selector, key) => {
-                    const element = document.querySelector(selector);
-                    if (element && element.childNodes.length) {
-                        element.childNodes[element.childNodes.length - 1].textContent = ` ${translateUiText(key, safeLanguage)}`;
-                    }
-                };
-
-                const setInputLabels = () => {
-                    if (searchInput) {
-                        searchInput.setAttribute('placeholder', translateUiText('searchPlaceholder', safeLanguage));
-                        searchInput.setAttribute('aria-label', translateUiText('searchAria', safeLanguage));
-                    }
-
-                    if (searchClearButton) {
-                        const clearText = translateUiText('clearSearch', safeLanguage);
-                        searchClearButton.setAttribute('aria-label', clearText);
-                        searchClearButton.setAttribute('title', clearText);
-                    }
-                };
-
-                setText('.user-name [data-user-fullname]', 'profileUpper');
-
-                const userLinks = document.querySelectorAll('#user-menu a');
-                if (userLinks[0]) userLinks[0].textContent = translateUiText('profileUpper', safeLanguage);
-                if (userLinks[1]) userLinks[1].textContent = translateUiText('editProfileUpper', safeLanguage);
-                if (userLinks[2]) userLinks[2].textContent = translateUiText('settingsUpper', safeLanguage);
-                if (userLinks[3]) userLinks[3].textContent = translateUiText('logoutUpper', safeLanguage);
-
-                const sectionTitles = document.querySelectorAll('#sideProfile .menu-section-title');
-                if (sectionTitles[0]) sectionTitles[0].textContent = translateUiText('accountSection', safeLanguage);
-                if (sectionTitles[1]) sectionTitles[1].textContent = translateUiText('sessionSection', safeLanguage);
-
-                const sideProfileLinks = document.querySelectorAll('#sideProfile a');
-                if (sideProfileLinks[0]) setTrailingText('#sideProfile a:nth-of-type(1)', 'yourProfile');
-                if (sideProfileLinks[1]) setTrailingText('#sideProfile a:nth-of-type(2)', 'settings');
-                if (sideProfileLinks[2]) setTrailingText('#sideProfile a:nth-of-type(3)', 'switchAccount');
-                if (sideProfileLinks[3]) setTrailingText('#sideProfile a:nth-of-type(4)', 'logout');
-                if (sideProfileLinks[4]) setTrailingText('#sideProfile a:nth-of-type(5)', 'goBack');
-
-                const tabs = document.querySelectorAll('.tabs .tab');
-                if (tabs[0]) tabs[0].textContent = translateUiText('postsTab', safeLanguage);
-                if (tabs[1]) tabs[1].textContent = translateUiText('collectionTab', safeLanguage);
-                if (tabs[2]) tabs[2].textContent = translateUiText('savedTab', safeLanguage);
-
-                setText('.profile-sidebar h2', 'socialsTitle');
-                setText('.following-head h3', 'followingTitle');
-                setText('.following-head a', 'seeMore');
-                setText('.posts-toolbar .create-post-btn span', 'createPostPage');
-                setText('.collection-panel h3', 'collectionTitle');
-
-                if (themeLabel) {
-                    const isDarkTheme = document.body.dataset.theme === 'dark';
-                    themeLabel.textContent = isDarkTheme
-                        ? translateUiText('lightTheme', safeLanguage)
-                        : translateUiText('darkTheme', safeLanguage);
-                }
-
-                setInputLabels();
-            };
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -354,9 +215,7 @@
                 document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
 
                 if (themeLabel) {
-                    themeLabel.textContent = isDarkTheme
-                        ? translateUiText('lightTheme', currentLanguage)
-                        : translateUiText('darkTheme', currentLanguage);
+                    themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
                 }
 
                 if (themeIcon) {
@@ -430,7 +289,7 @@
                         slot.setAttribute('href', '#');
                         slot.removeAttribute('target');
                         slot.removeAttribute('rel');
-                        slot.setAttribute('aria-label', translateUiText('noSocial', currentLanguage));
+                        slot.setAttribute('aria-label', 'Sin red social');
 
                         if (iconNode) {
                             iconNode.className = 'fa-solid fa-link';
@@ -475,11 +334,7 @@
                 }
 
                 avatarBadge.classList.toggle('offline', !isOnline);
-<<<<<<< Updated upstream
                 avatarBadge.setAttribute('title', isOnline ? 'En línea' : 'No disponible');
-=======
-                avatarBadge.setAttribute('title', isOnline ? translateUiText('online', currentLanguage) : translateUiText('offline', currentLanguage));
->>>>>>> Stashed changes
             };
 
             const getPostsStorageKey = () => {
@@ -693,295 +548,6 @@
                     });
             };
 
-            const readSavedPosts = () => {
-                try {
-                    const rawSavedPosts = localStorage.getItem(SAVED_POSTS_KEY);
-                    if (!rawSavedPosts) {
-                        return [];
-                    }
-
-                    const parsedSavedPosts = JSON.parse(rawSavedPosts);
-                    return Array.isArray(parsedSavedPosts) ? parsedSavedPosts : [];
-                } catch (error) {
-                    return [];
-                }
-            };
-
-            const readStoredPublications = () => {
-                try {
-                    const rawPosts = localStorage.getItem(POSTS_KEY);
-                    if (!rawPosts) {
-                        return [];
-                    }
-
-                    const parsedPosts = JSON.parse(rawPosts);
-                    return Array.isArray(parsedPosts) ? parsedPosts : [];
-                } catch (error) {
-                    return [];
-                }
-            };
-
-            const writeSavedPosts = (savedPosts) => {
-                localStorage.setItem(SAVED_POSTS_KEY, JSON.stringify(savedPosts));
-            };
-
-            const isPostSaved = (postId) => {
-                const savedPosts = readSavedPosts();
-                return savedPosts.some((post) => Number(post?.id) === Number(postId));
-            };
-
-            const toggleSavedPost = (post) => {
-                const savedPosts = readSavedPosts();
-                const normalizedPostId = Number(post?.id);
-                const existingIndex = savedPosts.findIndex((item) => Number(item?.id) === normalizedPostId);
-
-                if (existingIndex >= 0) {
-                    savedPosts.splice(existingIndex, 1);
-                    writeSavedPosts(savedPosts);
-                    return false;
-                }
-
-                savedPosts.push({
-                    id: normalizedPostId,
-                    titulo: post?.titulo || '',
-                    encabezado: post?.encabezado || '',
-                    username: post?.username || 'Usuario',
-                    fecha: post?.fecha || new Date().toISOString(),
-                    categoria: post?.categoria || '',
-                    imagenPrincipal: post?.imagenPrincipal || '',
-                    savedAt: new Date().toISOString()
-                });
-
-                writeSavedPosts(savedPosts);
-                return true;
-            };
-
-            const normalizeSearchText = (value) => {
-                if (value === null || value === undefined) {
-                    return '';
-                }
-
-                return String(value)
-                    .toLowerCase()
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .trim();
-            };
-
-            const renderSearchResults = (rawQuery) => {
-                if (!searchResults) {
-                    return;
-                }
-
-                const query = normalizeSearchText(rawQuery);
-                searchResults.innerHTML = '';
-
-                if (!query) {
-                    searchResults.classList.remove('active');
-                    return;
-                }
-
-                const posts = readStoredPublications();
-                const matches = posts
-                    .filter((post) => {
-                        const searchable = [
-                            post?.titulo,
-                            post?.encabezado,
-                            post?.username,
-                            post?.categoria
-                        ].map((text) => normalizeSearchText(text)).join(' ');
-
-                        return searchable.includes(query);
-                    })
-                    .sort((a, b) => new Date(b?.fecha || 0).getTime() - new Date(a?.fecha || 0).getTime())
-                    .slice(0, 8);
-
-                if (!matches.length) {
-                    searchResults.innerHTML = `<p class="search-results-empty">${currentLanguage === 'en' ? 'No posts found.' : 'No se encontraron publicaciones.'}</p>`;
-                    searchResults.classList.add('active');
-                    return;
-                }
-
-                matches.forEach((post) => {
-                    const postIsSaved = isPostSaved(post?.id);
-                    const thumbImage = typeof post?.imagenPrincipal === 'string' ? post.imagenPrincipal.trim() : '';
-                    const avatarInitials = (post?.username || 'US').substring(0, 2).toUpperCase();
-                    const avatarStyle = post?.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
-
-                    const item = document.createElement('div');
-                    item.className = 'search-result-item';
-                    item.setAttribute('role', 'button');
-                    item.setAttribute('tabindex', '0');
-                    item.innerHTML = `
-                        <div class="search-result-left">
-                            ${thumbImage
-                                ? `<img src="${thumbImage}" alt="Miniatura de publicación" class="search-result-thumb">`
-                                : '<div class="search-result-thumb search-result-thumb-empty"></div>'
-                            }
-                        </div>
-                        <div class="search-result-body">
-                            <span class="search-result-title">${post?.titulo || 'Sin título'}</span>
-                            <span class="search-result-meta">${post?.username || 'Usuario'}${post?.categoria ? ` • ${post.categoria}` : ''}</span>
-                            <span class="search-result-author">
-                                <span class="search-result-avatar" style="${avatarStyle}">${!post?.userAvatar ? avatarInitials : ''}</span>
-                                <span>${post?.encabezado || 'Sin descripción disponible.'}</span>
-                            </span>
-                        </div>
-                        <button type="button" class="search-result-save ${postIsSaved ? 'saved' : ''}" aria-label="Guardar publicación" title="${postIsSaved ? 'Quitar de guardados' : 'Guardar publicación'}">
-                            <i class="${postIsSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-                        </button>
-                    `;
-
-                    const openPost = () => {
-                        if (!post?.id) {
-                            return;
-                        }
-
-                        window.location.href = `../pagina_principal/publicacion.html?id=${post.id}`;
-                    };
-
-                    item.addEventListener('click', openPost);
-                    item.addEventListener('keydown', (event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openPost();
-                        }
-                    });
-
-                    const saveButton = item.querySelector('.search-result-save');
-                    if (saveButton) {
-                        saveButton.addEventListener('click', (event) => {
-                            event.stopPropagation();
-                            const nowSaved = toggleSavedPost(post);
-                            saveButton.classList.toggle('saved', nowSaved);
-                            saveButton.title = nowSaved ? 'Quitar de guardados' : 'Guardar publicación';
-                            const icon = saveButton.querySelector('i');
-                            if (icon) {
-                                icon.className = `${nowSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark`;
-                            }
-                            renderSavedPosts();
-                        });
-                    }
-
-                    searchResults.appendChild(item);
-                });
-
-                searchResults.classList.add('active');
-            };
-
-            const setupSearchBar = () => {
-                if (!searchInput || !searchResults) {
-                    return;
-                }
-
-                const searchContainer = searchInput.closest('.topbar-search');
-
-                const updateClearButtonVisibility = () => {
-                    if (!searchClearButton) {
-                        return;
-                    }
-
-                    const hasText = searchInput.value.trim().length > 0;
-                    searchClearButton.classList.toggle('active', hasText);
-                    searchClearButton.setAttribute('aria-hidden', hasText ? 'false' : 'true');
-                };
-
-                searchInput.addEventListener('input', () => {
-                    renderSearchResults(searchInput.value);
-                    updateClearButtonVisibility();
-                });
-
-                searchInput.addEventListener('focus', () => {
-                    renderSearchResults(searchInput.value);
-                    updateClearButtonVisibility();
-                });
-
-                searchInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Escape') {
-                        searchResults.classList.remove('active');
-                    }
-                });
-
-                if (searchClearButton) {
-                    searchClearButton.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        searchInput.value = '';
-                        renderSearchResults('');
-                        updateClearButtonVisibility();
-                        searchInput.focus();
-                    });
-                }
-
-                document.addEventListener('click', (event) => {
-                    if (!searchContainer?.contains(event.target)) {
-                        searchResults.classList.remove('active');
-                    }
-                });
-
-                updateClearButtonVisibility();
-            };
-
-            const buildSavedPostCard = (savedPost) => {
-                const article = document.createElement('article');
-                article.className = 'post-card post-card-custom';
-
-                const textWrapper = document.createElement('div');
-                textWrapper.className = 'post-text';
-
-                const titleNode = document.createElement('h3');
-                titleNode.textContent = savedPost?.titulo || 'Publicación guardada';
-
-                const contentNode = document.createElement('p');
-                contentNode.textContent = savedPost?.encabezado || 'Sin descripción disponible.';
-
-                textWrapper.appendChild(titleNode);
-                textWrapper.appendChild(contentNode);
-
-                const thumb = document.createElement('div');
-                thumb.className = 'post-thumb';
-                if (typeof savedPost?.imagenPrincipal === 'string' && savedPost.imagenPrincipal.trim()) {
-                    thumb.style.backgroundImage = `url(${savedPost.imagenPrincipal.trim()})`;
-                    thumb.classList.add('post-cover-image');
-                }
-
-                article.appendChild(textWrapper);
-                article.appendChild(thumb);
-
-                if (savedPost?.id) {
-                    article.style.cursor = 'pointer';
-                    article.addEventListener('click', () => {
-                        window.location.href = `../pagina_principal/publicacion.html?id=${savedPost.id}`;
-                    });
-                }
-
-                return article;
-            };
-
-            const renderSavedPosts = () => {
-                if (!savedList) {
-                    return;
-                }
-
-                savedList.innerHTML = '';
-                const savedPosts = readSavedPosts();
-
-                if (!savedPosts.length) {
-                    const emptyNode = document.createElement('p');
-                    emptyNode.className = 'saved-empty-message';
-                    emptyNode.textContent = 'Aún no tienes publicaciones guardadas.';
-                    savedList.appendChild(emptyNode);
-                    return;
-                }
-
-                savedPosts
-                    .slice()
-                    .sort((a, b) => new Date(b.savedAt || 0).getTime() - new Date(a.savedAt || 0).getTime())
-                    .forEach((savedPost) => {
-                        savedList.appendChild(buildSavedPostCard(savedPost));
-                    });
-            };
-
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
             renderPresenceBadge(readPresenceFromSettings());
 
@@ -1066,12 +632,9 @@
 
                     renderSocialLinks(storedUser);
                     renderMergedPosts();
-                    renderSavedPosts();
                 } catch (error) {
                     localStorage.removeItem('hiddenstageUser');
                 }
-            } else {
-                renderSavedPosts();
             }
 
             logoutLinks.forEach((logoutLink) => {
@@ -1087,10 +650,6 @@
             }
 
             applyTheme();
-            currentLanguage = readStoredLanguage();
-            document.documentElement.lang = currentLanguage;
-            applyInterfaceTranslations(currentLanguage);
-            setupSearchBar();
 
             if (!userPanel || !userTrigger) {
                 return;
@@ -1148,23 +707,9 @@
                         panels.forEach((panel) => {
                             panel.classList.toggle('hidden', panel.dataset.panel !== targetPanel);
                         });
-
-                        if (targetPanel === 'guardados') {
-                            renderSavedPosts();
-                        }
                     });
                 });
             }
-
-            window.addEventListener('storage', (event) => {
-                if (event.key === SAVED_POSTS_KEY) {
-                    renderSavedPosts();
-                }
-
-                if (event.key === POSTS_KEY || event.key === SAVED_POSTS_KEY) {
-                    renderSearchResults(searchInput?.value || '');
-                }
-            });
         })();
     </script>
 </body>
