@@ -134,12 +134,14 @@
                     <div class="author-section-wrap">
                         <div class="author-request" id="author-request-form">
                             <div class="author-request-head">
-                                <h2>Solicitud para ser Autor</h2>
+                                <h2></h2>
                                 <p>
                                     Completa esta solicitud para habilitar la creación de publicaciones (guías,
                                     trucos, noticias, reseñas y más).
                                 </p>
                             </div>
+
+                            <div id="author-request-fields">
 
                             <div class="field-block">
                                 <label for="author-fullname">Nombre completo</label>
@@ -191,6 +193,17 @@
                             <p class="author-wait-note">
                                 Importante: después de enviar tu solicitud, espera hasta 2 días hábiles para validar tu acceso como Autor.
                             </p>
+                            </div>
+
+                            <div class="author-request-status" id="author-request-status" hidden>
+                                <p class="author-request-status-title">Solicitud enviada</p>
+                                <p class="author-request-status-text">Espera a que el equipo valide tu solicitud.</p>
+                                <p class="author-request-status-pill" id="author-request-status-pill">Estado: Pendiente de revisión</p>
+                                <div class="author-request-status-actions">
+                                    <button type="button" class="btn btn-soft" id="cancel-author-request-btn">Cancelar solicitud</button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -372,11 +385,7 @@
                                     <i class="fa-regular fa-user"></i>
                                     <span>Mi cuenta</span>
                                 </button>
-<<<<<<< Updated upstream
                                 <button type="button" class="help-shortcut" data-help-topic="guias">
-=======
-                                <button type="button" class="help-shortcut" data-help-topic="noticias">
->>>>>>> Stashed changes
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span>Publicar Contenido</span>
                                 </button>
@@ -401,11 +410,7 @@
                                     </ul>
                                 </article>
 
-<<<<<<< Updated upstream
                                 <article class="help-topic-panel" data-help-panel="guias">
-=======
-                                <article class="help-topic-panel" data-help-panel="noticias">
->>>>>>> Stashed changes
                                     <h4>Publicar contenido: recomendaciones</h4>
                                     <ul>
                                         <li>Usa títulos claros: juego + objetivo de la guía.</li>
@@ -431,11 +436,7 @@
                             <h3>Preguntas Frecuentes</h3>
 
                             <div class="help-faq-list">
-<<<<<<< Updated upstream
                                 <details class="help-faq-item" data-help-topic="guias" data-help-text="cada cuanto tiempo publican nuevas noticias o reseñas guias tutoriales contenido">
-=======
-                                <details class="help-faq-item" data-help-topic="noticias" data-help-text="cada cuanto tiempo publican nuevas noticias o reseñas guias tutoriales contenido">
->>>>>>> Stashed changes
                                     <summary>¿Cada cuánto tiempo publican nuevas noticias o reseñas?</summary>
                                     <p>
                                         Publicamos contenido nuevo de forma constante durante la semana. El ritmo puede variar según lanzamientos,
@@ -451,11 +452,7 @@
                                     </p>
                                 </details>
 
-<<<<<<< Updated upstream
                                 <details class="help-faq-item" data-help-topic="guias" data-help-text="como solicito ser autor publicar guias reseñas noticias">
-=======
-                                <details class="help-faq-item" data-help-topic="noticias" data-help-text="como solicito ser autor publicar guias reseñas noticias">
->>>>>>> Stashed changes
                                     <summary>¿Cómo solicito ser Autor para publicar contenido?</summary>
                                     <p>
                                         En Configuración entra a Solicitud para Autor, completa el formulario y envíalo.
@@ -479,11 +476,7 @@
                                     </p>
                                 </details>
 
-<<<<<<< Updated upstream
                                 <details class="help-faq-item" data-help-topic="guias" data-help-text="que debe tener una buena guia tutorial">
-=======
-                                <details class="help-faq-item" data-help-topic="noticias" data-help-text="que debe tener una buena guia tutorial">
->>>>>>> Stashed changes
                                     <summary>¿Qué debe tener una buena guía?</summary>
                                     <p>
                                         Te recomendamos incluir objetivo, pasos claros, requisitos, imágenes de apoyo
@@ -515,11 +508,7 @@
                                     </p>
                                 </details>
 
-<<<<<<< Updated upstream
                                 <details class="help-faq-item" data-help-topic="guias" data-help-text="puedo editar una publicacion despues de subirla">
-=======
-                                <details class="help-faq-item" data-help-topic="noticias" data-help-text="puedo editar una publicacion despues de subirla">
->>>>>>> Stashed changes
                                     <summary>¿Puedo editar una publicación después de subirla?</summary>
                                     <p>
                                         Sí. Puedes actualizar texto e información de tus posts desde tu perfil.
@@ -527,11 +516,7 @@
                                     </p>
                                 </details>
 
-<<<<<<< Updated upstream
                                 <details class="help-faq-item" data-help-topic="guias" data-help-text="que formato de imagen o video recomiendan para guias">
-=======
-                                <details class="help-faq-item" data-help-topic="noticias" data-help-text="que formato de imagen o video recomiendan para guias">
->>>>>>> Stashed changes
                                     <summary>¿Qué formato de contenido recomiendan para guías?</summary>
                                     <p>
                                         Usa títulos directos, párrafos cortos, listas por pasos e imágenes ligeras.
@@ -612,6 +597,10 @@
             const authorReferenceLinkInput = document.getElementById('author-reference-link');
             const authorTermsInput = document.getElementById('author-terms');
             const submitAuthorRequestBtn = document.getElementById('submit-author-request-btn');
+            const authorRequestFields = document.getElementById('author-request-fields');
+            const authorRequestStatus = document.getElementById('author-request-status');
+            const authorRequestStatusPill = document.getElementById('author-request-status-pill');
+            const cancelAuthorRequestBtn = document.getElementById('cancel-author-request-btn');
             const profileVisibilityToggle = document.getElementById('profile-visibility-toggle');
             const profileVisibilityLabel = document.getElementById('profile-visibility-label');
             const onlineStatusToggle = document.getElementById('online-status-toggle');
@@ -623,6 +612,7 @@
             const helpFaqEmpty = document.getElementById('help-faq-empty');
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
             const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
+            const AUTHOR_REQUEST_STATUS_KEY = 'hiddenstageAuthorRequestStatus';
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -648,6 +638,71 @@
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase();
+
+            const renderAuthorRequestStatus = (requestStatus = null) => {
+                if (!authorRequestStatus || !submitAuthorRequestBtn) {
+                    return;
+                }
+
+                const isPending = requestStatus?.status === 'pendiente';
+
+                if (authorRequestFields) {
+                    authorRequestFields.hidden = isPending;
+                }
+
+                authorRequestStatus.hidden = !isPending;
+
+                if (isPending && authorRequestStatusPill) {
+                    const submittedAt = requestStatus?.submittedAt
+</body>
+                        : null;
+
+                    const dateLabel = submittedAt && !Number.isNaN(submittedAt.getTime())
+                        ? submittedAt.toLocaleString('es-MX', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                        : null;
+
+                    authorRequestStatusPill.textContent = dateLabel
+                        ? `Estado: Pendiente de revisión · Enviada: ${dateLabel}`
+                        : 'Estado: Pendiente de revisión';
+                }
+
+                submitAuthorRequestBtn.disabled = isPending;
+                submitAuthorRequestBtn.textContent = isPending
+                    ? 'Solicitud enviada'
+                    : 'Enviar solicitud';
+            };
+
+            const readAuthorRequestStatus = () => {
+                try {
+                    const raw = localStorage.getItem(AUTHOR_REQUEST_STATUS_KEY);
+                    if (!raw) {
+                        return null;
+                    }
+
+                    const parsed = JSON.parse(raw);
+                    if (parsed?.status !== 'pendiente') {
+                        return null;
+                    }
+
+                    return parsed;
+                } catch (error) {
+                    return null;
+                }
+            };
+
+            if (cancelAuthorRequestBtn) {
+                cancelAuthorRequestBtn.addEventListener('click', () => {
+                    localStorage.removeItem(AUTHOR_REQUEST_STATUS_KEY);
+                    renderAuthorRequestStatus(null);
+                    alert('La solicitud pendiente fue cancelada. Ahora puedes enviar una nueva solicitud.');
+                });
+            }
 
             const filterHelpFaq = (query, topic = '') => {
                 if (!helpFaqItems.length) {
@@ -717,11 +772,7 @@
             if (helpShortcutButtons.length) {
                 const topicMap = {
                     cuenta: 'cuenta',
-<<<<<<< Updated upstream
                     guias: 'guias',
-=======
-                    noticias: 'noticias',
->>>>>>> Stashed changes
                     soporte: 'soporte'
                 };
 
@@ -742,6 +793,7 @@
             }
 
             renderHelpTopicPanels('');
+            renderAuthorRequestStatus(readAuthorRequestStatus());
 
             const readPrivacySettings = () => {
                 try {
@@ -1153,19 +1205,55 @@
                         status: 'pendiente'
                     };
 
-                    localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
+                    const previousLabel = submitAuthorRequestBtn.textContent;
+                    submitAuthorRequestBtn.disabled = true;
+                    submitAuthorRequestBtn.textContent = 'Enviando...';
 
-                    alert('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.');
+                    fetch(`${API_BASE}/api/author-request`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(authorRequestPayload)
+                    })
+                        .then(async (response) => {
+                            const data = await response.json().catch(() => ({}));
 
-                    authorFullNameInput.value = '';
-                    authorContactInput.value = '';
-                    authorContentTypeInput.value = '';
-                    authorExperienceInput.value = '';
-                    authorMotivationInput.value = '';
-                    if (authorReferenceLinkInput) {
-                        authorReferenceLinkInput.value = '';
-                    }
-                    authorTermsInput.checked = false;
+                            if (!response.ok) {
+                                throw new Error(data.message || 'No se pudo enviar la solicitud para Autor.');
+                            }
+
+                            const savedStatus = {
+                                status: 'pendiente',
+                                submittedAt: new Date().toISOString(),
+                                requestId: data.requestId || ''
+                            };
+
+                            localStorage.setItem(AUTHOR_REQUEST_STATUS_KEY, JSON.stringify(savedStatus));
+                            renderAuthorRequestStatus(savedStatus);
+
+                            alert('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.');
+
+                            authorFullNameInput.value = '';
+                            authorContactInput.value = '';
+                            authorContentTypeInput.value = '';
+                            authorExperienceInput.value = '';
+                            authorMotivationInput.value = '';
+                            if (authorReferenceLinkInput) {
+                                authorReferenceLinkInput.value = '';
+                            }
+                            authorTermsInput.checked = false;
+                        })
+                        .catch((error) => {
+                            alert(error.message || 'No se pudo enviar la solicitud para Autor.');
+                        })
+                        .finally(() => {
+                            const currentStatus = readAuthorRequestStatus();
+                            if (!currentStatus) {
+                                submitAuthorRequestBtn.disabled = false;
+                                submitAuthorRequestBtn.textContent = previousLabel;
+                            }
+                        });
                 });
             }
         })();
