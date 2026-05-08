@@ -654,7 +654,7 @@
 
                 if (isPending && authorRequestStatusPill) {
                     const submittedAt = requestStatus?.submittedAt
-</body>
+                        ? new Date(requestStatus.submittedAt)
                         : null;
 
                     const dateLabel = submittedAt && !Number.isNaN(submittedAt.getTime())

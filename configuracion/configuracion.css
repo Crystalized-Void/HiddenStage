@@ -863,11 +863,14 @@ body[data-theme="dark"] .brand-logo {
 
 .author-terms {
     display: flex;
-body[data-theme="dark"] .author-terms,
-body[data-theme="dark"] .author-request-status-text {
     gap: 8px;
     font-size: 13px;
     color: #333;
+}
+
+body[data-theme="dark"] .author-terms,
+body[data-theme="dark"] .author-request-status-text {
+    color: #fff;
 }
 
 .author-terms input {
