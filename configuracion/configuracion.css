@@ -428,10 +428,13 @@ body[data-theme="dark"] .brand-logo {
 }
 
 .privacy-security-card {
-    border: 1px solid #d9d9d9;
-    border-radius: 12px;
-    background: #f7f7f7;
-    padding: 20px;
+    border: 1px solid rgba(149, 130, 193, 0.18);
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at top right, rgba(149, 130, 193, 0.12), transparent 30%),
+        linear-gradient(180deg, #fbfbfd 0%, #f6f2fb 100%);
+    padding: 22px;
+    box-shadow: 0 18px 40px rgba(124, 105, 168, 0.08);
 }
 
 .privacy-security-card h2 {
@@ -443,7 +446,7 @@ body[data-theme="dark"] .brand-logo {
 
 .privacy-security-divider {
     height: 1px;
-    background: #bdbdbd;
+    background: linear-gradient(90deg, rgba(149, 130, 193, 0.15), rgba(149, 130, 193, 0.45), rgba(149, 130, 193, 0.15));
     margin: 6px 0 14px;
 }
 
@@ -534,12 +537,23 @@ body[data-theme="dark"] .brand-logo {
     grid-template-columns: 34px 1fr;
     align-items: start;
     gap: 10px;
+    padding: 16px;
+    border: 1px solid rgba(149, 130, 193, 0.16);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 8px 18px rgba(31, 31, 31, 0.04);
 }
 
 .security-item i {
-    font-size: 26px;
-    color: #2d2d2d;
+    font-size: 24px;
+    color: #7c69a8;
     line-height: 1.1;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: rgba(149, 130, 193, 0.12);
 }
 
 .security-item h3 {
@@ -553,6 +567,143 @@ body[data-theme="dark"] .brand-logo {
     color: #5e5e5e;
     font-size: 14px;
     line-height: 1.35;
+}
+
+#twoFactorItem {
+    background:
+        radial-gradient(circle at top right, rgba(149, 130, 193, 0.18), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #faf8ff 100%);
+    border-color: rgba(149, 130, 193, 0.26);
+    position: relative;
+    overflow: hidden;
+}
+
+#twoFactorItem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    pointer-events: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#twoFactorItem > div {
+    position: relative;
+}
+
+#twoFactorStatus {
+    margin-top: 3px;
+    color: #645f73;
+    font-size: 14px;
+}
+
+#twoFactorControls {
+    margin-top: 14px !important;
+    padding-top: 14px !important;
+    border-top: 1px solid rgba(149, 130, 193, 0.16) !important;
+    display: grid;
+    gap: 12px;
+}
+
+#notVerifiedState,
+#waitingCodeState,
+#verifiedState,
+#enabledState {
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(245, 242, 251, 0.9);
+    border: 1px solid rgba(149, 130, 193, 0.14);
+}
+
+#notVerifiedState {
+    display: grid;
+    gap: 10px;
+}
+
+#notVerifiedState p {
+    margin-bottom: 0 !important;
+}
+
+#notVerifiedState p,
+#waitingCodeState p,
+#verifiedState p,
+#enabledState p {
+    color: #605a72;
+    line-height: 1.45;
+}
+
+#sendVerificationCodeBtn,
+#verifyCodeBtn,
+#enable2FABtn,
+#disable2FABtn {
+    border-radius: 999px;
+    padding: 9px 14px !important;
+    min-height: 36px;
+    font-size: 13px !important;
+    letter-spacing: 0.1px;
+    box-shadow: 0 10px 20px rgba(124, 105, 168, 0.12);
+}
+
+#sendVerificationCodeBtn {
+    justify-self: stretch;
+}
+
+#sendVerificationCodeBtn,
+#verifyCodeBtn,
+#enable2FABtn {
+    background: linear-gradient(135deg, #8f7cc5 0%, #7b68ad 100%);
+    color: #ffffff;
+}
+
+#disable2FABtn {
+    background: linear-gradient(135deg, #d7d2de 0%, #bfb7c9 100%);
+    color: #2b2438;
+}
+
+#verificationCodeInput {
+    width: 140px !important;
+    border: 1px solid rgba(149, 130, 193, 0.22) !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+    font-size: 15px !important;
+    letter-spacing: 4px;
+    text-align: center;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+#verificationTimer {
+    font-size: 12px !important;
+    color: #7b7390 !important;
+    margin-top: 6px !important;
+}
+
+#waitingCodeState > div {
+    gap: 10px !important;
+    align-items: center !important;
+    flex-wrap: wrap;
+}
+
+#verifiedState p,
+#enabledState p {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px !important;
+}
+
+#verifiedState p::before,
+#enabledState p::before {
+    content: '•';
+    color: #7b68ad;
+    font-size: 18px;
+    line-height: 1;
+}
+
+#twoFactorItem .btn:disabled {
+    opacity: 0.72;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 .privacy-card h2 {
@@ -962,6 +1113,69 @@ body[data-theme="dark"] .privacy-card {
 body[data-theme="dark"] .privacy-security-card {
     background: var(--cfg-panel-soft);
     border-color: var(--cfg-border);
+}
+
+body[data-theme="dark"] #twoFactorItem {
+    background:
+        radial-gradient(circle at top right, rgba(149, 130, 193, 0.16), transparent 34%),
+        linear-gradient(180deg, rgba(36, 28, 52, 0.96) 0%, rgba(28, 22, 41, 0.98) 100%);
+    border-color: rgba(197, 181, 228, 0.2);
+}
+
+body[data-theme="dark"] #twoFactorItem::before {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body[data-theme="dark"] #twoFactorStatus {
+    color: var(--cfg-muted);
+}
+
+body[data-theme="dark"] #twoFactorControls {
+    border-top-color: rgba(197, 181, 228, 0.16) !important;
+}
+
+body[data-theme="dark"] #notVerifiedState,
+body[data-theme="dark"] #waitingCodeState,
+body[data-theme="dark"] #verifiedState,
+body[data-theme="dark"] #enabledState {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(197, 181, 228, 0.14);
+}
+
+body[data-theme="dark"] #notVerifiedState p,
+body[data-theme="dark"] #waitingCodeState p,
+body[data-theme="dark"] #verifiedState p,
+body[data-theme="dark"] #enabledState p,
+body[data-theme="dark"] #verificationTimer {
+    color: var(--cfg-muted) !important;
+}
+
+body[data-theme="dark"] #verificationCodeInput {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: var(--cfg-text) !important;
+    border-color: rgba(197, 181, 228, 0.22) !important;
+}
+
+body[data-theme="dark"] #sendVerificationCodeBtn,
+body[data-theme="dark"] #verifyCodeBtn,
+body[data-theme="dark"] #enable2FABtn {
+    background: linear-gradient(135deg, #a593da 0%, #8d7ac1 100%);
+    color: #ffffff;
+}
+
+body[data-theme="dark"] #disable2FABtn {
+    background: linear-gradient(135deg, #4d445f 0%, #372f47 100%);
+    color: var(--cfg-text);
+}
+
+body[data-theme="dark"] .security-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(197, 181, 228, 0.12);
+}
+
+body[data-theme="dark"] .security-item i {
+    color: #c8b7ec;
+    background: rgba(149, 130, 193, 0.16);
 }
 
 body[data-theme="dark"] .help-card,
