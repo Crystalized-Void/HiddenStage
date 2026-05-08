@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,120 +11,96 @@
     <link rel="stylesheet" href="principal.css">
 </head>
 <body id="inicio">
-    <header class="barra-superior">
-        <div class="barra-superior-principal">
-            <a class="marca" aria-label="HiddenStage Inicio">
-                <img src="../img/LogoHS.png" alt="HiddenStage" class="logo-marca" onclick="Menu()">
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo" onclick="Menu()">
             </a>
 
-            <div class="busqueda-superior">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido" data-post-search-input autocomplete="off">
-                <button type="button" class="boton-limpiar-busqueda" data-post-search-clear aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="resultados-busqueda" data-post-resultados-busqueda aria-live="polite"></div>
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
             </div>
 
-            <div class="panel-usuario">
-                <button type="button" class="disparador-usuario" aria-expanded="false" aria-controls="user-menu">
-                    <span data-nombre-usuario></span>
-                    <span class="avatar-superior-usuario" data-user-avatar aria-hidden="true">
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
+                    <span data-user-name></span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
                         <i class="fa-solid fa-user"></i>
                     </span>
                 </button>
 
-                <div id="user-menu" class="desplegable-usuario">
-                    <div class="nombre-usuario">
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
                         <span data-user-fullname>NOMBRE USUARIO</span>
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <a href="#" data-open-profile-menu>PERFIL</a>
                     <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
                     <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
-                    <a href="../inicio_de_sesion/index.html" data-enlace-cerrar-sesion>CERRAR SESIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
                 </div>
             </div>
         </div>
     </header>
-<nav class="barra-navegacion">
-    <a href="pagina_principal.html#inicio"><i class="fas fa-house"></i> Inicio</a>
-    <a href="generos.html#accion"><i class="fas fa-bolt"></i> Accion</a>
-    <a href="generos.html#aventuras"><i class="fas fa-compass"></i> Aventuras</a>
-    <a href="generos.html#carrera"><i class="fas fa-bandera-checkered"></i> Carreras</a>
-    <a href="generos.html#plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
-    <a href="generos.html#romances"><i class="fas fa-heart"></i> Romance</a>
-    <a href="generos.html#porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
+<nav class="nav-bar">
+    <a href="#paginaprincipal" onclick="Volver(); return false;"><i class="fas fa-house"></i> Inicio</a>
+    <a href="#accion"><i class="fas fa-bolt"></i> Accion</a>
+    <a href="#aventuras"><i class="fas fa-compass"></i> Aventuras</a>
+    <a href="#carrera"><i class="fas fa-flag-checkered"></i> Carreras</a>
+    <a href="#plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
+    <a href="#romances"><i class="fas fa-heart"></i> Romance</a>
+    <a href="#porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
 </nav>
-<div id="sideMenu" class="menu-lateral">
-    <div class="encabezado-menu">
+<div id="sideMenu" class="side-menu">
+    <div class="menu-header">
         <img src="../img/LogoHS.png" onclick="Menu()">
-        <i class="fas fa-times icono-cerrar" onclick="Menu()"></i>
+        <i class="fas fa-times close-icon" onclick="Menu()"></i>
     </div>
-    <a href="pagina_principal.html#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="pagina_principal.html#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="pagina_principal.html#reciente"><i class="fas fa-clock"></i> Reciente</a>
-    <a href="pagina_principal.html#noticias"><i class="fas fa-book"></i> Noticias</a>
-    <a href="pagina_principal.html#tips"><i class="fas fa-lightbulb"></i> Tips</a>
-    <a href="pagina_principal.html"><i class="fas fa-comments"></i> Foro</a>
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
 </div>
-<div id="sideProfile" class="perfil-lateral">
-    <div class="encabezado-menu">
-        <i class="fas fa-times icono-cerrar-izquierda" onclick="AjustesPerfil()"></i>
+<div id="sideProfile" class="side-profile">
+    <div class="menu-header">
+        <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
     </div>
-    <div class="encabezado-perfil-lateral">
-        <div class="avatar-perfil-lateral" data-side-avatar aria-hidden="true">
+    <div class="side-profile-header">
+        <div class="side-profile-avatar" data-side-avatar aria-hidden="true">
             <i class="fa-solid fa-user"></i>
         </div>
-        <div class="meta-perfil-lateral">
+        <div class="side-profile-meta">
             <strong data-side-username>Invitado</strong>
             <span data-side-handle>@hiddenstage</span>
         </div>
     </div>
-    <span class="titulo-seccion-menu">Cuenta</span>
+    <span class="menu-section-title">Cuenta</span>
     <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
     <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
-    <button type="button" class="enlace-alternar-tema" data-theme-toggle>
+    <button type="button" class="theme-toggle-link" data-theme-toggle>
         <i class="fas fa-moon" data-theme-icon></i>
         <span data-theme-label>Tema oscuro</span>
     </button>
-    <div class="menu-idioma" data-menu-idioma>
-        <button type="button" class="enlace-alternar-idioma" data-language-toggle aria-expanded="false">
-            <span class="contenido-alternar-idioma">
-                <i class="fas fa-language"></i>
-                <span data-i18n="language">Lenguaje</span>
-            </span>
-            <i class="fas fa-chevron-down chevron-idioma" aria-hidden="true"></i>
-        </button>
-        <div class="opciones-idioma" data-opciones-idioma>
-            <button type="button" class="opcion-idioma" data-opcion-idioma="es">
-                <span class="bandera" aria-hidden="true">🇪🇸</span>
-                <span data-i18n="spanish">Español</span>
-            </button>
-            <button type="button" class="opcion-idioma" data-opcion-idioma="en">
-                <span class="bandera" aria-hidden="true">🇬🇧</span>
-                <span data-i18n="english">Inglés</span>
-            </button>
-        </div>
-    </div>
-    <a href="../inicio_de_sesion/index.html" class="enlace-lateral-secundario"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-    <span class="titulo-seccion-menu">Sesión</span>
-    <a href="../inicio_de_sesion/index.html" class="enlace-cerrar-sesion" data-enlace-cerrar-sesion><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+    <span class="menu-section-title">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
     <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
 </div>
-
 <section id="accion" class="Accion">
     <h2><i class="fas fa-bolt"></i> ACCION </h2>
-        <div class="tarjetas">
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
@@ -132,35 +108,35 @@
 
 <section id="aventuras" class="Aventuras">
     <h2><i class="fas fa-compass"></i> AVENTURA </h2>
-        <div class="tarjetas">
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
 </section>
 
 <section id="carrera" class="Carreras">
-    <h2><i class="fas fa-bandera-checkered"></i> CARRERAS </h2>
-        <div class="tarjetas">
+    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
@@ -168,17 +144,17 @@
 
 <section id="plataformas" class="Plataformas">
     <h2><i class="fas fa-layer-group"></i> PLATAFORMAS </h2>
-        <div class="tarjetas">
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
@@ -186,17 +162,17 @@
 
 <section id="romances" class="Romance">
     <h2><i class="fas fa-heart"></i> ROMANCE </h2>
-        <div class="tarjetas">
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
@@ -204,17 +180,17 @@
 
 <section id="porturnos" class="PorTurnos">
     <h2><i class="fas fa-chess-board"></i> POR TURNOS </h2>
-        <div class="tarjetas">
+        <div class="cards">
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
 
-        <div class="tarjeta">
+        <div class="card">
             <img src="">
         </div>
     </div>
@@ -223,176 +199,6 @@
 <script>
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
-    const LANGUAGE_KEY = 'hiddenstageLanguage';
-    const POSTS_KEY = 'hiddenstagePosts';
-    const SAVED_POSTS_KEY = 'hiddenstageSavedPosts';
-    const UI_TRANSLATIONS = {
-        es: {
-            searchPlaceholder: 'Buscar...',
-            searchAria: 'Buscar contenido',
-            clearSearch: 'Limpiar busqueda',
-            createPost: 'Crear publicacion',
-            createNote: 'Crear nota',
-            profileUpper: 'PERFIL',
-            editProfileUpper: 'EDITAR PERFIL',
-            settingsUpper: 'CONFIGURACION',
-            logoutUpper: 'CERRAR SESION',
-            home: 'Inicio',
-            relevance: 'Relevancia',
-            new: 'Nuevo',
-            recent: 'Reciente',
-            guides: 'Noticias',
-            tips: 'Tips',
-            forum: 'Foro',
-            genres: 'Generos',
-            accountSection: 'Cuenta',
-            yourProfile: 'Tu perfil',
-            settings: 'Ajustes',
-            language: 'Lenguaje',
-            spanish: 'Espanol',
-            english: 'Ingles',
-            switchAccount: 'Cambiar de cuenta',
-            sessionSection: 'Sesion',
-            logout: 'Cerrar sesion',
-            goBack: 'Regresar',
-            mostRelevant: ' MAS RELEVANTES ',
-            latest: ' NOVEDADES ',
-            guidesUpper: ' NOTICIAS ',
-            tipsUpper: ' TIPS ',
-            racesUpper: ' CARRERAS ',
-            platformsUpper: ' PLATAFORMAS ',
-            romanceUpper: ' ROMANCE ',
-            turnBasedUpper: ' POR TURNOS ',
-            actionUpper: ' ACCION ',
-            adventuresUpper: ' AVENTURAS ',
-            darkTheme: 'Tema oscuro',
-            lightTheme: 'Tema claro',
-            loginToPostAlert: 'Debes iniciar sesion para crear una publicacion',
-            searchEmpty: 'No se encontraron publicaciones.'
-        },
-        en: {
-            searchPlaceholder: 'Search...',
-            searchAria: 'Search content',
-            clearSearch: 'Clear search',
-            createPost: 'Create post',
-            createNote: 'Create note',
-            profileUpper: 'PROFILE',
-            editProfileUpper: 'EDIT PROFILE',
-            settingsUpper: 'SETTINGS',
-            logoutUpper: 'LOG OUT',
-            home: 'Home',
-            relevance: 'Relevance',
-            new: 'New',
-            recent: 'Recent',
-            guides: 'Guides',
-            tips: 'Tips',
-            forum: 'Forum',
-            genres: 'Genres',
-            accountSection: 'Account',
-            yourProfile: 'Your profile',
-            settings: 'Settings',
-            language: 'Language',
-            spanish: 'Spanish',
-            english: 'English',
-            switchAccount: 'Switch account',
-            sessionSection: 'Session',
-            logout: 'Log out',
-            goBack: 'Go back',
-            mostRelevant: ' MOST RELEVANT ',
-            latest: ' LATEST ',
-            guidesUpper: ' GUIDES ',
-            tipsUpper: ' TIPS ',
-            racesUpper: ' RACING ',
-            platformsUpper: ' PLATFORMS ',
-            romanceUpper: ' ROMANCE ',
-            turnBasedUpper: ' TURN-BASED ',
-            actionUpper: ' ACTION ',
-            adventuresUpper: ' ADVENTURES ',
-            darkTheme: 'Dark theme',
-            lightTheme: 'Light theme',
-            loginToPostAlert: 'You need to sign in to create a post',
-            searchEmpty: 'No posts found.'
-        }
-    };
-
-    
-    function readPreferredLanguage() {
-        const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-        return storedLanguage === 'en' ? 'en' : 'es';
-    }
-
-    function translateUiText(key, language) {
-        const safeLanguage = language === 'en' ? 'en' : 'es';
-        return UI_TRANSLATIONS[safeLanguage]?.[key] || UI_TRANSLATIONS.es[key] || key;
-    }
-
-    function applyStaticTranslations(languageName) {
-        const safeLanguage = languageName === 'en' ? 'en' : 'es';
-
-        const setText = (selector, key) => {
-            const element = document.querySelector(selector);
-            if (element) {
-                element.textContent = translateUiText(key, safeLanguage);
-            }
-        };
-
-        setText('.nombre-usuario [data-user-fullname]', 'profileUpper');
-
-        const userLinks = document.querySelectorAll('#user-menu a');
-        if (userLinks[0]) userLinks[0].textContent = translateUiText('profileUpper', safeLanguage);
-        if (userLinks[1]) userLinks[1].textContent = translateUiText('editProfileUpper', safeLanguage);
-        if (userLinks[2]) userLinks[2].textContent = translateUiText('settingsUpper', safeLanguage);
-        if (userLinks[3]) userLinks[3].textContent = translateUiText('logoutUpper', safeLanguage);
-
-        const topNavLinks = document.querySelectorAll('.barra-navegacion a');
-        if (topNavLinks[0]) topNavLinks[0].childNodes[topNavLinks[0].childNodes.length - 1].textContent = ` ${translateUiText('home', safeLanguage)}`;
-        if (topNavLinks[1]) topNavLinks[1].childNodes[topNavLinks[1].childNodes.length - 1].textContent = ` ${translateUiText('actionUpper', safeLanguage).trim()}`;
-        if (topNavLinks[2]) topNavLinks[2].childNodes[topNavLinks[2].childNodes.length - 1].textContent = ` ${translateUiText('adventuresUpper', safeLanguage).trim()}`;
-        if (topNavLinks[3]) topNavLinks[3].childNodes[topNavLinks[3].childNodes.length - 1].textContent = ` ${translateUiText('racesUpper', safeLanguage).trim()}`;
-        if (topNavLinks[4]) topNavLinks[4].childNodes[topNavLinks[4].childNodes.length - 1].textContent = ` ${translateUiText('platformsUpper', safeLanguage).trim()}`;
-        if (topNavLinks[5]) topNavLinks[5].childNodes[topNavLinks[5].childNodes.length - 1].textContent = ` ${translateUiText('romanceUpper', safeLanguage).trim()}`;
-        if (topNavLinks[6]) topNavLinks[6].childNodes[topNavLinks[6].childNodes.length - 1].textContent = ` ${translateUiText('turnBasedUpper', safeLanguage).trim()}`;
-
-        const sideMenuLinks = document.querySelectorAll('#sideMenu a');
-        if (sideMenuLinks[0]) sideMenuLinks[0].childNodes[sideMenuLinks[0].childNodes.length - 1].textContent = ` ${translateUiText('home', safeLanguage)}`;
-        if (sideMenuLinks[1]) sideMenuLinks[1].childNodes[sideMenuLinks[1].childNodes.length - 1].textContent = ` ${translateUiText('relevance', safeLanguage)}`;
-        if (sideMenuLinks[2]) sideMenuLinks[2].childNodes[sideMenuLinks[2].childNodes.length - 1].textContent = ` ${translateUiText('recent', safeLanguage)}`;
-        if (sideMenuLinks[3]) sideMenuLinks[3].childNodes[sideMenuLinks[3].childNodes.length - 1].textContent = ` ${translateUiText('guides', safeLanguage)}`;
-        if (sideMenuLinks[4]) sideMenuLinks[4].childNodes[sideMenuLinks[4].childNodes.length - 1].textContent = ` ${translateUiText('tips', safeLanguage)}`;
-        if (sideMenuLinks[5]) sideMenuLinks[5].childNodes[sideMenuLinks[5].childNodes.length - 1].textContent = ` ${translateUiText('forum', safeLanguage)}`;
-
-        const menuSectionTitles = document.querySelectorAll('#sideProfile .titulo-seccion-menu');
-        if (menuSectionTitles[0]) menuSectionTitles[0].textContent = translateUiText('accountSection', safeLanguage);
-        if (menuSectionTitles[1]) menuSectionTitles[1].textContent = translateUiText('sessionSection', safeLanguage);
-
-        const sideProfileLinks = document.querySelectorAll('#sideProfile a');
-        if (sideProfileLinks[0]) sideProfileLinks[0].childNodes[sideProfileLinks[0].childNodes.length - 1].textContent = ` ${translateUiText('yourProfile', safeLanguage)}`;
-        if (sideProfileLinks[1]) sideProfileLinks[1].childNodes[sideProfileLinks[1].childNodes.length - 1].textContent = ` ${translateUiText('settings', safeLanguage)}`;
-        if (sideProfileLinks[2]) sideProfileLinks[2].childNodes[sideProfileLinks[2].childNodes.length - 1].textContent = ` ${translateUiText('switchAccount', safeLanguage)}`;
-        if (sideProfileLinks[3]) sideProfileLinks[3].childNodes[sideProfileLinks[3].childNodes.length - 1].textContent = ` ${translateUiText('logout', safeLanguage)}`;
-        if (sideProfileLinks[4]) sideProfileLinks[4].childNodes[sideProfileLinks[4].childNodes.length - 1].textContent = ` ${translateUiText('goBack', safeLanguage)}`;
-
-        const sectionTitles = document.querySelectorAll('section > h2');
-        if (sectionTitles[0]) sectionTitles[0].childNodes[sectionTitles[0].childNodes.length - 1].textContent = ` ${translateUiText('actionUpper', safeLanguage)} `;
-        if (sectionTitles[1]) sectionTitles[1].childNodes[sectionTitles[1].childNodes.length - 1].textContent = ` ${translateUiText('adventuresUpper', safeLanguage)} `;
-        if (sectionTitles[2]) sectionTitles[2].childNodes[sectionTitles[2].childNodes.length - 1].textContent = ` ${translateUiText('racesUpper', safeLanguage)} `;
-        if (sectionTitles[3]) sectionTitles[3].childNodes[sectionTitles[3].childNodes.length - 1].textContent = ` ${translateUiText('platformsUpper', safeLanguage)} `;
-        if (sectionTitles[4]) sectionTitles[4].childNodes[sectionTitles[4].childNodes.length - 1].textContent = ` ${translateUiText('romanceUpper', safeLanguage)} `;
-        if (sectionTitles[5]) sectionTitles[5].childNodes[sectionTitles[5].childNodes.length - 1].textContent = ` ${translateUiText('turnBasedUpper', safeLanguage)} `;
-
-        const searchInput = document.querySelector('[data-post-search-input]');
-        if (searchInput) {
-            searchInput.setAttribute('placeholder', translateUiText('searchPlaceholder', safeLanguage));
-            searchInput.setAttribute('aria-label', translateUiText('searchAria', safeLanguage));
-        }
-
-        const clearBtn = document.querySelector('[data-post-search-clear]');
-        if (clearBtn) {
-            const clearText = translateUiText('clearSearch', safeLanguage);
-            clearBtn.setAttribute('aria-label', clearText);
-            clearBtn.setAttribute('title', clearText);
-        }
-    }
 
     function Menu() {
         document.getElementById('sideMenu').classList.toggle('active');
@@ -410,249 +216,10 @@
         window.location.href = 'pagina_principal.html';
     }
 
-    function readStoredPublications() {
-        try {
-            const rawPosts = localStorage.getItem(POSTS_KEY);
-            if (!rawPosts) {
-                return [];
-            }
-
-            const parsedPosts = JSON.parse(rawPosts);
-            return Array.isArray(parsedPosts) ? parsedPosts : [];
-        } catch (error) {
-            return [];
-        }
-    }
-
-    function readSavedPosts() {
-        try {
-            const rawSavedPosts = localStorage.getItem(SAVED_POSTS_KEY);
-            if (!rawSavedPosts) {
-                return [];
-            }
-
-            const parsedSavedPosts = JSON.parse(rawSavedPosts);
-            return Array.isArray(parsedSavedPosts) ? parsedSavedPosts : [];
-        } catch (error) {
-            return [];
-        }
-    }
-
-    function writeSavedPosts(savedPosts) {
-        localStorage.setItem(SAVED_POSTS_KEY, JSON.stringify(savedPosts));
-    }
-
-    function isPostSaved(postId) {
-        const savedPosts = readSavedPosts();
-        return savedPosts.some((post) => Number(post?.id) === Number(postId));
-    }
-
-    function toggleSavedPost(post) {
-        const savedPosts = readSavedPosts();
-        const normalizedPostId = Number(post?.id);
-        const existingIndex = savedPosts.findIndex((item) => Number(item?.id) === normalizedPostId);
-
-        if (existingIndex >= 0) {
-            savedPosts.splice(existingIndex, 1);
-            writeSavedPosts(savedPosts);
-            return false;
-        }
-
-        savedPosts.push({
-            id: normalizedPostId,
-            titulo: post?.titulo || '',
-            encabezado: post?.encabezado || '',
-            username: post?.username || 'Usuario',
-            fecha: post?.fecha || new Date().toISOString(),
-            categoria: post?.categoria || '',
-            imagenPrincipal: post?.imagenPrincipal || '',
-            savedAt: new Date().toISOString()
-        });
-
-        writeSavedPosts(savedPosts);
-        return true;
-    }
-
-    function normalizeSearchText(value) {
-        if (value === null || value === undefined) {
-            return '';
-        }
-
-        return String(value)
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .trim();
-    }
-
-    function renderSearchResults(rawQuery) {
-        const searchResults = document.querySelector('[data-post-resultados-busqueda]');
-        if (!searchResults) {
-            return;
-        }
-
-        const query = normalizeSearchText(rawQuery);
-        searchResults.innerHTML = '';
-
-        if (!query) {
-            searchResults.classList.remove('active');
-            return;
-        }
-
-        const posts = readStoredPublications();
-        const matches = posts
-            .filter((post) => {
-                const searchable = [
-                    post?.titulo,
-                    post?.encabezado,
-                    post?.username,
-                    post?.categoria
-                ].map((text) => normalizeSearchText(text)).join(' ');
-
-                return searchable.includes(query);
-            })
-            .sort((a, b) => new Date(b?.fecha || 0).getTime() - new Date(a?.fecha || 0).getTime())
-            .slice(0, 8);
-
-        if (!matches.length) {
-            searchResults.innerHTML = `<p class="vacio-resultados-busqueda">${translateUiText('searchEmpty', readPreferredLanguage())}</p>`;
-            searchResults.classList.add('active');
-            return;
-        }
-
-        matches.forEach((post) => {
-            const postIsSaved = isPostSaved(post?.id);
-            const thumbImage = typeof post?.imagenPrincipal === 'string' ? post.imagenPrincipal.trim() : '';
-            const avatarInitials = (post?.username || 'US').substring(0, 2).toUpperCase();
-            const avatarStyle = post?.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
-
-            const item = document.createElement('div');
-            item.className = 'item-resultado-busqueda';
-            item.setAttribute('role', 'button');
-            item.setAttribute('tabindex', '0');
-            item.innerHTML = `
-                <div class="izquierda-resultado-busqueda">
-                    ${thumbImage
-                        ? `<img src="${thumbImage}" alt="Miniatura de publicación" class="miniatura-resultado-busqueda">`
-                        : '<div class="miniatura-resultado-busqueda miniatura-resultado-busqueda-vacia"></div>'
-                    }
-                </div>
-                <div class="cuerpo-resultado-busqueda">
-                    <span class="titulo-resultado-busqueda">${post?.titulo || 'Sin título'}</span>
-                    <span class="meta-resultado-busqueda">${post?.username || 'Usuario'}${post?.categoria ? ` • ${post.categoria}` : ''}</span>
-                    <span class="autor-resultado-busqueda">
-                        <span class="avatar-resultado-busqueda" style="${avatarStyle}">${!post?.userAvatar ? avatarInitials : ''}</span>
-                        <span>${post?.encabezado || 'Sin descripción disponible.'}</span>
-                    </span>
-                </div>
-                <button type="button" class="guardar-resultado-busqueda ${postIsSaved ? 'saved' : ''}" aria-label="Guardar publicación" title="${postIsSaved ? 'Quitar de guardados' : 'Guardar publicación'}">
-                    <i class="${postIsSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-                </button>
-            `;
-
-            const openPost = () => {
-                if (!post?.id) {
-                    return;
-                }
-
-                window.location.href = `publicacion.html?id=${post.id}`;
-            };
-
-            item.addEventListener('click', openPost);
-            item.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    openPost();
-                }
-            });
-
-            const saveButton = item.querySelector('.guardar-resultado-busqueda');
-            if (saveButton) {
-                saveButton.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const nowSaved = toggleSavedPost(post);
-                    saveButton.classList.toggle('saved', nowSaved);
-                    saveButton.title = nowSaved ? 'Quitar de guardados' : 'Guardar publicación';
-                    const icon = saveButton.querySelector('i');
-                    if (icon) {
-                        icon.className = `${nowSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark`;
-                    }
-                });
-            }
-
-            searchResults.appendChild(item);
-        });
-
-        searchResults.classList.add('active');
-    }
-
-    function setupSearchBar() {
-        const searchInput = document.querySelector('[data-post-search-input]');
-        const searchResults = document.querySelector('[data-post-resultados-busqueda]');
-        const searchClearButton = document.querySelector('[data-post-search-clear]');
-
-        if (!searchInput || !searchResults) {
-            return;
-        }
-
-        const searchContainer = searchInput.closest('.busqueda-superior');
-
-        const updateClearButtonVisibility = () => {
-            if (!searchClearButton) {
-                return;
-            }
-
-            const hasText = searchInput.value.trim().length > 0;
-            searchClearButton.classList.toggle('active', hasText);
-            searchClearButton.setAttribute('aria-hidden', hasText ? 'false' : 'true');
-        };
-
-        searchInput.addEventListener('input', () => {
-            renderSearchResults(searchInput.value);
-            updateClearButtonVisibility();
-        });
-
-        searchInput.addEventListener('focus', () => {
-            renderSearchResults(searchInput.value);
-            updateClearButtonVisibility();
-        });
-
-        searchInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                searchResults.classList.remove('active');
-            }
-        });
-
-        if (searchClearButton) {
-            searchClearButton.addEventListener('click', (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                searchInput.value = '';
-                renderSearchResults('');
-                updateClearButtonVisibility();
-                searchInput.focus();
-            });
-        }
-
-        document.addEventListener('click', (event) => {
-            if (!searchContainer?.contains(event.target)) {
-                searchResults.classList.remove('active');
-            }
-        });
-
-        window.addEventListener('storage', (event) => {
-            if (event.key === POSTS_KEY || event.key === SAVED_POSTS_KEY) {
-                renderSearchResults(searchInput.value || '');
-            }
-        });
-
-        updateClearButtonVisibility();
-    }
-
     (() => {
-        const userPanel = document.querySelector('.panel-usuario');
-        const userTrigger = document.querySelector('.disparador-usuario');
-        const userNameText = document.querySelector('[data-nombre-usuario]');
+        const userPanel = document.querySelector('.user-panel');
+        const userTrigger = document.querySelector('.user-trigger');
+        const userNameText = document.querySelector('[data-user-name]');
         const userFullNameText = document.querySelector('[data-user-fullname]');
         const userTopAvatar = document.querySelector('[data-user-avatar]');
         const sideAvatar = document.querySelector('[data-side-avatar]');
@@ -660,15 +227,10 @@
         const sideHandle = document.querySelector('[data-side-handle]');
         const openProfileMenuLink = document.querySelector('[data-open-profile-menu]');
         const sideProfile = document.getElementById('sideProfile');
-        const logoutLinks = document.querySelectorAll('[data-enlace-cerrar-sesion]');
+        const logoutLinks = document.querySelectorAll('[data-logout-link]');
         const themeToggleButton = document.querySelector('[data-theme-toggle]');
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
-        const languageMenu = document.querySelector('[data-menu-idioma]');
-        const languageToggleButton = document.querySelector('[data-language-toggle]');
-        const languageOptionsContainer = document.querySelector('[data-opciones-idioma]');
-        const languageOptions = document.querySelectorAll('[data-opcion-idioma]');
-        let currentLanguage = readPreferredLanguage();
 
         const normalizeUsername = (username) => {
             if (typeof username !== 'string') {
@@ -735,9 +297,7 @@
             document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
 
             if (themeLabel) {
-                themeLabel.textContent = isDarkTheme
-                    ? translateUiText('lightTheme', currentLanguage)
-                    : translateUiText('darkTheme', currentLanguage);
+                themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
             }
 
             if (themeIcon) {
@@ -756,41 +316,6 @@
             applyTheme(nextTheme);
         };
 
-        const applyInterfaceTranslations = (languageName) => {
-            document.querySelectorAll('[data-i18n]').forEach((element) => {
-                const key = element.dataset.i18n;
-                element.textContent = translateUiText(key, languageName);
-            });
-
-            applyStaticTranslations(languageName);
-        };
-
-        const applyLanguage = (languageName) => {
-            const normalizedLanguage = languageName === 'en' ? 'en' : 'es';
-            currentLanguage = normalizedLanguage;
-            document.documentElement.lang = normalizedLanguage;
-            applyInterfaceTranslations(normalizedLanguage);
-            applyTheme(readStoredTheme());
-
-            languageOptions.forEach((option) => {
-                option.classList.toggle('active', option.dataset.opcionIdioma === normalizedLanguage);
-            });
-        };
-
-        const readStoredLanguage = () => {
-            const storedLanguage = localStorage.getItem(LANGUAGE_KEY);
-            return storedLanguage === 'en' ? 'en' : 'es';
-        };
-
-        const setLanguageMenuExpanded = (isExpanded) => {
-            if (!languageMenu || !languageToggleButton) {
-                return;
-            }
-
-            languageMenu.classList.toggle('active', isExpanded);
-            languageToggleButton.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-        };
-
         const closeUserMenu = () => {
             if (!userPanel) {
                 return;
@@ -801,8 +326,6 @@
 
         renderSessionUser();
         applyTheme(readStoredTheme());
-        applyLanguage(readStoredLanguage());
-        setupSearchBar();
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
@@ -834,29 +357,6 @@
             });
         }
 
-        if (languageToggleButton) {
-            languageToggleButton.addEventListener('click', (event) => {
-                event.stopPropagation();
-                const willExpand = !languageMenu?.classList.contains('active');
-                setLanguageMenuExpanded(willExpand);
-            });
-        }
-
-        if (languageOptionsContainer) {
-            languageOptionsContainer.addEventListener('click', (event) => {
-                event.stopPropagation();
-            });
-        }
-
-        languageOptions.forEach((option) => {
-            option.addEventListener('click', () => {
-                const selectedLanguage = option.dataset.opcionIdioma === 'en' ? 'en' : 'es';
-                localStorage.setItem(LANGUAGE_KEY, selectedLanguage);
-                applyLanguage(selectedLanguage);
-                setLanguageMenuExpanded(false);
-            });
-        });
-
         if (!userPanel || !userTrigger) {
             return;
         }
@@ -879,7 +379,6 @@
                 const clickedTopTrigger = userTrigger.contains(event.target);
                 if (!clickedInsideProfileMenu && !clickedProfileTrigger && !clickedTopTrigger) {
                     sideProfile.classList.remove('active');
-                    setLanguageMenuExpanded(false);
                 }
             }
         });
@@ -888,12 +387,7 @@
             if (event.key === 'Escape') {
                 closeUserMenu();
                 sideProfile?.classList.remove('active');
-                setLanguageMenuExpanded(false);
             }
         });
     })();
 </script>
-
-
-
-
