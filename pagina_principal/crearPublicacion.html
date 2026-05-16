@@ -16,7 +16,7 @@
             <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
-            <h1 class="page-title">Crear Publicación</h1>
+            <h1 class="page-title" data-i18n="create.title">Crear Publicación</h1>
             <div class="spacer"></div>
         </div>
     </header>
@@ -26,12 +26,13 @@
             <form id="postForm" class="post-form">
                 <!-- Título -->
                 <div class="form-group">
-                    <label for="titulo">Título de la publicación *</label>
+                    <label for="titulo" data-i18n="form.title.label">Título de la publicación *</label>
                     <input 
                         type="text" 
                         id="titulo" 
                         name="titulo" 
                         placeholder="Ej: Los mejores juegos de 2026"
+                        data-i18n="placeholder.title"
                         required
                         maxlength="100"
                     >
@@ -40,12 +41,13 @@
 
                 <!-- Encabezado/Resumen -->
                 <div class="form-group">
-                    <label for="encabezado">Encabezado o resumen *</label>
+                    <label for="encabezado" data-i18n="form.heading.label">Encabezado o resumen *</label>
                     <input 
                         type="text" 
                         id="encabezado" 
                         name="encabezado" 
                         placeholder="Breve descripción que aparecerá en la vista previa"
+                        data-i18n="placeholder.heading"
                         required
                         maxlength="200"
                     >
@@ -54,7 +56,7 @@
 
                 <!-- Categoría -->
                 <div class="form-group">
-                    <label for="categoria">Categoría *</label>
+                    <label for="categoria" data-i18n="form.category.label">Categoría *</label>
                     <select id="categoria" name="categoria" required>
                         <option value="">-- Selecciona una categoría --</option>
                         <option value="guias">Guías</option>
@@ -70,7 +72,7 @@
 
                 <!-- Imagen Principal -->
                 <div class="form-group">
-                    <label for="imagenPrincipal">Imagen principal (portada)</label>
+                    <label for="imagenPrincipal" data-i18n="form.image.label">Imagen principal (portada)</label>
                     <div class="image-upload">
                         <input 
                             type="file" 
@@ -80,7 +82,7 @@
                         >
                         <label for="imagenPrincipal" class="upload-label">
                             <i class="fas fa-image"></i>
-                            <span>Haz clic para subir imagen</span>
+                            <span data-i18n="upload.click.image">Haz clic para subir imagen</span>
                         </label>
                     </div>
                     <div id="imagenPreview" class="image-preview"></div>
@@ -88,7 +90,7 @@
 
                 <!-- Galería de Imágenes -->
                 <div class="form-group">
-                    <label for="imagenGaleria">Galería de imágenes (múltiples)</label>
+                    <label for="imagenGaleria" data-i18n="form.gallery.label">Galería de imágenes (múltiples)</label>
                     <div class="image-upload multiple">
                         <input 
                             type="file" 
@@ -99,7 +101,7 @@
                         >
                         <label for="imagenGaleria" class="upload-label">
                             <i class="fas fa-images"></i>
-                            <span>Haz clic para subir múltiples imágenes</span>
+                            <span data-i18n="upload.click.images">Haz clic para subir múltiples imágenes</span>
                         </label>
                     </div>
                     <div id="galeriaPreview" class="gallery-preview"></div>
@@ -107,7 +109,7 @@
 
                 <!-- Enlaces -->
                 <div class="form-group">
-                    <label>Enlaces útiles</label>
+                    <label data-i18n="form.links.label">Enlaces útiles</label>
                     <div id="linksContainer">
                         <div class="link-input-group">
                             <input 
@@ -127,17 +129,18 @@
                         </div>
                     </div>
                     <button type="button" class="btn-add-link" onclick="addLink()">
-                        <i class="fas fa-plus"></i> Agregar enlace
+                        <i class="fas fa-plus"></i> <span data-i18n="form.link.add">Agregar enlace</span>
                     </button>
                 </div>
 
                 <!-- Contenido de la Publicación -->
                 <div class="form-group">
-                    <label for="contenido">Desarrollo textual de la publicación *</label>
+                    <label for="contenido" data-i18n="form.content.label">Desarrollo textual de la publicación *</label>
                     <textarea 
                         id="contenido" 
                         name="contenido" 
                         placeholder="Escribe el contenido completo de tu publicación aquí..."
+                        data-i18n="placeholder.content"
                         required
                         rows="15"
                         maxlength="5000"
@@ -148,10 +151,10 @@
                 <!-- Botones de Acción -->
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-                        <i class="fas fa-arrow-left"></i> Cancelar
+                        <i class="fas fa-arrow-left"></i> <span data-i18n="create.cancel">Cancelar</span>
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-check"></i> Publicar
+                        <i class="fas fa-check"></i> <span data-i18n="create.publicar">Publicar</span>
                     </button>
                 </div>
             </form>
@@ -325,9 +328,21 @@
             posts.push(post);
             localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
 
+            // Also save a per-user posts key so profile pages can read user-specific posts
+            try {
+                const userKey = `hiddenstagePosts_${userData.id || userData.username}`;
+                const userPostsRaw = localStorage.getItem(userKey);
+                const userPosts = userPostsRaw ? JSON.parse(userPostsRaw) : [];
+                userPosts.push(post);
+                localStorage.setItem(userKey, JSON.stringify(userPosts));
+            } catch (err) {
+                // ignore storage errors
+            }
+
             alert('¡Publicación creada exitosamente!');
             window.location.href = 'pagina_principal.html#' + post.categoria;
         });
-    </script>
+</script>
+<script src="../js/lang.js"></script>
 </body>
 </html>

@@ -166,17 +166,16 @@
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
                 document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
-            };
+            });
+        }
 
-            applyTheme();
-
+        if (profilePhotoEditBtn && profilePhotoInput) {
             let currentUser = null;
             let currentPhotoValue = '';
             let currentBannerValue = '';
+            }
+        }
 
-            const renderProfilePhoto = (photoValue) => {
-                if (!profilePhotoPreview) {
-                    return;
                 }
 
                 if (photoValue) {
@@ -412,5 +411,6 @@
             }
         })();
     </script>
+    <script src="../js/lang.js"></script>
 </body>
 </html>

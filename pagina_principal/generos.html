@@ -18,7 +18,8 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <input type="search" id="postSearchInput" placeholder="Buscar..." aria-label="Buscar contenido">
+                <div id="postSearchResults" class="post-search-results" aria-live="polite"></div>
             </div>
 
             <div class="user-panel">
@@ -42,25 +43,27 @@
             </div>
         </div>
     </header>
-<nav class="nav-bar">
-    <a href="#paginaprincipal" onclick="Volver(); return false;"><i class="fas fa-house"></i> Inicio</a>
-    <a href="#accion"><i class="fas fa-bolt"></i> Accion</a>
-    <a href="#aventuras"><i class="fas fa-compass"></i> Aventuras</a>
-    <a href="#carrera"><i class="fas fa-flag-checkered"></i> Carreras</a>
-    <a href="#plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
-    <a href="#romances"><i class="fas fa-heart"></i> Romance</a>
-    <a href="#porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
-</nav>
+<div class="page-shell">
+    <nav class="nav-bar">
+        <a href="#paginaprincipal" onclick="Volver(); return false;" data-i18n="nav.inicio"><i class="fas fa-house"></i> Inicio</a>
+        <a href="#accion" data-i18n="genre.accion"><i class="fas fa-bolt"></i> Accion</a>
+        <a href="#aventuras" data-i18n="genre.aventuras"><i class="fas fa-compass"></i> Aventuras</a>
+        <a href="#carrera" data-i18n="genre.carreras"><i class="fas fa-flag-checkered"></i> Carreras</a>
+        <a href="#plataformas" data-i18n="genre.plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
+        <a href="#romances" data-i18n="genre.romance"><i class="fas fa-heart"></i> Romance</a>
+        <a href="#porturnos" data-i18n="genre.porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
+    </nav>
+</div>
 <div id="sideMenu" class="side-menu">
     <div class="menu-header">
         <img src="../img/LogoHS.png" onclick="Menu()">
         <i class="fas fa-times close-icon" onclick="Menu()"></i>
     </div>
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="pagina_principal.html#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="pagina_principal.html#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="pagina_principal.html#reciente"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="pagina_principal.html#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="pagina_principal.html#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
     <a href="#"><i class="fas fa-comments"></i> Foro</a>
 </div>
 <div id="sideProfile" class="side-profile">
@@ -76,20 +79,33 @@
             <span data-side-handle>@hiddenstage</span>
         </div>
     </div>
-    <span class="menu-section-title">Cuenta</span>
-    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+    <span class="menu-section-title" data-i18n="menu.cuenta">Cuenta</span>
+    <a href="../perfil/perfil.html" data-i18n="menu.tu_perfil"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="../configuracion/configuracion.html" data-i18n="menu.ajustes"><i class="fas fa-cog"></i> Ajustes</a>
     <button type="button" class="theme-toggle-link" data-theme-toggle>
         <i class="fas fa-moon" data-theme-icon></i>
-        <span data-theme-label>Tema oscuro</span>
+        <span data-theme-label data-i18n="menu.tema">Tema oscuro</span>
     </button>
-    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-    <span class="menu-section-title">Sesión</span>
-    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    <a href="../inicio_de_sesion/index.html" class="side-link-muted" data-i18n="menu.cambiar_cuenta"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+
+    <span class="menu-section-title" data-i18n="menu.idioma">Idioma</span>
+    <div class="language-selector">
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="es" onclick="setLanguage('es')">
+            <i class="fas fa-globe"></i>
+            <span>Español</span>
+        </button>
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="en" onclick="setLanguage('en')">
+            <i class="fas fa-globe"></i>
+            <span>English</span>
+        </button>
+    </div>
+
+    <span class="menu-section-title" data-i18n="menu.sesion">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link data-i18n="menu.cerrar_sesion"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="#" onclick="AjustesPerfil()" data-i18n="menu.regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
 </div>
 <section id="accion" class="Accion">
-    <h2><i class="fas fa-bolt"></i> ACCION </h2>
+    <h2 data-i18n="genre.accion"><i class="fas fa-bolt"></i> ACCION </h2>
         <div class="cards">
 
         <div class="card">
@@ -107,7 +123,7 @@
 </section>
 
 <section id="aventuras" class="Aventuras">
-    <h2><i class="fas fa-compass"></i> AVENTURA </h2>
+    <h2 data-i18n="genre.aventuras"><i class="fas fa-compass"></i> AVENTURA </h2>
         <div class="cards">
 
         <div class="card">
@@ -125,7 +141,7 @@
 </section>
 
 <section id="carrera" class="Carreras">
-    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+    <h2 data-i18n="genre.carreras"><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
         <div class="cards">
 
         <div class="card">
@@ -143,7 +159,7 @@
 </section>
 
 <section id="plataformas" class="Plataformas">
-    <h2><i class="fas fa-layer-group"></i> PLATAFORMAS </h2>
+    <h2 data-i18n="genre.plataformas"><i class="fas fa-layer-group"></i> PLATAFORMAS </h2>
         <div class="cards">
 
         <div class="card">
@@ -161,7 +177,7 @@
 </section>
 
 <section id="romances" class="Romance">
-    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
+    <h2 data-i18n="genre.romance"><i class="fas fa-heart"></i> ROMANCE </h2>
         <div class="cards">
 
         <div class="card">
@@ -179,7 +195,7 @@
 </section>
 
 <section id="porturnos" class="PorTurnos">
-    <h2><i class="fas fa-chess-board"></i> POR TURNOS </h2>
+    <h2 data-i18n="genre.porturnos"><i class="fas fa-chess-board"></i> POR TURNOS </h2>
         <div class="cards">
 
         <div class="card">
@@ -390,4 +406,68 @@
             }
         });
     })();
-</script>
+    </script>
+    <script src="search.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => { if(window.setupPostSearch) setupPostSearch(); });</script>
+    <script>
+        // Load posts for each genre section from all hiddenstagePosts* keys
+        (function(){
+            const getAllPosts = () => {
+                try {
+                    const aggregated = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (!key) continue;
+                        if (/^hiddenstagePosts(?:_.*)?$/.test(key)) {
+                            try {
+                                const raw = localStorage.getItem(key);
+                                const parsed = raw ? JSON.parse(raw) : [];
+                                if (Array.isArray(parsed)) parsed.forEach(p=>aggregated.push(p));
+                            } catch(e){}
+                        }
+                    }
+                    return aggregated;
+                } catch(e){ return []; }
+            };
+
+            const categories = ['accion','aventuras','carrera','plataformas','romances','porturnos'];
+
+            const renderCategory = (categoryId) => {
+                const section = document.getElementById(categoryId);
+                if (!section) return;
+                const cards = section.querySelector('.cards');
+                if (!cards) return;
+                cards.innerHTML = '';
+                const posts = getAllPosts().filter(p => (p.categoria || p.categoria === '') && String(p.categoria) === String(categoryId));
+                if (!posts.length) {
+                    cards.innerHTML = '<p data-i18n="no.posts.category" style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card';
+                    card.onclick = () => window.location.href = `../pagina_principal/publicacion.html?id=${post.id || post.sql_post_id}`;
+                    const img = post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="">` : '';
+                    const titulo = post.titulo || post.title || 'Sin título';
+                    const encabezado = post.encabezado || post.contenido || post.content || '';
+                    card.innerHTML = `
+                        ${img}
+                        <div class="post-info">
+                            <h4>${titulo}</h4>
+                            <p>${encabezado}</p>
+                        </div>
+                    `;
+                    // NOTE: delete controls removed from genre listing by user request
+                    cards.appendChild(card);
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', () => {
+                categories.forEach(renderCategory);
+            });
+        })();
+    </script>
+    <script src="../js/lang.js"></script>
+</body>
+</html>

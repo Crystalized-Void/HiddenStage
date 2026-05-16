@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
                 <div id="postSearchResults" class="post-search-results" aria-live="polite"></div>
             </div>
 
-            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
+            <button type="button" class="create-post-btn" data-i18n-title="modal.create_post" data-i18n-aria="modal.create_post" onclick="toggleCreateModal()">
                 <i class="fas fa-plus"></i>
             </button>
 
@@ -49,26 +49,26 @@
     </header>
 <div class="page-shell">
 <nav class="nav-bar">
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#inicio" data-i18n="nav.inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia" data-i18n="nav.relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente" data-i18n="nav.nuevo"><i class="fas fa-clock"></i> Nuevo</a>
+    <a href="#guias" data-i18n="nav.guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos" data-i18n="nav.trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#" data-i18n="nav.foro"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html" data-i18n="nav.generos"><i class="fas fa-gamepad"></i> Géneros</a>
 </nav>
 <div id="sideMenu" class="side-menu">
     <div class="menu-header">
         <img src="../img/LogoHS.png" onclick="Menu()">
         <i class="fas fa-times close-icon" onclick="Menu()"></i>
     </div>
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#inicio" data-i18n="nav.inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia" data-i18n="nav.relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente" data-i18n="nav.nuevo"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias" data-i18n="nav.guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos" data-i18n="nav.trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#" data-i18n="nav.foro"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html" data-i18n="nav.generos"><i class="fas fa-gamepad"></i> Géneros</a>
 </div>
 <div id="sideProfile" class="side-profile">
     <div class="menu-header">
@@ -83,17 +83,30 @@
             <span data-side-handle>@hiddenstage</span>
         </div>
     </div>
-    <span class="menu-section-title">Cuenta</span>
-    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+    <span class="menu-section-title" data-i18n="menu.cuenta">Cuenta</span>
+    <a href="../perfil/perfil.html" data-i18n="menu.tu_perfil"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="../configuracion/configuracion.html" data-i18n="menu.ajustes"><i class="fas fa-cog"></i> Ajustes</a>
     <button type="button" class="theme-toggle-link" data-theme-toggle>
         <i class="fas fa-moon" data-theme-icon></i>
-        <span data-theme-label>Tema oscuro</span>
+        <span data-theme-label data-i18n="menu.tema">Tema oscuro</span>
     </button>
-    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-    <span class="menu-section-title">Sesión</span>
-    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    <a href="../inicio_de_sesion/index.html" class="side-link-muted" data-i18n="menu.cambiar_cuenta"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+
+    <span class="menu-section-title" data-i18n="menu.idioma">Idioma</span>
+    <div class="language-selector">
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="es" onclick="setLanguage('es')">
+            <i class="fas fa-globe"></i>
+            <span>Español</span>
+        </button>
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="en" onclick="setLanguage('en')">
+            <i class="fas fa-globe"></i>
+            <span>English</span>
+        </button>
+    </div>
+
+    <span class="menu-section-title" data-i18n="menu.sesion">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link data-i18n="menu.cerrar_sesion"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="#" onclick="AjustesPerfil()" data-i18n="menu.regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
 </div>
     
 <main id="relevancia" class="container">
@@ -132,7 +145,7 @@
 </main>
 
 <section class="Populares">
-    <h2><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
+    <h2 data-i18n="section.populars"><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
         <div class="cards">
 
         <div class="card">
@@ -150,7 +163,7 @@
 </section>
 
 <section id="reciente" class="Recientes">
-    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+    <h2 data-i18n="section.new"><i class="fas fa-newspaper"></i> NOVEDADES </h2>
         <div class="cards">
 
         <div class="card">
@@ -168,7 +181,7 @@
 </section>
 
 <section id="guias" class="Guias">
-    <h2><i class="fas fa-book"></i> GUIAS </h2>
+    <h2 data-i18n="section.guides"><i class="fas fa-book"></i> GUIAS </h2>
         <div class="cards">
 
         <div class="card">
@@ -186,7 +199,7 @@
 </section>
 
 <section id="trucos" class="Trucos">
-    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
+    <h2 data-i18n="section.tips"><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
     <div class="cards">
 
         <div class="card">
@@ -204,7 +217,7 @@
 </section>
 
 <section id="carreras" class="Carreras">
-    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+    <h2 data-i18n="genre.carreras"><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -222,7 +235,7 @@
 </section>
 
 <section id="plataformas" class="Plataformas">
-    <h2><i class="fas fa-server"></i> PLATAFORMAS </h2>
+    <h2 data-i18n="genre.plataformas"><i class="fas fa-server"></i> PLATAFORMAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -240,7 +253,7 @@
 </section>
 
 <section id="romance" class="Romance">
-    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
+    <h2 data-i18n="genre.romance"><i class="fas fa-heart"></i> ROMANCE </h2>
     <div class="cards">
 
         <div class="card">
@@ -257,8 +270,8 @@
     </div>
 </section>
 
-<section id="porturnos" class="Porturnos">
-    <h2><i class="fas fa-mask"></i> POR TURNOS </h2>
+<section id="porturnos" class="PorTurnos">
+    <h2 data-i18n="genre.porturnos"><i class="fas fa-mask"></i> POR TURNOS </h2>
     <div class="cards">
 
         <div class="card">
@@ -276,7 +289,7 @@
 </section>
 
 <section id="accion" class="Accion">
-    <h2><i class="fas fa-explosion"></i> ACCIÓN </h2>
+    <h2 data-i18n="genre.accion"><i class="fas fa-explosion"></i> ACCIÓN </h2>
     <div class="cards">
 
         <div class="card">
@@ -294,7 +307,7 @@
 </section>
 
 <section id="aventuras" class="Aventuras">
-    <h2><i class="fas fa-map"></i> AVENTURAS </h2>
+    <h2 data-i18n="genre.aventuras"><i class="fas fa-map"></i> AVENTURAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -312,20 +325,19 @@
 </section>
 </div>
 
-<!-- Modal: Crear Publicación -->
 <div id="createModal" class="modal-create-post">
     <div class="modal-overlay" onclick="toggleCreateModal()"></div>
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Crear publicación</h2>
-            <button class="modal-close" onclick="toggleCreateModal()">
+            <h2 data-i18n="modal.create_post">Crear publicación</h2>
+            <button class="modal-close" data-i18n-title="modal.create_post" onclick="toggleCreateModal()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <button class="create-option" onclick="redirectToCreatePost()">
                 <i class="fas fa-pen"></i>
-                <span>Crear nota</span>
+                <span data-i18n="modal.create_note">Crear nota</span>
             </button>
         </div>
     </div>
@@ -381,13 +393,13 @@
             if (!cards) return;
 
             // Limpiar tarjetas existentes
-            cards.innerHTML = '';
+                cards.innerHTML = '';
 
             // Filtrar publicaciones por categoría
             const categoryPosts = posts.filter(p => p.categoria === category);
 
             if (categoryPosts.length === 0) {
-                cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+                cards.innerHTML = '<p data-i18n="no.posts.category" style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
                 return;
             }
 
@@ -413,6 +425,8 @@
                         </div>
                     </div>
                 `;
+
+                // NOTE: delete controls removed from main listing by user request
                 cards.appendChild(card);
             });
         });
@@ -471,6 +485,50 @@
             return compactText.length > 85 ? `${compactText.slice(0, 85)}...` : compactText;
         };
 
+
+        // --- Gestión de guardados (localStorage key: hiddenstageSaved) ---
+        const SAVED_KEY = 'hiddenstageSaved';
+
+        const getSavedIds = () => {
+            try {
+                return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        };
+
+        const isSaved = (postId) => getSavedIds().includes(String(postId));
+
+        const setSavedIds = (ids) => {
+            localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+            // Notificar cambios dentro de esta página y a otras pestañas
+            try {
+                window.dispatchEvent(new CustomEvent('hiddenstageSavedChanged', { detail: ids }));
+            } catch (e) {
+                // ignore
+            }
+        };
+
+        const toggleSavePost = (postId) => {
+            const storedUser = localStorage.getItem(SESSION_KEY);
+            if (!storedUser) {
+                alert('Debes iniciar sesión para guardar publicaciones');
+                window.location.href = '../inicio_de_sesion/index.html';
+                return false;
+            }
+
+            const idStr = String(postId);
+            const ids = getSavedIds();
+            const idx = ids.indexOf(idStr);
+            if (idx === -1) {
+                ids.push(idStr);
+            } else {
+                ids.splice(idx, 1);
+            }
+            setSavedIds(ids);
+            return ids.includes(idStr);
+        };
+
         const hideResults = () => {
             searchResults.classList.remove('active');
             searchResults.innerHTML = '';
@@ -483,6 +541,8 @@
                 return;
             }
 
+            const savedIds = getSavedIds();
+
             searchResults.innerHTML = matches
                 .slice(0, 6)
                 .map((post) => {
@@ -494,14 +554,21 @@
                         ? `<img src="${post.imagenPrincipal}" alt="${safeTitle}" class="search-result-thumb">`
                         : '<div class="search-result-thumb search-result-thumb-placeholder"><i class="fas fa-image" aria-hidden="true"></i></div>';
 
+                    const savedClass = savedIds.includes(String(post.id)) ? ' saved' : '';
+
                     return `
-                        <button type="button" class="search-result-item" data-post-id="${post.id}">
+                        <div class="search-result-item" data-post-id="${post.id}" role="button" tabindex="0">
                             ${imageMarkup}
                             <div class="search-result-text">
                                 <div class="search-result-title">${safeTitle}</div>
                                 <div class="search-result-excerpt">${safeExcerpt}</div>
                             </div>
-                        </button>
+                            <div class="search-result-actions">
+                                <button type="button" class="bookmark-btn${savedClass}" data-post-id="${post.id}" aria-label="Guardar publicación" title="Guardar">
+                                    <i class="${savedClass ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
                     `;
                 })
                 .join('');
@@ -531,6 +598,25 @@
         });
 
         searchResults.addEventListener('click', (event) => {
+            const bookmark = event.target.closest('.bookmark-btn');
+            if (bookmark) {
+                event.stopPropagation();
+                const postId = bookmark.dataset.postId;
+                if (!postId) return;
+                const nowSaved = toggleSavePost(postId);
+                // actualizar apariencia del botón
+                if (nowSaved) {
+                    bookmark.classList.add('saved');
+                    bookmark.querySelector('i')?.classList.remove('fa-regular');
+                    bookmark.querySelector('i')?.classList.add('fa-solid');
+                } else {
+                    bookmark.classList.remove('saved');
+                    bookmark.querySelector('i')?.classList.remove('fa-solid');
+                    bookmark.querySelector('i')?.classList.add('fa-regular');
+                }
+                return;
+            }
+
             const selected = event.target.closest('.search-result-item');
             if (!selected) {
                 return;
@@ -551,6 +637,20 @@
         });
 
         searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                hideResults();
+            }
+        });
+
+        // Soporte de teclado para resultados (Enter / Space abre la publicación)
+        searchResults.addEventListener('keydown', (event) => {
+            const focused = document.activeElement?.closest?.('.search-result-item') || document.activeElement;
+            if (!focused) return;
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const postId = focused.dataset?.postId;
+                if (postId) window.location.href = `publicacion.html?id=${postId}`;
+            }
             if (event.key === 'Escape') {
                 hideResults();
             }
@@ -743,5 +843,6 @@
         });
     })();
 </script>
+<script src="../js/lang.js"></script>
 </body>
 </html>

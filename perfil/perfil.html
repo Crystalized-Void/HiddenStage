@@ -18,7 +18,8 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <input type="search" id="postSearchInput" placeholder="Buscar..." aria-label="Buscar contenido">
+                <div id="postSearchResults" class="post-search-results" aria-live="polite"></div>
             </div>
 
             <div class="user-panel">
@@ -56,17 +57,30 @@
                 <span data-side-handle>@hiddenstage</span>
             </div>
         </div>
-        <span class="menu-section-title">Cuenta</span>
-        <a href="perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-        <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+        <span class="menu-section-title" data-i18n="menu.cuenta">Cuenta</span>
+        <a href="perfil.html" data-i18n="menu.tu_perfil"><i class="fas fa-user"></i> Tu perfil</a>
+        <a href="../configuracion/configuracion.html" data-i18n="menu.ajustes"><i class="fas fa-cog"></i> Ajustes</a>
         <button type="button" class="theme-toggle-link" data-theme-toggle>
             <i class="fas fa-moon" data-theme-icon></i>
-            <span data-theme-label>Tema oscuro</span>
+            <span data-theme-label data-i18n="menu.tema">Tema oscuro</span>
         </button>
-        <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-        <span class="menu-section-title">Sesión</span>
-        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-        <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+        <a href="../inicio_de_sesion/index.html" class="side-link-muted" data-i18n="menu.cambiar_cuenta"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+
+        <span class="menu-section-title" data-i18n="menu.idioma">Idioma</span>
+        <div class="language-selector">
+            <button type="button" class="theme-toggle-link lang-btn" data-lang="es" onclick="setLanguage('es')">
+                <i class="fas fa-globe"></i>
+                <span>Español</span>
+            </button>
+            <button type="button" class="theme-toggle-link lang-btn" data-lang="en" onclick="setLanguage('en')">
+                <i class="fas fa-globe"></i>
+                <span>English</span>
+            </button>
+        </div>
+
+        <span class="menu-section-title" data-i18n="menu.sesion">Sesión</span>
+        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link data-i18n="menu.cerrar_sesion"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        <a href="#" onclick="AjustesPerfil()" data-i18n="menu.regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
     </div>
 
     <main class="profile-page">
@@ -78,9 +92,9 @@
 
         <section class="profile-tabs-strip">
             <nav class="tabs">
-                <button type="button" class="tab active" data-tab="posts">POST</button>
-                <button type="button" class="tab" data-tab="coleccion">COLECCION</button>
-                <button type="button" class="tab" data-tab="guardados">GUARDADOS</button>
+                <button type="button" class="tab active" data-tab="posts" data-i18n="profile.tabs.posts">POST</button>
+                <button type="button" class="tab" data-tab="coleccion" data-i18n="profile.tabs.collection">COLECCION</button>
+                <button type="button" class="tab" data-tab="guardados" data-i18n="profile.tabs.saved">GUARDADOS</button>
             </nav>
         </section>
 
@@ -94,9 +108,9 @@
                 <h1 data-profile-name>Nombre de Usuario/Autor</h1>
                 <p class="handle" data-profile-handle>@example</p>
                 <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
-                <p class="joined">Se unió el 13 de febrero del 2026</p>
+                <p class="joined"><span data-i18n="profile.joined">Se unió el</span> <span data-join-date>13 de febrero del 2026</span></p>
 
-                <h2>Socials</h2>
+                <h2 data-i18n="profile.socials">Socials</h2>
                 <div class="social-grid">
                     <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
                     <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
@@ -107,8 +121,8 @@
 
                 <div class="following-box">
                     <div class="following-head">
-                        <h3>Seguidos:</h3>
-                        <a href="#">ver más</a>
+                        <h3 data-i18n="profile.following">Seguidos:</h3>
+                        <a href="#" data-i18n="profile.following.more">ver más</a>
                     </div>
                     <div class="following-list">
                         <div class="follow-item"><span></span>Usuario</div>
@@ -119,11 +133,11 @@
             </aside>
 
             <section class="profile-content">
-                <div class="tab-panel" data-panel="posts">
+                    <div class="tab-panel" data-panel="posts">
                     <div class="posts-toolbar">
                         <a class="create-post-btn" href="crear-post.html">
                             <i class="fa-solid fa-pen"></i>
-                            <span>Crear post en nueva página</span>
+                            <span data-i18n="profile.create_post_text">Crear post en nueva página</span>
                         </a>
                     </div>
 
@@ -132,7 +146,7 @@
 
                 <div class="tab-panel hidden" data-panel="coleccion">
                     <section class="collection-panel">
-                        <h3>COLECCION DE VIDEOJUEGOS</h3>
+                        <h3 data-i18n="profile.collection.title">COLECCION DE VIDEOJUEGOS</h3>
                         <div class="collection-grid">
                             <article class="collection-card"></article>
                             <article class="collection-card"></article>
@@ -167,6 +181,13 @@
     </main>
 
     <script>
+            // init shared search after loading shared script
+            (function(){
+                const script = document.createElement('script');
+                script.src = '../pagina_principal/search.js';
+                script.onload = () => { if(window.setupPostSearch) setupPostSearch(); };
+                document.body.appendChild(script);
+            })();
         function AjustesPerfil() {
             document.getElementById('sideProfile')?.classList.toggle('active');
         }
@@ -409,6 +430,23 @@
                 article.appendChild(textWrapper);
                 article.appendChild(thumb);
 
+                // actions (delete)
+                const actions = document.createElement('div');
+                actions.className = 'post-card-actions';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'btn btn-danger delete-post-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.title = (localStorage.getItem('hiddenstageLang') === 'en') ? 'Delete post' : 'Eliminar publicación';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleDeletePost(post);
+                });
+
+                actions.appendChild(deleteBtn);
+                article.appendChild(actions);
+
                 const media = Array.isArray(post?.media) ? post.media : [];
 
                 if (typeof post?.youtube_url === 'string' && post.youtube_url.trim()) {
@@ -467,6 +505,52 @@
                 return article;
             };
 
+            const handleDeletePost = (post) => {
+                try {
+                    const storedLang = localStorage.getItem('hiddenstageLang') || 'es';
+                    const confirmMsg = (window.translatePage && (function(){
+                        // use translations map if available
+                        try { return (window.translations && window.translations[storedLang] && window.translations[storedLang]['post.delete.confirm']) || null; } catch(e){return null}
+                    })()) || (storedLang === 'en' ? 'Delete this post? This cannot be undone.' : '¿Eliminar esta publicación? Esta acción no se puede deshacer.');
+
+                    if (!confirm(confirmMsg)) return;
+
+                    // If post seems to originate from SQL/backend, don't allow
+                    if (post && (post.source === 'sql' || post.sql_post_id)) {
+                        const msg = storedLang === 'en' ? 'Cannot delete a post originating from the database.' : 'No se puede eliminar una publicación proveniente de la base de datos.';
+                        alert(msg);
+                        return;
+                    }
+
+                    // remove from user's posts storage
+                    const storageKey = getPostsStorageKey();
+                    if (storageKey) {
+                        try {
+                            const raw = localStorage.getItem(storageKey);
+                            const arr = raw ? JSON.parse(raw) : [];
+                            const filtered = arr.filter(p => String(p.id) !== String(post.id));
+                            localStorage.setItem(storageKey, JSON.stringify(filtered));
+                        } catch (e) {}
+                    }
+
+                    // also remove from global hiddenstagePosts
+                    try {
+                        const rawAll = localStorage.getItem('hiddenstagePosts');
+                        const all = rawAll ? JSON.parse(rawAll) : [];
+                        const filteredAll = all.filter(p => String(p.id) !== String(post.id));
+                        localStorage.setItem('hiddenstagePosts', JSON.stringify(filteredAll));
+                    } catch (e) {}
+
+                    // update UI
+                    renderCustomPosts();
+
+                    const successMsg = storedLang === 'en' ? 'Post deleted' : 'Publicación eliminada';
+                    alert(successMsg);
+                } catch (e) {
+                    console.error('delete post', e);
+                }
+            };
+
             const renderCustomPosts = () => {
                 if (!postsList) {
                     return;
@@ -520,6 +604,126 @@
                         postsList.prepend(buildPostCard(post));
                     });
             };
+
+                // --- Guardados: leer ids guardadas y renderizar posts correspondientes ---
+                const SAVED_KEY = 'hiddenstageSaved';
+
+                const getGlobalPosts = () => {
+                    try {
+                        const aggregated = [];
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if (!key) continue;
+                            if (/^hiddenstagePosts(?:_.*)?$/.test(key)) {
+                                try {
+                                    const raw = localStorage.getItem(key);
+                                    const parsed = raw ? JSON.parse(raw) : [];
+                                    if (Array.isArray(parsed)) {
+                                        parsed.forEach(p => aggregated.push(p));
+                                    }
+                                } catch (err) {
+                                    // ignore malformed entries
+                                }
+                            }
+                        }
+
+                        return aggregated;
+                    } catch (e) {
+                        return [];
+                    }
+                };
+
+                const getSavedIds = () => {
+                    try {
+                        const raw = localStorage.getItem(SAVED_KEY);
+                        return raw ? JSON.parse(raw) : [];
+                    } catch (e) {
+                        return [];
+                    }
+                };
+
+                const renderSavedPanel = () => {
+                    const guardadosPanel = document.querySelector('[data-panel="guardados"] .post-list');
+                    if (!guardadosPanel) return;
+
+                    // Limpiar
+                    guardadosPanel.innerHTML = '';
+
+                    const savedIds = getSavedIds().map(String);
+                    if (!savedIds.length) {
+                        guardadosPanel.innerHTML = '<p style="color: var(--muted); padding: 24px; text-align: center;">No tienes publicaciones guardadas.</p>';
+                        return;
+                    }
+
+                    const globalPosts = getGlobalPosts();
+                    const matched = globalPosts.filter(p => {
+                        const pid = String(p?.id || p?.sql_post_id || p?.id_post || p?.idPost || '');
+                        return pid && savedIds.includes(pid);
+                    });
+
+                    matched.forEach((post) => {
+                        const article = document.createElement('article');
+                        article.className = 'post-card';
+
+                        const textDiv = document.createElement('div');
+                        textDiv.className = 'post-text';
+
+                        const h3 = document.createElement('h3');
+                        h3.textContent = post.titulo || post.title || 'Sin título';
+                        const p = document.createElement('p');
+                        p.textContent = (post.encabezado || post.contenido || post.content || '').slice(0, 180);
+
+                        textDiv.appendChild(h3);
+                        textDiv.appendChild(p);
+
+                        const thumb = document.createElement('div');
+                        thumb.className = 'post-thumb';
+                        if (post.imagenPrincipal) {
+                            thumb.style.backgroundImage = `url(${post.imagenPrincipal})`;
+                        }
+
+                        // Añadir botón para quitar guardado
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'bookmark-btn saved';
+                        removeBtn.title = 'Quitar guardado';
+                        removeBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+                        removeBtn.addEventListener('click', (ev) => {
+                            ev.stopPropagation();
+                            const ids = getSavedIds().map(String);
+                            const idx = ids.indexOf(String(post.id));
+                            if (idx !== -1) {
+                                ids.splice(idx, 1);
+                                localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+                                renderSavedPanel();
+                            }
+                        });
+
+                        article.appendChild(textDiv);
+                        article.appendChild(thumb);
+                        article.appendChild(removeBtn);
+
+                        // click en la tarjeta abre la publicación
+                        article.addEventListener('click', () => {
+                            const id = post.id || post.sql_post_id || post.id_post;
+                            if (id) window.location.href = `../pagina_principal/publicacion.html?id=${id}`;
+                        });
+
+                        guardadosPanel.appendChild(article);
+                    });
+                };
+
+                // Render inicial y actualización al cambiar storage
+                renderSavedPanel();
+                window.addEventListener('storage', (e) => {
+                    if (e.key === SAVED_KEY || e.key === 'hiddenstagePosts') {
+                        renderSavedPanel();
+                    }
+                });
+                // Escuchar evento personalizado para cambios inmediatos
+                window.addEventListener('hiddenstageSavedChanged', () => {
+                    renderSavedPanel();
+                });
 
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
 
@@ -678,6 +882,7 @@
                 });
             }
         })();
-    </script>
+</script>
+<script src="../js/lang.js"></script>
 </body>
 </html>

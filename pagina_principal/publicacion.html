@@ -17,6 +17,12 @@
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
             <div class="spacer"></div>
+            <div class="topbar-actions">
+                <select id="langSelector" class="lang-select" aria-label="Seleccionar idioma">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                </select>
+            </div>
             <button type="button" class="back-btn" onclick="window.history.back()" title="Volver">
                 <i class="fas fa-arrow-left"></i>
             </button>
@@ -39,6 +45,8 @@
                         </div>
                     </div>
                     <a id="categoryTag" href="#" class="category-tag">Categoría</a>
+                    <!-- Contenedor para acciones de la publicación (editar, etc.) -->
+                    <div id="postActions" class="post-actions" aria-hidden="true"></div>
                 </div>
 
                 <!-- Título y Encabezado -->
@@ -70,7 +78,7 @@
 
             <!-- Sección de Interacciones -->
             <section class="community-section">
-                <h2>¿Qué opina la comunidad?</h2>
+                <h2 data-i18n="section.community">¿Qué opina la comunidad?</h2>
 
                 <!-- Botones de Reacción -->
                 <div class="reaction-bar">
@@ -91,7 +99,7 @@
 
                 <!-- Comentarios -->
                 <div class="comments-container">
-                    <h3>Comunidad</h3>
+                    <h3 data-i18n="section.community_short">Comunidad</h3>
                     <div id="commentList" class="comment-list">
                         <!-- Los comentarios se cargarán aquí -->
                     </div>
@@ -99,18 +107,17 @@
 
                 <!-- Formulario de Comentario -->
                 <div class="comment-form">
-                    <h3>Escribe un comentario</h3>
-                    <p class="logged-user">Comentando como: <strong id="displayUserName">Invitado</strong></p>
+                    <h3 data-i18n="comment.write_title">Escribe un comentario</h3>
+                        <p class="logged-user"><span data-i18n="comment.logged_as">Comentando como:</span> <strong id="displayUserName">Invitado</strong></p>
                     <textarea 
                         id="userComment" 
-                        placeholder="Escribe tu comentario aquí..." 
+                            placeholder="Escribe tu comentario aquí..." 
+                            data-i18n="comment.placeholder"
                         rows="4"
                         maxlength="500"
                     ></textarea>
                     <small id="commentCharCount">0/500</small>
-                    <button onclick="postComment()" class="btn btn-primary">
-                        <i class="fas fa-paper-plane"></i> Publicar comentario
-                    </button>
+                        <button onclick="postComment()" class="btn btn-primary"><i class="fas fa-paper-plane"></i> <span data-i18n="comment.post_button">Publicar comentario</span></button>
                 </div>
             </section>
         </div>
@@ -253,6 +260,8 @@
             }
 
             window.currentPost = post;
+            // Crear botón de editar si el usuario actual es el autor
+            try { createEditButtonIfAllowed(); } catch(e) { /* ignore if not defined yet */ }
         };
 
         // Formatear fecha
@@ -503,6 +512,345 @@
 
         // Cargar publicación al iniciar
         loadPost();
+
+        // --- Edición en línea de la publicación ---
+        const createEditButtonIfAllowed = () => {
+            const sessionUser = getSessionUser();
+            if (!window.currentPost || !sessionUser) return;
+            if (sessionUser.username !== window.currentPost.username) return; // solo autor
+
+            const actions = document.getElementById('postActions');
+            if (!actions) return;
+
+            // Evitar crear botón duplicado
+            if (document.getElementById('editPostBtn')) return;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = 'editPostBtn';
+            btn.className = 'edit-btn';
+            btn.title = 'Editar publicación';
+            btn.innerHTML = '<i class="fas fa-pen"></i>';
+            btn.addEventListener('click', enterEditMode);
+            actions.appendChild(btn);
+            // delete button
+            if (!document.getElementById('deletePostBtn')) {
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.id = 'deletePostBtn';
+                del.className = 'delete-btn';
+                del.innerHTML = '<i class="fas fa-trash"></i>';
+                // keep accessible tooltip translated
+                del.title = (localStorage.getItem('hiddenstageLang') === 'en') ? 'Delete post' : 'Eliminar publicación';
+                del.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // delete current post
+                    try {
+                        const storedLang = localStorage.getItem('hiddenstageLang') || 'es';
+                        const confirmMsg = (storedLang === 'en') ? (window.translations && window.translations.en && window.translations.en['post.delete.confirm'] ? window.translations.en['post.delete.confirm'] : 'Delete this post? This cannot be undone.') : (window.translations && window.translations.es && window.translations.es['post.delete.confirm'] ? window.translations.es['post.delete.confirm'] : '¿Eliminar esta publicación? Esta acción no se puede deshacer.');
+                        if (!confirm(confirmMsg)) return;
+
+                        // protect sql posts
+                        if (window.currentPost && (window.currentPost.source === 'sql' || window.currentPost.sql_post_id)) {
+                            const msg = storedLang === 'en' ? 'Cannot delete a post originating from the database.' : 'No se puede eliminar una publicación proveniente de la base de datos.';
+                            alert(msg);
+                            return;
+                        }
+
+                        const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+                        const filtered = posts.filter(p => String(p.id) !== String(window.currentPost.id));
+                        localStorage.setItem(POSTS_KEY, JSON.stringify(filtered));
+
+                        // remove from user's per-key
+                        try {
+                            const sess = getSessionUser();
+                            if (sess) {
+                                const userKey = `hiddenstagePosts_${sess.id || sess.username || ''}`;
+                                const raw = localStorage.getItem(userKey);
+                                if (raw) {
+                                    const arr = JSON.parse(raw) || [];
+                                    const newArr = arr.filter(p => String(p.id) !== String(window.currentPost.id));
+                                    localStorage.setItem(userKey, JSON.stringify(newArr));
+                                }
+                            }
+                        } catch (e) {}
+
+                        alert(storedLang === 'en' ? 'Post deleted' : 'Publicación eliminada');
+                        // Redirect back to listing
+                        window.location.href = 'pagina_principal.html#' + (window.currentPost?.categoria || '');
+                    } catch (e) { console.error(e); }
+                });
+                actions.appendChild(del);
+            }
+            actions.setAttribute('aria-hidden', 'false');
+        };
+
+        const enterEditMode = () => {
+            if (!window.currentPost) return;
+
+            // Reemplazar título
+            const titleEl = document.getElementById('postTitle');
+            const headingEl = document.getElementById('postHeading');
+            const contentEl = document.getElementById('postContentText');
+
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.id = 'editTitle';
+            titleInput.className = 'editor-input';
+            titleInput.value = window.currentPost.titulo || '';
+
+            const headingInput = document.createElement('input');
+            headingInput.type = 'text';
+            headingInput.id = 'editHeading';
+            headingInput.className = 'editor-input';
+            headingInput.value = window.currentPost.encabezado || '';
+
+            // Selector de archivo para imagen principal con vista previa
+            const imageFileInput = document.createElement('input');
+            imageFileInput.type = 'file';
+            imageFileInput.accept = 'image/*';
+            imageFileInput.id = 'editImageFile';
+            imageFileInput.className = 'hidden-file-input';
+
+            const fileWrapper = document.createElement('div');
+            fileWrapper.className = 'file-input-wrapper';
+
+            const fileBtn = document.createElement('label');
+            fileBtn.className = 'file-btn';
+            fileBtn.htmlFor = 'editImageFile';
+            fileBtn.innerHTML = '<i class="fas fa-upload"></i> Seleccionar imagen';
+
+            const imgPreview = document.createElement('img');
+            imgPreview.id = 'editImagePreview';
+            imgPreview.className = 'edit-image-preview';
+            if (window.currentPost.imagenPrincipal) imgPreview.src = window.currentPost.imagenPrincipal;
+
+            // Leer archivo y mostrar preview como data URL
+            imageFileInput.addEventListener('change', (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    imgPreview.src = reader.result;
+                    imgPreview.dataset.uploaded = '1';
+                };
+                reader.readAsDataURL(f);
+            });
+
+            fileWrapper.appendChild(fileBtn);
+            fileWrapper.appendChild(imageFileInput);
+
+            const textarea = document.createElement('textarea');
+            textarea.id = 'editContent';
+            textarea.className = 'editor-textarea';
+            textarea.rows = 10;
+            textarea.value = window.currentPost.contenido || '';
+
+            const galleryTextarea = document.createElement('textarea');
+            galleryTextarea.id = 'editGalleryUrls';
+            galleryTextarea.className = 'editor-textarea';
+            galleryTextarea.rows = 4;
+            galleryTextarea.placeholder = 'Una URL por línea para la galería (opcional)';
+            galleryTextarea.value = (Array.isArray(window.currentPost.imagenGaleria) ? window.currentPost.imagenGaleria.join('\n') : '');
+
+            const linksTextarea = document.createElement('textarea');
+            linksTextarea.id = 'editLinks';
+            linksTextarea.className = 'editor-textarea';
+            linksTextarea.rows = 4;
+            linksTextarea.placeholder = "Formato: Título|https://... (una por línea)";
+            linksTextarea.value = (Array.isArray(window.currentPost.links) ? window.currentPost.links.map(l => `${l.title}|${l.url}`).join('\n') : '');
+
+            // Reemplazar nodos
+            titleEl.replaceWith(titleInput);
+            headingEl.replaceWith(headingInput);
+            // Insertar inputs en orden: imagen, contenido, galería, enlaces
+            contentEl.innerHTML = '';
+            const imgLabel = document.createElement('div');
+            imgLabel.className = 'editor-label';
+            imgLabel.textContent = 'Imagen principal';
+            contentEl.appendChild(imgLabel);
+            contentEl.appendChild(fileWrapper);
+            contentEl.appendChild(imgPreview);
+
+            const contentLabel = document.createElement('div');
+            contentLabel.className = 'editor-label';
+            contentLabel.textContent = 'Contenido';
+            contentEl.appendChild(contentLabel);
+            contentEl.appendChild(textarea);
+
+            const galleryLabel = document.createElement('div');
+            galleryLabel.className = 'editor-label';
+            galleryLabel.textContent = 'Galería (URLs)';
+            contentEl.appendChild(galleryLabel);
+            contentEl.appendChild(galleryTextarea);
+
+            const linksLabel = document.createElement('div');
+            linksLabel.className = 'editor-label';
+            linksLabel.textContent = 'Enlaces (Título|URL)';
+            contentEl.appendChild(linksLabel);
+            contentEl.appendChild(linksTextarea);
+
+            // Añadir controles de acción
+            const actionsContainer = document.createElement('div');
+            actionsContainer.id = 'editControls';
+            actionsContainer.className = 'editor-actions';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.type = 'button';
+            saveBtn.className = 'btn btn-primary';
+            saveBtn.id = 'saveEditBtn';
+            saveBtn.innerHTML = '<i class="fas fa-check"></i> Guardar';
+            saveBtn.addEventListener('click', saveEdits);
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-secondary';
+            cancelBtn.id = 'cancelEditBtn';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.addEventListener('click', cancelEditMode);
+
+            actionsContainer.appendChild(cancelBtn);
+            actionsContainer.appendChild(saveBtn);
+
+            contentEl.parentNode.insertBefore(actionsContainer, contentEl.nextSibling);
+
+            // Focus en el título
+            titleInput.focus();
+        };
+
+        const saveEdits = () => {
+            const titleInput = document.getElementById('editTitle');
+            const headingInput = document.getElementById('editHeading');
+            const textarea = document.getElementById('editContent');
+            // nota: el input URL antiguo fue reemplazado por selector de archivo
+            const galleryTextarea = document.getElementById('editGalleryUrls');
+            const linksTextarea = document.getElementById('editLinks');
+            if (!titleInput || !headingInput || !textarea) return;
+
+            const newTitle = titleInput.value.trim();
+            const newHeading = headingInput.value.trim();
+            const newContent = textarea.value;
+
+            if (!newTitle) {
+                alert('El título no puede quedar vacío');
+                titleInput.focus();
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            const idx = posts.findIndex(p => Number(p.id) === Number(window.currentPost.id));
+            if (idx === -1) return;
+
+            posts[idx].titulo = newTitle;
+            posts[idx].encabezado = newHeading;
+            posts[idx].contenido = newContent;
+            // Si el usuario subió una imagen, usarla (data URL). Si no, mantener la preview/src actual si hay.
+            const imgPreview = document.getElementById('editImagePreview');
+            if (imgPreview && imgPreview.dataset.uploaded === '1') {
+                posts[idx].imagenPrincipal = imgPreview.src || '';
+            } else if (imgPreview && imgPreview.src) {
+                posts[idx].imagenPrincipal = imgPreview.src || '';
+            } else {
+                posts[idx].imagenPrincipal = '';
+            }
+            // Galería: una URL por línea
+            const galleryLines = (galleryTextarea?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+            posts[idx].imagenGaleria = galleryLines;
+            // Enlaces: formato Título|URL por línea
+            const linkLines = (linksTextarea?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+            posts[idx].links = linkLines.map(line => {
+                const parts = line.split('|');
+                if (parts.length >= 2) return { title: parts[0].trim(), url: parts.slice(1).join('|').trim() };
+                return { title: line, url: line };
+            });
+
+            localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+            window.currentPost = posts[idx];
+
+            // Restaurar nodos principales si estamos en modo edición, antes de recargar
+            try {
+                const currentTitleInput = document.getElementById('editTitle');
+                if (currentTitleInput) {
+                    const titleH = document.createElement('h1');
+                    titleH.id = 'postTitle';
+                    titleH.textContent = newTitle;
+                    currentTitleInput.replaceWith(titleH);
+                }
+
+                const currentHeadingInput = document.getElementById('editHeading');
+                if (currentHeadingInput) {
+                    const headingP = document.createElement('p');
+                    headingP.id = 'postHeading';
+                    headingP.className = 'post-heading';
+                    headingP.textContent = newHeading;
+                    currentHeadingInput.replaceWith(headingP);
+                }
+
+                const editControls = document.getElementById('editControls');
+                if (editControls) editControls.remove();
+                const fileWrapper = document.querySelector('.file-input-wrapper');
+                if (fileWrapper) fileWrapper.remove();
+                const imgPreview = document.getElementById('editImagePreview');
+                if (imgPreview) imgPreview.remove();
+                const galleryTextarea = document.getElementById('editGalleryUrls');
+                if (galleryTextarea) galleryTextarea.remove();
+                const linksTextarea = document.getElementById('editLinks');
+                if (linksTextarea) linksTextarea.remove();
+                const contentTextarea = document.getElementById('editContent');
+                if (contentTextarea) contentTextarea.remove();
+            } catch (e) {
+                // ignore DOM restore errors
+            }
+
+            // Recargar la vista para mostrar la publicación actualizada fuera del editor
+            loadPost();
+            try { alert('Publicación guardada'); } catch(e) { /* ignore */ }
+        };
+
+        const cancelEditMode = () => {
+            if (!window.currentPost) return;
+            // Restaurar vista sin guardar: reemplazar inputs por elementos originales
+            const titleInput = document.getElementById('editTitle');
+            const headingInput = document.getElementById('editHeading');
+            const contentEl = document.getElementById('postContentText');
+            const editControls = document.getElementById('editControls');
+
+            const titleH = document.createElement('h1');
+            titleH.id = 'postTitle';
+            titleH.textContent = window.currentPost.titulo || '';
+
+            const headingP = document.createElement('p');
+            headingP.id = 'postHeading';
+            headingP.className = 'post-heading';
+            headingP.textContent = window.currentPost.encabezado || '';
+
+            if (titleInput) titleInput.replaceWith(titleH);
+            if (headingInput) headingInput.replaceWith(headingP);
+
+            if (contentEl) {
+                // Restaurar contenido, galería y enlaces desde currentPost
+                contentEl.innerHTML = (window.currentPost.contenido || '').replace(/\n/g, '<br>');
+                // Restaurar imagen principal
+                if (window.currentPost.imagenPrincipal) {
+                    document.getElementById('imageSection').style.display = '';
+                    document.getElementById('mainImage').src = window.currentPost.imagenPrincipal;
+                } else {
+                    document.getElementById('imageSection').style.display = 'none';
+                }
+                // Restaurar galería y enlaces usando loadPost helper for consistency
+            }
+
+            if (editControls) editControls.remove();
+            // Recargar componentes dependientes (comentarios, likes, etc.)
+            try { loadPost(); } catch (e) { /* ignore */ }
+        };
+
+        // Crear botón editar cuando la publicación haya cargado y el usuario tenga permiso
+        document.addEventListener('DOMContentLoaded', () => {
+            // Si ya cargó la publicación, crear el botón
+            createEditButtonIfAllowed();
+        });
     </script>
+    <script src="../js/lang.js"></script>
 </body>
 </html>
