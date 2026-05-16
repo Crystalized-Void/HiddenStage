@@ -98,6 +98,7 @@ const hasRole = (user, allowedRoles) => {
 };
 
 const VALID_COMMENT_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
+const VALID_COMMENT_STATES = ['activo', 'oculto', 'eliminado'];
 const VALID_REACTION_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
 const VALID_REACTION_TYPES = ['like', 'hype'];
 
@@ -929,6 +930,181 @@ app.post('/api/comentarios', async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al crear comentario' });
+    }
+});
+
+app.get('/api/moderacion/comentarios', async (req, res) => {
+    try {
+        const { id_usuario, estado, tipo_contenido, id_contenido } = req.query || {};
+        const moderatorId = Number(id_usuario);
+        const normalizedEstado = typeof estado === 'string' ? estado.trim().toLowerCase() : '';
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+
+        if (!moderatorId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const moderator = await getUserWithRoleById(moderatorId);
+
+        if (!moderator) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderator, [3, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para moderar comentarios' });
+        }
+
+        const whereClauses = [];
+        const queryParams = [];
+
+        if (normalizedEstado) {
+            if (!VALID_COMMENT_STATES.includes(normalizedEstado)) {
+                return res.status(400).json({ message: "estado solo puede ser 'activo', 'oculto' o 'eliminado'" });
+            }
+
+            whereClauses.push('c.estado = ?');
+            queryParams.push(normalizedEstado);
+        }
+
+        if (normalizedContentType) {
+            if (!VALID_COMMENT_CONTENT_TYPES.includes(normalizedContentType)) {
+                return res.status(400).json({ message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'" });
+            }
+
+            whereClauses.push('c.tipo_contenido = ?');
+            queryParams.push(normalizedContentType);
+        }
+
+        if (contentId) {
+            whereClauses.push('c.id_contenido = ?');
+            queryParams.push(contentId);
+        }
+
+        const whereSql = whereClauses.length > 0 ? `AND ${whereClauses.join(' AND ')}` : '';
+
+        const [rows] = await pool.query(
+            `SELECT c.id_comentario, c.contenido, c.estado, c.tipo_contenido, c.id_contenido,
+                    c.created_at, c.updated_at, c.id_usuario,
+                    u.username, u.foto_perfil
+             FROM comentarios c
+             INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+             WHERE 1 = 1
+             ${whereSql}
+             ORDER BY c.created_at DESC`,
+            queryParams
+        );
+
+        return res.json({ comentarios: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener comentarios para moderación' });
+    }
+});
+
+app.patch('/api/moderacion/comentarios/:id/estado', async (req, res) => {
+    try {
+        const commentId = Number(req.params.id);
+        const { id_moderador, estado, detalle } = req.body || {};
+
+        const moderatorId = Number(id_moderador);
+        const normalizedEstado = typeof estado === 'string' ? estado.trim().toLowerCase() : '';
+        const normalizedDetalle = typeof detalle === 'string' ? detalle.trim() : '';
+
+        if (!commentId) {
+            return res.status(400).json({ message: 'id de comentario inválido' });
+        }
+
+        if (!moderatorId) {
+            return res.status(400).json({ message: 'id_moderador es obligatorio' });
+        }
+
+        if (!normalizedEstado) {
+            return res.status(400).json({ message: 'estado es obligatorio' });
+        }
+
+        if (!VALID_COMMENT_STATES.includes(normalizedEstado)) {
+            return res.status(400).json({ message: "estado solo puede ser 'activo', 'oculto' o 'eliminado'" });
+        }
+
+        const moderator = await getUserWithRoleById(moderatorId);
+
+        if (!moderator) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderator, [3, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para moderar comentarios' });
+        }
+
+        const [commentRows] = await pool.query(
+            `SELECT id_comentario, id_usuario, tipo_contenido, id_contenido, contenido, estado, created_at, updated_at
+             FROM comentarios
+             WHERE id_comentario = ?
+             LIMIT 1`,
+            [commentId]
+        );
+
+        if (commentRows.length === 0) {
+            return res.status(404).json({ message: 'Comentario no encontrado' });
+        }
+
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            await connection.query(
+                `UPDATE comentarios
+                 SET estado = ?
+                 WHERE id_comentario = ?
+                 LIMIT 1`,
+                [normalizedEstado, commentId]
+            );
+
+            const tipoAccion = normalizedEstado === 'oculto'
+                ? 'ocultar_comentario'
+                : normalizedEstado === 'eliminado'
+                    ? 'eliminar_comentario'
+                    : 'restaurar_comentario';
+
+            const detalleFinal = normalizedDetalle || `Comentario ${normalizedEstado}`;
+
+            await connection.query(
+                `INSERT INTO moderacion_historial (
+                    id_moderador,
+                    tipo_accion,
+                    tipo_contenido,
+                    id_contenido,
+                    detalle
+                ) VALUES (?, ?, 'comentario', ?, ?)`,
+                [moderatorId, tipoAccion, commentId, detalleFinal]
+            );
+
+            const [updatedRows] = await connection.query(
+                `SELECT c.id_comentario, c.id_usuario, c.tipo_contenido, c.id_contenido,
+                        c.contenido, c.estado, c.created_at, c.updated_at,
+                        u.username, u.foto_perfil
+                 FROM comentarios c
+                 INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+                 WHERE c.id_comentario = ?
+                 LIMIT 1`,
+                [commentId]
+            );
+
+            await connection.commit();
+
+            return res.json({
+                message: 'Comentario moderado correctamente',
+                comentario: updatedRows[0]
+            });
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al moderar comentario' });
     }
 });
 
