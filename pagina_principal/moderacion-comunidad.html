@@ -35,37 +35,12 @@
 		</section>
 
 		<section id="contentState" class="content-shell hidden">
-					function switchPanel(panelName) {
-						const isPostsPanel = panelName === 'posts';
+			<div class="tabs-bar" role="tablist" aria-label="Moderación de comunidad">
+				<button id="commentsTab" class="tab-btn active" type="button" role="tab" aria-controls="commentsPanel" aria-selected="true">Comentarios</button>
+				<button id="postsTab" class="tab-btn" type="button" role="tab" aria-controls="postsPanel" aria-selected="false">Publicaciones personales</button>
+			</div>
 
-						if (isPostsPanel) {
-							postsPanel.style.display = 'grid';
-							postsPanel.classList.remove('hidden');
-							postsPanel.classList.add('active');
-
-							commentsPanel.style.display = 'none';
-							commentsPanel.classList.add('hidden');
-							commentsPanel.classList.remove('active');
-
-							postsTab.classList.add('active');
-							commentsTab.classList.remove('active');
-						} else {
-							commentsPanel.style.display = 'grid';
-							commentsPanel.classList.remove('hidden');
-							commentsPanel.classList.add('active');
-
-							postsPanel.style.display = 'none';
-							postsPanel.classList.add('hidden');
-							postsPanel.classList.remove('active');
-
-							commentsTab.classList.add('active');
-							postsTab.classList.remove('active');
-						}
-
-						console.log('panel activo:', panelName);
-						console.log('display de commentsPanel:', window.getComputedStyle(commentsPanel).display);
-						console.log('display de postsPanel:', window.getComputedStyle(postsPanel).display);
-					}
+			<section id="commentsPanel" class="panel active" aria-labelledby="commentsTab">
 				<div class="panel-header">
 					<h2>Comentarios</h2>
 					<p id="commentsSummary" class="panel-summary"></p>
@@ -102,8 +77,10 @@
 					<span class="pill state-pill"></span>
 				</div>
 				<div class="card-title-row">
-					commentsTab.addEventListener('click', () => switchPanel('comments'));
-					postsTab.addEventListener('click', () => switchPanel('posts'));
+					<strong class="author-name"></strong>
+					<span class="card-date"></span>
+				</div>
+				<dl class="info-grid">
 					<div><dt>Estado</dt><dd class="comment-state"></dd></div>
 					<div><dt>Tipo contenido</dt><dd class="comment-type"></dd></div>
 					<div><dt>Id contenido</dt><dd class="comment-content-id"></dd></div>
@@ -119,7 +96,7 @@
 					<button type="button" class="action-btn warn-btn btn-hide">Ocultar</button>
 					<button type="button" class="action-btn danger-btn btn-delete">Eliminar</button>
 				</div>
-						switchPanel('comments');
+				<p class="feedback" aria-live="polite"></p>
 			</div>
 		</article>
 	</template>
@@ -227,35 +204,19 @@
 		};
 
 		function switchPanel(panelName) {
-			const isPostsPanel = panelName === 'posts';
+			const showComments = panelName === 'comments';
 
-			if (isPostsPanel) {
-				postsPanel.style.display = 'block';
-				postsPanel.classList.remove('hidden');
-				postsPanel.classList.add('active');
+			commentsPanel.classList.toggle('hidden', !showComments);
+			commentsPanel.classList.toggle('active', showComments);
+			postsPanel.classList.toggle('hidden', showComments);
+			postsPanel.classList.toggle('active', !showComments);
+			commentsTab.classList.toggle('active', showComments);
+			postsTab.classList.toggle('active', !showComments);
+			commentsTab.setAttribute('aria-selected', String(showComments));
+			postsTab.setAttribute('aria-selected', String(!showComments));
 
-				commentsPanel.style.display = 'none';
-				commentsPanel.classList.add('hidden');
-				commentsPanel.classList.remove('active');
-
-				postsTab.classList.add('active');
-				commentsTab.classList.remove('active');
-			} else {
-				commentsPanel.style.display = 'block';
-				commentsPanel.classList.remove('hidden');
-				commentsPanel.classList.add('active');
-
-				postsPanel.style.display = 'none';
-				postsPanel.classList.add('hidden');
-				postsPanel.classList.remove('active');
-
-				commentsTab.classList.add('active');
-				postsTab.classList.remove('active');
-			}
-
-			console.log('panel activo:', panelName);
-			console.log('display de commentsPanel:', window.getComputedStyle(commentsPanel).display);
-			console.log('display de postsPanel:', window.getComputedStyle(postsPanel).display);
+			console.log('commentsPanel.className al cambiar de pestaña:', commentsPanel.className);
+			console.log('postsPanel.className al cambiar de pestaña:', postsPanel.className);
 		}
 
 		const isCommentState = (value) => ['activo', 'oculto', 'eliminado'].includes(value);
@@ -346,6 +307,7 @@
 		const renderComments = (comentarios, moderatorId) => {
 			commentsList.innerHTML = '';
 			commentsEmpty.classList.add('hidden');
+			commentsList.classList.remove('hidden');
 
 			if (comentarios.length === 0) {
 				renderEmpty(commentsEmpty, commentsList, 'No hay comentarios para moderar.');
@@ -374,6 +336,7 @@
 		const renderPosts = (publicaciones, moderatorId) => {
 			postsList.innerHTML = '';
 			postsEmpty.classList.add('hidden');
+			postsList.classList.remove('hidden');
 
 			if (publicaciones.length === 0) {
 				renderEmpty(postsEmpty, postsList, 'No hay publicaciones personales para moderar.');
@@ -459,6 +422,7 @@
 			try {
 				const response = await fetch(`${API_BASE}/api/moderacion/comentarios?id_usuario=${encodeURIComponent(user.id_usuario)}`);
 				const data = await response.json().catch(() => ({}));
+				console.log('respuesta comentarios:', data);
 
 				if (!response.ok) {
 					if (response.status === 403) {
@@ -470,7 +434,10 @@
 					return;
 				}
 
-				const comentarios = Array.isArray(data.comentarios) ? data.comentarios : [];
+				const comentarios = Array.isArray(data)
+					? data
+					: data.comentarios || data.data || [];
+				console.log('comentarios normalizados:', comentarios);
 				renderComments(comentarios, user.id_usuario);
 			} catch (error) {
 				errorMessage.textContent = 'No se pudo conectar con el servidor.';
@@ -494,7 +461,7 @@
 			try {
 				const response = await fetch(`${API_BASE}/api/moderacion/posts-personales?id_usuario=${encodeURIComponent(user.id_usuario)}`);
 				const data = await response.json().catch(() => ({}));
-				console.log('Respuesta completa de posts personales:', data);
+				console.log('respuesta posts:', data);
 
 				if (!response.ok) {
 					if (response.status === 403) {
@@ -506,8 +473,10 @@
 					return;
 				}
 
-				const publicaciones = normalizePostsResponse(data);
-				console.log('Array final de publicaciones usado para renderizar:', publicaciones);
+				const publicaciones = Array.isArray(data)
+					? data
+					: data.publicaciones || data.posts || data.data || [];
+				console.log('publicaciones normalizadas:', publicaciones);
 				renderPosts(publicaciones, user.id_usuario);
 			} catch (error) {
 				errorMessage.textContent = 'No se pudo conectar con el servidor.';
@@ -517,18 +486,28 @@
 
 		const initialize = async () => {
 			const user = getStoredUser();
+			console.log('usuario detectado:', user);
 
 			if (!user) {
 				window.location.href = '../inicio_de_sesion/index.html';
 				return;
 			}
 
+			console.log('rol detectado:', user.id_rol);
+
 			if (!VALID_MODERATOR_ROLES.includes(Number(user.id_rol))) {
-				showOnly(deniedState);
+				loadingState.classList.add('hidden');
+				deniedState.classList.remove('hidden');
+				contentState.classList.add('hidden');
+				errorState.classList.add('hidden');
 				return;
 			}
 
-			showOnly(contentState);
+			loadingState.classList.add('hidden');
+			deniedState.classList.add('hidden');
+			errorState.classList.add('hidden');
+			contentState.classList.remove('hidden');
+			console.log('contentState.className después de validar acceso:', contentState.className);
 			switchPanel('comments');
 			await loadComments();
 			await loadPosts();
