@@ -101,6 +101,7 @@ const VALID_COMMENT_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
 const VALID_COMMENT_STATES = ['activo', 'oculto', 'eliminado'];
 const VALID_REACTION_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
 const VALID_REACTION_TYPES = ['like', 'hype'];
+const VALID_MODERATED_POST_STATES = ['activo', 'oculto', 'eliminado'];
 
 app.get('/api/health', async (req, res) => {
     try {
@@ -1105,6 +1106,170 @@ app.patch('/api/moderacion/comentarios/:id/estado', async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al moderar comentario' });
+    }
+});
+
+app.get('/api/moderacion/posts-personales', async (req, res) => {
+    try {
+        const { id_usuario, estado, id_autor } = req.query || {};
+        const moderatorId = Number(id_usuario);
+        const normalizedEstado = typeof estado === 'string' ? estado.trim().toLowerCase() : '';
+        const authorId = Number(id_autor);
+
+        if (!moderatorId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const moderator = await getUserWithRoleById(moderatorId);
+
+        if (!moderator) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderator, [3, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para moderar publicaciones personales' });
+        }
+
+        const whereClauses = [];
+        const queryParams = [];
+
+        if (normalizedEstado) {
+            if (!VALID_MODERATED_POST_STATES.includes(normalizedEstado)) {
+                return res.status(400).json({ message: "estado solo puede ser 'activo', 'oculto' o 'eliminado'" });
+            }
+
+            whereClauses.push('p.estado = ?');
+            queryParams.push(normalizedEstado);
+        }
+
+        if (authorId) {
+            whereClauses.push('p.id_usuario = ?');
+            queryParams.push(authorId);
+        }
+
+        const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+        const [rows] = await pool.query(
+            `SELECT p.id_post, p.id_usuario, p.titulo, p.contenido, p.portada_url,
+                    p.youtube_url, p.resumen_media_json, p.estado, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones p
+             INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+             ${whereSql}
+             ORDER BY p.created_at DESC`,
+            queryParams
+        );
+
+        return res.json({ publicaciones: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones personales' });
+    }
+});
+
+app.patch('/api/moderacion/posts-personales/:id/estado', async (req, res) => {
+    try {
+        const postId = Number(req.params.id);
+        const { id_moderador, estado, detalle } = req.body || {};
+
+        const moderatorId = Number(id_moderador);
+        const normalizedEstado = typeof estado === 'string' ? estado.trim().toLowerCase() : '';
+        const normalizedDetalle = typeof detalle === 'string' ? detalle.trim() : '';
+
+        if (!postId) {
+            return res.status(400).json({ message: 'id de publicación inválido' });
+        }
+
+        if (!moderatorId) {
+            return res.status(400).json({ message: 'id_moderador es obligatorio' });
+        }
+
+        if (!normalizedEstado) {
+            return res.status(400).json({ message: 'estado es obligatorio' });
+        }
+
+        if (!VALID_MODERATED_POST_STATES.includes(normalizedEstado)) {
+            return res.status(400).json({ message: "estado solo puede ser 'activo', 'oculto' o 'eliminado'" });
+        }
+
+        const moderator = await getUserWithRoleById(moderatorId);
+
+        if (!moderator) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderator, [3, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para moderar publicaciones personales' });
+        }
+
+        const [postRows] = await pool.query(
+            `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, estado, created_at, updated_at
+             FROM publicaciones
+             WHERE id_post = ?
+             LIMIT 1`,
+            [postId]
+        );
+
+        if (postRows.length === 0) {
+            return res.status(404).json({ message: 'Publicación personal no encontrada' });
+        }
+
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            await connection.query(
+                `UPDATE publicaciones
+                 SET estado = ?
+                 WHERE id_post = ?
+                 LIMIT 1`,
+                [normalizedEstado, postId]
+            );
+
+            const tipoAccion = normalizedEstado === 'oculto'
+                ? 'ocultar_post_personal'
+                : normalizedEstado === 'eliminado'
+                    ? 'eliminar_post_personal'
+                    : 'restaurar_post_personal';
+
+            const detalleFinal = normalizedDetalle || `Publicación personal ${normalizedEstado}`;
+
+            await connection.query(
+                `INSERT INTO moderacion_historial (
+                    id_moderador,
+                    tipo_accion,
+                    tipo_contenido,
+                    id_contenido,
+                    detalle
+                ) VALUES (?, ?, 'post_personal', ?, ?)`,
+                [moderatorId, tipoAccion, postId, detalleFinal]
+            );
+
+            const [updatedRows] = await connection.query(
+                `SELECT p.id_post, p.id_usuario, p.titulo, p.contenido, p.portada_url,
+                        p.youtube_url, p.resumen_media_json, p.estado, p.created_at, p.updated_at,
+                        u.username, u.foto_perfil
+                 FROM publicaciones p
+                 INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+                 WHERE p.id_post = ?
+                 LIMIT 1`,
+                [postId]
+            );
+
+            await connection.commit();
+
+            return res.json({
+                message: 'Publicación personal moderada correctamente',
+                publicacion: updatedRows[0]
+            });
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al moderar publicación personal' });
     }
 });
 
