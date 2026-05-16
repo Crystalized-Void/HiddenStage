@@ -333,6 +333,28 @@
 <script>
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
+    const LOCAL_API_ORIGIN = 'http://localhost:3000';
+    const isLocalFrontend =
+        window.location.protocol === 'file:' ||
+        ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+    const API_BASE = isLocalFrontend && !isBackendOrigin
+        ? LOCAL_API_ORIGIN
+        : '';
+
+    const MAIN_PAGE_URL = 'pagina_principal.html';
+
+    const getStoredUser = () => {
+        try {
+            const raw = localStorage.getItem(SESSION_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const getUserRoleId = (user) => Number(user?.id_rol);
 
     function Menu() {
         document.getElementById('sideMenu').classList.toggle('active');
@@ -358,63 +380,113 @@
     }
 
     function redirectToCreatePost() {
-        const storedUser = localStorage.getItem('hiddenstageUser');
+        const storedUser = getStoredUser();
+
         if (!storedUser) {
             alert('Debes iniciar sesión para crear una publicación');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
+
+        if (![2, 5].includes(getUserRoleId(storedUser))) {
+            alert('Solo los autores verificados pueden crear publicaciones principales.');
+            return;
+        }
+
         window.location.href = 'crearPublicacion.html';
     }
 
-    // Cargar publicaciones desde localStorage
-    function loadPublications() {
-        const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
+    const escapeHtml = (value) => String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    // Cargar publicaciones aprobadas desde backend
+    async function loadPublications() {
         const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
+        const categoryLabels = {
+            guias: 'Guías',
+            trucos: 'Trucos',
+            carreras: 'Carreras',
+            plataformas: 'Plataformas',
+            romance: 'Romance',
+            porturnos: 'Por Turnos',
+            accion: 'Acción',
+            aventuras: 'Aventuras'
+        };
 
-        categories.forEach(category => {
-            const section = document.getElementById(category);
-            if (!section) return;
+        const setEmptyMessage = (message) => {
+            const firstSection = document.querySelector('section.Populares .cards');
+            if (firstSection) {
+                firstSection.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
+            }
+        };
 
-            const cards = section.querySelector('.cards');
-            if (!cards) return;
+        try {
+            const response = await fetch(`${API_BASE}/api/publicaciones-principales`);
+            const data = await response.json();
+            const posts = Array.isArray(data.publicaciones) ? data.publicaciones : [];
 
-            // Limpiar tarjetas existentes
-            cards.innerHTML = '';
-
-            // Filtrar publicaciones por categoría
-            const categoryPosts = posts.filter(p => p.categoria === category);
-
-            if (categoryPosts.length === 0) {
-                cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+            if (!response.ok) {
+                setEmptyMessage(data.message || 'Aún no hay publicaciones aprobadas.');
                 return;
             }
 
-            // Crear tarjetas de publicación
-            categoryPosts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.onclick = () => window.location.href = `publicacion.html?id=${post.id}`;
-                
-                const avatarInitials = post.username.substring(0, 2).toUpperCase();
-                const avatarStyle = post.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
-                
-                card.innerHTML = `
-                    ${post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="" class="post-card-image">` : '<div class="post-card-image"></div>'}
-                    <div class="post-card-content">
-                        <div class="post-card-title">${post.titulo}</div>
-                        <div class="post-card-heading">${post.encabezado}</div>
-                        <div class="post-card-meta">
-                            <div class="post-card-avatar" style="${avatarStyle}">${!post.userAvatar ? avatarInitials : ''}</div>
-                            <span>${post.username}</span>
-                            <span>•</span>
-                            <span>${formatPostDate(post.fecha)}</span>
+            if (posts.length === 0) {
+                setEmptyMessage('Aún no hay publicaciones aprobadas.');
+                return;
+            }
+
+            categories.forEach((category) => {
+                const section = document.getElementById(category);
+                if (!section) return;
+
+                const cards = section.querySelector('.cards');
+                if (!cards) return;
+
+                cards.innerHTML = '';
+
+                const categoryPosts = posts.filter((post) => post.categoria === category);
+
+                if (categoryPosts.length === 0) {
+                    cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones aprobadas en esta categoría aún.</p>';
+                    return;
+                }
+
+                categoryPosts.forEach((post) => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card';
+                    card.onclick = () => window.location.href = `publicacion.html?id=${post.id_publicacion}`;
+
+                    const authorName = post.username || 'Autor';
+                    const avatarInitials = authorName.substring(0, 2).toUpperCase();
+                    const avatarStyle = post.foto_perfil ? `background-image: url('${post.foto_perfil}')` : '';
+                    const postDate = post.created_at ? formatPostDate(post.created_at) : '';
+                    const categoryLabel = categoryLabels[post.categoria] || post.categoria || '';
+
+                    card.innerHTML = `
+                        ${post.imagen_principal ? `<img src="${post.imagen_principal}" alt="${escapeHtml(post.titulo)}" class="post-card-image">` : '<div class="post-card-image"></div>'}
+                        <div class="post-card-content">
+                            <div class="post-card-title">${escapeHtml(post.titulo)}</div>
+                            <div class="post-card-heading">${escapeHtml(post.encabezado)}</div>
+                            <div class="post-card-meta">
+                                <div class="post-card-avatar" style="${avatarStyle}">${!post.foto_perfil ? avatarInitials : ''}</div>
+                                <span>${escapeHtml(authorName)}</span>
+                                <span>•</span>
+                                <span>${escapeHtml(categoryLabel)}</span>
+                                <span>•</span>
+                                <span>${escapeHtml(postDate)}</span>
+                            </div>
                         </div>
-                    </div>
-                `;
-                cards.appendChild(card);
+                    `;
+                    cards.appendChild(card);
+                });
             });
-        });
+        } catch (error) {
+            setEmptyMessage('Aún no hay publicaciones aprobadas.');
+        }
     }
 
     function formatPostDate(isoDate) {
@@ -471,14 +543,7 @@
             }
         };
 
-        const readStoredUser = () => {
-            try {
-                const raw = localStorage.getItem(SESSION_KEY);
-                return raw ? JSON.parse(raw) : null;
-            } catch (error) {
-                return null;
-            }
-        };
+        const readStoredUser = getStoredUser;
 
         const renderSessionUser = () => {
             const storedUser = readStoredUser();
@@ -604,15 +669,8 @@
             }
         });
 
-        // Cargar publicaciones al iniciar
+        // Cargar publicaciones aprobadas al iniciar
         loadPublications();
-
-        // Escuchar cambios en storage para actualizar publicaciones
-        window.addEventListener('storage', (event) => {
-            if (event.key === 'hiddenstagePosts') {
-                loadPublications();
-            }
-        });
     })();
 </script>
 </body>
