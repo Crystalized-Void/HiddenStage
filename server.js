@@ -97,6 +97,43 @@ const hasRole = (user, allowedRoles) => {
     return Boolean(user && Array.isArray(allowedRoles) && allowedRoles.includes(Number(user.id_rol)));
 };
 
+const getEnumValuesForColumn = async (tableName, columnName) => {
+    const [rows] = await pool.query(
+        `SELECT COLUMN_TYPE
+         FROM INFORMATION_SCHEMA.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE()
+           AND TABLE_NAME = ?
+           AND COLUMN_NAME = ?
+         LIMIT 1`,
+        [tableName, columnName]
+    );
+
+    const columnType = String(rows[0]?.COLUMN_TYPE || '');
+    const match = columnType.match(/^enum\((.*)\)$/i);
+
+    if (!match) {
+        return [];
+    }
+
+    return match[1]
+        .split(',')
+        .map((value) => value.trim().replace(/^'/, '').replace(/'$/, '').replace(/''/g, "'"))
+        .filter(Boolean);
+};
+
+const canStoreRoleChangeHistory = async () => {
+    try {
+        const [actionValues, contentValues] = await Promise.all([
+            getEnumValuesForColumn('moderacion_historial', 'tipo_accion'),
+            getEnumValuesForColumn('moderacion_historial', 'tipo_contenido')
+        ]);
+
+        return actionValues.includes('cambiar_rol_usuario') && contentValues.includes('usuario');
+    } catch (error) {
+        return false;
+    }
+};
+
 const VALID_COMMENT_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
 const VALID_COMMENT_STATES = ['activo', 'oculto', 'eliminado'];
 const VALID_REACTION_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
@@ -358,6 +395,212 @@ app.put('/api/profile', async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al actualizar perfil' });
+    }
+});
+
+app.get('/api/admin/usuarios', async (req, res) => {
+    try {
+        const { id_admin, search, rol } = req.query || {};
+        const adminId = Number(id_admin);
+        const normalizedSearch = typeof search === 'string' ? search.trim() : '';
+        const roleFilter = rol === undefined || rol === null || rol === '' ? null : Number(rol);
+
+        if (!adminId) {
+            return res.status(400).json({ message: 'id_admin es obligatorio' });
+        }
+
+        if (rol !== undefined && rol !== null && rol !== '' && Number.isNaN(roleFilter)) {
+            return res.status(400).json({ message: 'rol debe ser numérico' });
+        }
+
+        const adminUser = await getUserWithRoleById(adminId);
+
+        if (!adminUser) {
+            return res.status(404).json({ message: 'Usuario administrador no encontrado' });
+        }
+
+        if (!hasRole(adminUser, [5])) {
+            return res.status(403).json({ message: 'No tienes permisos para ver usuarios' });
+        }
+
+        const whereClauses = [];
+        const queryParams = [];
+
+        if (normalizedSearch) {
+            whereClauses.push('(u.username LIKE ? OR u.email LIKE ?)');
+            const searchTerm = `%${normalizedSearch}%`;
+            queryParams.push(searchTerm, searchTerm);
+        }
+
+        if (roleFilter !== null) {
+            whereClauses.push('u.id_rol = ?');
+            queryParams.push(roleFilter);
+        }
+
+        const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+        const [rows] = await pool.query(
+            `SELECT u.id_usuario, u.username, u.email, u.biografia, u.pronombres,
+                    u.foto_perfil, u.banner_perfil, u.id_rol, r.nombre_rol,
+                    u.created_at, u.updated_at
+             FROM usuarios u
+             INNER JOIN roles r ON u.id_rol = r.id_rol
+             ${whereSql}
+             ORDER BY u.created_at DESC`,
+            queryParams
+        );
+
+        return res.json({ usuarios: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener usuarios administrables' });
+    }
+});
+
+app.get('/api/admin/roles', async (req, res) => {
+    try {
+        const { id_admin } = req.query || {};
+        const adminId = Number(id_admin);
+
+        if (!adminId) {
+            return res.status(400).json({ message: 'id_admin es obligatorio' });
+        }
+
+        const adminUser = await getUserWithRoleById(adminId);
+
+        if (!adminUser) {
+            return res.status(404).json({ message: 'Usuario administrador no encontrado' });
+        }
+
+        if (!hasRole(adminUser, [5])) {
+            return res.status(403).json({ message: 'No tienes permisos para consultar roles' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT id_rol, nombre_rol
+             FROM roles
+             ORDER BY id_rol ASC`
+        );
+
+        return res.json({ roles: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener roles' });
+    }
+});
+
+app.patch('/api/admin/usuarios/:id/rol', async (req, res) => {
+    try {
+        const targetUserId = Number(req.params.id);
+        const { id_admin, id_rol } = req.body || {};
+        const adminId = Number(id_admin);
+        const nextRoleId = Number(id_rol);
+
+        if (!targetUserId) {
+            return res.status(400).json({ message: 'id de usuario inválido' });
+        }
+
+        if (!adminId) {
+            return res.status(400).json({ message: 'id_admin es obligatorio' });
+        }
+
+        if (id_rol === undefined || id_rol === null || id_rol === '') {
+            return res.status(400).json({ message: 'id_rol es obligatorio' });
+        }
+
+        if (Number.isNaN(nextRoleId)) {
+            return res.status(400).json({ message: 'id_rol debe ser numérico' });
+        }
+
+        const adminUser = await getUserWithRoleById(adminId);
+
+        if (!adminUser) {
+            return res.status(404).json({ message: 'Usuario administrador no encontrado' });
+        }
+
+        if (!hasRole(adminUser, [5])) {
+            return res.status(403).json({ message: 'No tienes permisos para cambiar roles' });
+        }
+
+        if (Number(adminUser.id_usuario) === targetUserId && nextRoleId !== 5) {
+            return res.status(400).json({ message: 'No puedes quitarte a ti mismo el rol de administrador.' });
+        }
+
+        const targetUser = await getUserWithRoleById(targetUserId);
+
+        if (!targetUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const [roleRows] = await pool.query(
+            `SELECT id_rol, nombre_rol
+             FROM roles
+             WHERE id_rol = ?
+             LIMIT 1`,
+            [nextRoleId]
+        );
+
+        if (roleRows.length === 0) {
+            return res.status(404).json({ message: 'El rol seleccionado no existe' });
+        }
+
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            await connection.query(
+                `UPDATE usuarios
+                 SET id_rol = ?
+                 WHERE id_usuario = ?
+                 LIMIT 1`,
+                [nextRoleId, targetUserId]
+            );
+
+            const [updatedRows] = await connection.query(
+                `SELECT u.id_usuario, u.username, u.email, u.biografia, u.pronombres,
+                        u.foto_perfil, u.banner_perfil, u.id_rol, r.nombre_rol,
+                        u.created_at, u.updated_at
+                 FROM usuarios u
+                 INNER JOIN roles r ON u.id_rol = r.id_rol
+                 WHERE u.id_usuario = ?
+                 LIMIT 1`,
+                [targetUserId]
+            );
+
+            await connection.commit();
+
+            const updatedUser = updatedRows[0];
+
+            const canLogRoleChange = await canStoreRoleChangeHistory();
+
+            if (canLogRoleChange) {
+                try {
+                    await pool.query(
+                        `INSERT INTO moderacion_historial (
+                            id_moderador,
+                            tipo_accion,
+                            tipo_contenido,
+                            id_contenido,
+                            detalle
+                        ) VALUES (?, 'cambiar_rol_usuario', 'usuario', ?, ?)`,
+                        [adminId, targetUserId, `Cambio de rol a ${updatedUser.nombre_rol}`]
+                    );
+                } catch (historyError) {
+                    // Si el esquema no admite este valor o el historial falla, no bloqueamos el cambio de rol.
+                }
+            }
+
+            return res.json({
+                message: 'Rol actualizado correctamente',
+                usuario: updatedUser
+            });
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al cambiar el rol del usuario' });
     }
 });
 
