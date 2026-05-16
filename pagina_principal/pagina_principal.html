@@ -326,6 +326,10 @@
                 <i class="fas fa-pen"></i>
                 <span>Crear nota</span>
             </button>
+            <button id="review-posts-option" class="create-option" onclick="redirectToReviewPosts()" style="display: none;">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Revisar publicaciones</span>
+            </button>
         </div>
     </div>
 </div>
@@ -394,6 +398,23 @@
         }
 
         window.location.href = 'crearPublicacion.html';
+    }
+
+    function redirectToReviewPosts() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder a revisión.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (![4, 5].includes(getUserRoleId(storedUser))) {
+            alert('No tienes permisos para revisar publicaciones.');
+            return;
+        }
+
+        window.location.href = 'revision-publicaciones.html';
     }
 
     const escapeHtml = (value) => String(value || '')
@@ -517,6 +538,7 @@
         const themeToggleButton = document.querySelector('[data-theme-toggle]');
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
+        const reviewPostsOption = document.getElementById('review-posts-option');
 
         const normalizeUsername = (username) => {
             if (typeof username !== 'string') {
@@ -570,6 +592,16 @@
             applyAvatar(sideAvatar, photo);
         };
 
+        const updateReviewPostsVisibility = () => {
+            if (!reviewPostsOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const canReview = [4, 5].includes(getUserRoleId(storedUser));
+            reviewPostsOption.style.display = canReview ? '' : 'none';
+        };
+
         const applyTheme = (themeName) => {
             const isDarkTheme = themeName === 'dark';
 
@@ -604,15 +636,20 @@
         };
 
         renderSessionUser();
+        updateReviewPostsVisibility();
         applyTheme(readStoredTheme());
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
                 renderSessionUser();
+                updateReviewPostsVisibility();
             }
         });
 
-        window.addEventListener('focus', renderSessionUser);
+        window.addEventListener('focus', () => {
+            renderSessionUser();
+            updateReviewPostsVisibility();
+        });
 
         if (openProfileMenuLink) {
             openProfileMenuLink.addEventListener('click', (event) => {
