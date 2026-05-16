@@ -103,6 +103,7 @@
 
 	<script>
 		const SESSION_KEY = 'hiddenstageUser';
+		const DEFAULT_PROFILE_IMAGE = '../img/Perfil.png';
 		const LOCAL_API_ORIGIN = 'http://localhost:3000';
 		const isLocalFrontend =
 			window.location.protocol === 'file:' ||
@@ -158,8 +159,9 @@
 
 		const buildAvatar = (rawValue) => {
 			const value = typeof rawValue === 'string' ? rawValue.trim() : '';
-			if (!value) {
-				return '../img/usuario.png';
+
+			if (!value || value === 'null' || value === 'undefined') {
+				return DEFAULT_PROFILE_IMAGE;
 			}
 
 			return value;
@@ -270,7 +272,11 @@
 				const cardMessage = card.querySelector('.card-message');
 
 				avatar.src = buildAvatar(user.foto_perfil);
-				avatar.alt = `Foto de perfil de ${user.username || 'usuario'}`;
+				avatar.alt = `Foto de perfil de ${user.username || 'Usuario'}`;
+				avatar.onerror = () => {
+					avatar.onerror = null;
+					avatar.src = DEFAULT_PROFILE_IMAGE;
+				};
 				card.querySelector('.username').textContent = user.username || 'Sin username';
 				card.querySelector('.email').textContent = user.email || 'Sin correo';
 				card.querySelector('.role-pill').textContent = user.nombre_rol || 'Sin rol';

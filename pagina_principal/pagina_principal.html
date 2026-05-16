@@ -326,6 +326,10 @@
                 <i class="fas fa-pen"></i>
                 <span>Crear nota</span>
             </button>
+            <button id="admin-panel-option" class="create-option" onclick="redirectToAdminPanel()" style="display: none;">
+                <i class="fas fa-user-shield"></i>
+                <span>Panel administrador</span>
+            </button>
             <button id="review-posts-option" class="create-option" onclick="redirectToReviewPosts()" style="display: none;">
                 <i class="fas fa-clipboard-check"></i>
                 <span>Revisar publicaciones</span>
@@ -436,6 +440,23 @@
         }
 
         window.location.href = 'moderacion-comunidad.html';
+    }
+
+    function redirectToAdminPanel() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder al panel administrador.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (getUserRoleId(storedUser) !== 5) {
+            alert('No tienes permisos para acceder al panel administrador.');
+            return;
+        }
+
+        window.location.href = 'admin-panel.html';
     }
 
     const escapeHtml = (value) => String(value || '')
@@ -559,6 +580,7 @@
         const themeToggleButton = document.querySelector('[data-theme-toggle]');
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
+        const adminPanelOption = document.getElementById('admin-panel-option');
         const reviewPostsOption = document.getElementById('review-posts-option');
         const communityModerationOption = document.getElementById('community-moderation-option');
 
@@ -624,6 +646,16 @@
             reviewPostsOption.style.display = canReview ? '' : 'none';
         };
 
+        const updateAdminPanelVisibility = () => {
+            if (!adminPanelOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const isAdmin = getUserRoleId(storedUser) === 5;
+            adminPanelOption.style.display = isAdmin ? '' : 'none';
+        };
+
         const updateCommunityModerationVisibility = () => {
             if (!communityModerationOption) {
                 return;
@@ -668,6 +700,7 @@
         };
 
         renderSessionUser();
+        updateAdminPanelVisibility();
         updateReviewPostsVisibility();
         updateCommunityModerationVisibility();
         applyTheme(readStoredTheme());
@@ -675,6 +708,7 @@
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
                 renderSessionUser();
+                updateAdminPanelVisibility();
                 updateReviewPostsVisibility();
                 updateCommunityModerationVisibility();
             }
@@ -682,6 +716,7 @@
 
         window.addEventListener('focus', () => {
             renderSessionUser();
+            updateAdminPanelVisibility();
             updateReviewPostsVisibility();
             updateCommunityModerationVisibility();
         });
