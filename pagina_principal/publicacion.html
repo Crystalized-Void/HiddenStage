@@ -194,6 +194,45 @@
 
         const isCommentingAllowed = (user) => Boolean(user && !user.isGuest && Number(user.id_rol) !== 6);
 
+        const isReactionAllowed = (user) => Boolean(user && !user.isGuest && Number(user.id_rol) !== 6);
+
+        const reactionState = {
+            user_like: false,
+            user_hype: false
+        };
+
+        const setReactionButtonState = (buttonId, active) => {
+            const button = document.getElementById(buttonId);
+            if (!button) {
+                return;
+            }
+
+            button.classList.toggle('active', Boolean(active));
+        };
+
+        const configureReactionButtons = () => {
+            const userData = getSessionUser();
+            const hypeBtn = document.getElementById('hypeBtn');
+            const likeBtn = document.getElementById('likeBtn');
+            const allowed = isReactionAllowed(userData);
+
+            if (hypeBtn) {
+                hypeBtn.disabled = !allowed;
+                hypeBtn.title = !allowed
+                    ? 'Debes iniciar sesión para reaccionar.'
+                    : (reactionState.user_hype ? 'Quitar HYPE' : 'Dar HYPE');
+                hypeBtn.classList.toggle('active', Boolean(reactionState.user_hype));
+            }
+
+            if (likeBtn) {
+                likeBtn.disabled = !allowed;
+                likeBtn.title = !allowed
+                    ? 'Debes iniciar sesión para reaccionar.'
+                    : (reactionState.user_like ? 'Quitar like' : 'Dar like');
+                likeBtn.classList.toggle('active', Boolean(reactionState.user_like));
+            }
+        };
+
         const configureCommentForm = () => {
             const userData = getSessionUser();
             const commentInput = document.getElementById('userComment');
@@ -222,6 +261,102 @@
 
             if (loggedUserLabel) {
                 loggedUserLabel.textContent = userData.username || 'Invitado';
+            }
+        };
+
+        const loadReactions = async () => {
+            const postId = getPostId();
+
+            if (!postId) {
+                document.getElementById('hypeCount').textContent = '0';
+                document.getElementById('likeCount').textContent = '0';
+                reactionState.user_like = false;
+                reactionState.user_hype = false;
+                configureReactionButtons();
+                return;
+            }
+
+            const userData = getSessionUser();
+
+            try {
+                let url = `${API_BASE}/api/reacciones/resumen?tipo_contenido=publicacion_principal&id_contenido=${encodeURIComponent(postId)}`;
+
+                if (userData?.id_usuario) {
+                    url += `&id_usuario=${encodeURIComponent(userData.id_usuario)}`;
+                }
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    document.getElementById('hypeCount').textContent = '0';
+                    document.getElementById('likeCount').textContent = '0';
+                    reactionState.user_like = false;
+                    reactionState.user_hype = false;
+                    configureReactionButtons();
+                    return;
+                }
+
+                const data = await response.json();
+                const totalHype = Number(data?.total_hype || 0);
+                const totalLike = Number(data?.total_like || 0);
+
+                reactionState.user_like = Boolean(data?.user_like);
+                reactionState.user_hype = Boolean(data?.user_hype);
+
+                document.getElementById('hypeCount').textContent = String(totalHype);
+                document.getElementById('likeCount').textContent = String(totalLike);
+
+                setReactionButtonState('hypeBtn', reactionState.user_hype);
+                setReactionButtonState('likeBtn', reactionState.user_like);
+                configureReactionButtons();
+            } catch (error) {
+                document.getElementById('hypeCount').textContent = '0';
+                document.getElementById('likeCount').textContent = '0';
+                reactionState.user_like = false;
+                reactionState.user_hype = false;
+                configureReactionButtons();
+            }
+        };
+
+        const syncReaction = async (tipoReaccion) => {
+            const userData = getSessionUser();
+            const postId = getPostId();
+
+            if (!postId || !isReactionAllowed(userData)) {
+                alert('Debes iniciar sesión para reaccionar.');
+                return;
+            }
+
+            const alreadyReacted = tipoReaccion === 'hype'
+                ? reactionState.user_hype
+                : reactionState.user_like;
+
+            const method = alreadyReacted ? 'DELETE' : 'POST';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/reacciones`, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id_usuario: userData.id_usuario,
+                        tipo_contenido: 'publicacion_principal',
+                        id_contenido: postId,
+                        tipo_reaccion: tipoReaccion
+                    })
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok && response.status !== 409) {
+                    alert(data.message || 'No se pudo procesar la reacción.');
+                    return;
+                }
+
+                await loadReactions();
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
             }
         };
 
@@ -274,8 +409,6 @@
                     ? `pagina_principal.html#${category}`
                     : 'pagina_principal.html';
                 document.getElementById('postDate').textContent = createdAt ? formatDate(createdAt) : 'Hace poco';
-                document.getElementById('hypeCount').textContent = '0';
-                document.getElementById('likeCount').textContent = '0';
                 document.getElementById('commentCount').textContent = '0';
 
                 // Avatar del autor
@@ -358,9 +491,9 @@
                     linksSection.style.display = 'none';
                 }
 
-                // Comentarios/reacciones pendientes de migración
                 window.currentPost = post;
                 configureCommentForm();
+                configureReactionButtons();
             } catch (error) {
                 renderNotFound();
             }
@@ -454,29 +587,13 @@
         };
 
         // Toggle HYPE
-        const toggleHype = () => {
-            if (!window.currentPost) return;
-
-            const userData = getSessionUser();
-            if (!userData) {
-                alert('Debes iniciar sesión para dar HYPE');
-                return;
-            }
-
-            alert('Las reacciones estarán disponibles en una siguiente fase.');
+        const toggleHype = async () => {
+            await syncReaction('hype');
         };
 
         // Toggle Like
-        const toggleLike = () => {
-            if (!window.currentPost) return;
-
-            const userData = getSessionUser();
-            if (!userData) {
-                alert('Debes iniciar sesión para dar like');
-                return;
-            }
-
-            alert('Las reacciones estarán disponibles en una siguiente fase.');
+        const toggleLike = async () => {
+            await syncReaction('like');
         };
 
         // Publicar comentario
@@ -548,7 +665,9 @@
         (async () => {
             await loadPost();
             await loadComments();
+            await loadReactions();
             configureCommentForm();
+            configureReactionButtons();
         })();
     </script>
 </body>
