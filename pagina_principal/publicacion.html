@@ -190,6 +190,41 @@
             return [];
         };
 
+        const getCommentCountFromServer = (comments) => Array.isArray(comments) ? comments.length : 0;
+
+        const isCommentingAllowed = (user) => Boolean(user && !user.isGuest && Number(user.id_rol) !== 6);
+
+        const configureCommentForm = () => {
+            const userData = getSessionUser();
+            const commentInput = document.getElementById('userComment');
+            const commentButton = document.querySelector('.comment-form .btn.btn-primary');
+            const loggedUserLabel = document.querySelector('.logged-user strong#displayUserName');
+
+            if (!commentInput || !commentButton) {
+                return;
+            }
+
+            if (!isCommentingAllowed(userData)) {
+                commentInput.disabled = true;
+                commentButton.disabled = true;
+                commentInput.placeholder = 'Debes iniciar sesión para comentar.';
+
+                if (loggedUserLabel) {
+                    loggedUserLabel.textContent = 'Debes iniciar sesión para comentar.';
+                }
+
+                return;
+            }
+
+            commentInput.disabled = false;
+            commentButton.disabled = false;
+            commentInput.placeholder = 'Escribe tu comentario aquí...';
+
+            if (loggedUserLabel) {
+                loggedUserLabel.textContent = userData.username || 'Invitado';
+            }
+        };
+
         // Cargar publicación
         const loadPost = async () => {
             const postId = getPostId();
@@ -324,8 +359,8 @@
                 }
 
                 // Comentarios/reacciones pendientes de migración
-                loadComments([]);
                 window.currentPost = post;
+                configureCommentForm();
             } catch (error) {
                 renderNotFound();
             }
@@ -344,101 +379,77 @@
             return date.toLocaleDateString('es-ES');
         };
 
-        // Cargar comentarios
-        const loadComments = (comments) => {
+        // Cargar comentarios desde backend
+        const loadComments = async () => {
             const commentList = document.getElementById('commentList');
-            commentList.innerHTML = '';
+            const postId = getPostId();
 
-            if (comments.length === 0) {
-                commentList.innerHTML = '<p class="no-comments">Sé el primero en comentar</p>';
+            if (!postId) {
+                commentList.innerHTML = '<p class="no-comments">Aún no hay comentarios.</p>';
+                document.getElementById('commentCount').textContent = '0';
                 return;
             }
 
-            comments.forEach(comment => {
-                const commentEl = document.createElement('div');
-                commentEl.className = 'comment';
-                const commentId = Number(comment.id) || Date.now();
-                const safeUsername = escapeHtml(comment.username || 'Usuario');
-                const safeText = escapeHtml(comment.texto || '');
-                const avatarInitials = escapeHtml((comment.username || 'US').substring(0, 2).toUpperCase());
-                const replies = Array.isArray(comment.respuestas) ? comment.respuestas : [];
+            commentList.innerHTML = '<p class="no-comments">Cargando comentarios...</p>';
 
-                const repliesHtml = replies.map((reply) => {
-                    const replyUser = escapeHtml(reply.username || 'Usuario');
-                    const replyText = escapeHtml(reply.texto || '');
-                    const replyInitials = escapeHtml((reply.username || 'US').substring(0, 2).toUpperCase());
-                    return `
-                        <div class="reply-item">
-                            <div class="reply-avatar" ${reply.userAvatar ? `style="background-image: url('${reply.userAvatar}')"` : ''}>
-                                ${!reply.userAvatar ? replyInitials : ''}
+            try {
+                const response = await fetch(
+                    `${API_BASE}/api/comentarios?tipo_contenido=publicacion_principal&id_contenido=${encodeURIComponent(postId)}`
+                );
+
+                if (!response.ok) {
+                    commentList.innerHTML = '<p class="no-comments">Aún no hay comentarios.</p>';
+                    document.getElementById('commentCount').textContent = '0';
+                    return;
+                }
+
+                const data = await response.json();
+                const comments = Array.isArray(data?.comentarios) ? data.comentarios : [];
+
+                if (comments.length === 0) {
+                    commentList.innerHTML = '<p class="no-comments">Aún no hay comentarios.</p>';
+                    document.getElementById('commentCount').textContent = '0';
+                    return;
+                }
+
+                commentList.innerHTML = '';
+
+                comments.forEach((comment) => {
+                    const commentEl = document.createElement('div');
+                    commentEl.className = 'comment';
+                    const safeUsername = escapeHtml(comment.username || 'Usuario');
+                    const safeText = escapeHtml(comment.contenido || '');
+                    const avatarInitials = escapeHtml((comment.username || 'US').substring(0, 2).toUpperCase());
+                    const avatarPhoto = comment.foto_perfil || '';
+
+                    commentEl.innerHTML = `
+                        <div class="comment-avatar" ${avatarPhoto ? `style="background-image: url('${avatarPhoto}')"` : ''}>
+                            ${!avatarPhoto ? avatarInitials : ''}
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <strong>${safeUsername}</strong>
+                                <span class="comment-date">${formatDate(comment.created_at)}</span>
                             </div>
-                            <div class="reply-content">
-                                <div class="reply-header">
-                                    <strong>${replyUser}</strong>
-                                    <span class="comment-date">${formatDate(reply.fecha)}</span>
-                                </div>
-                                <p>${replyText}</p>
-                            </div>
+                            <p>${safeText}</p>
                         </div>
                     `;
-                }).join('');
+                    commentList.appendChild(commentEl);
+                });
 
-                commentEl.innerHTML = `
-                    <div class="comment-avatar" ${comment.userAvatar ? `style="background-image: url('${comment.userAvatar}')"` : ''}>
-                        ${!comment.userAvatar ? avatarInitials : ''}
-                    </div>
-                    <div class="comment-content">
-                        <div class="comment-header">
-                            <strong>${safeUsername}</strong>
-                            <span class="comment-date">${formatDate(comment.fecha)}</span>
-                        </div>
-                        <p>${safeText}</p>
-                        <div class="comment-actions">
-                            <button type="button" class="comment-reply-btn" onclick="toggleReplyForm(${commentId})">
-                                <i class="fas fa-reply"></i> Responder
-                            </button>
-                        </div>
-                        <div id="replyForm-${commentId}" class="reply-form hidden">
-                            <textarea id="replyInput-${commentId}" placeholder="Escribe tu respuesta..." rows="3" maxlength="500"></textarea>
-                            <div class="reply-form-actions">
-                                <button type="button" class="btn btn-secondary" onclick="toggleReplyForm(${commentId})">Cancelar</button>
-                                <button type="button" class="btn btn-primary" onclick="postReply(${commentId})">
-                                    <i class="fas fa-paper-plane"></i> Responder
-                                </button>
-                            </div>
-                        </div>
-                        ${replies.length > 0 ? `<div class="reply-list">${repliesHtml}</div>` : ''}
-                    </div>
-                `;
-                commentList.appendChild(commentEl);
-            });
+                document.getElementById('commentCount').textContent = String(getCommentCountFromServer(comments));
+            } catch (error) {
+                commentList.innerHTML = '<p class="no-comments">Aún no hay comentarios.</p>';
+                document.getElementById('commentCount').textContent = '0';
+            }
         };
 
         const toggleReplyForm = (commentId) => {
-            const form = document.getElementById(`replyForm-${commentId}`);
-            if (!form) return;
-            form.classList.toggle('hidden');
-
-            if (!form.classList.contains('hidden')) {
-                const input = document.getElementById(`replyInput-${commentId}`);
-                input?.focus();
-            }
+            void commentId;
+            alert('Las respuestas estarán disponibles en una siguiente fase.');
         };
 
-        const postReply = (commentId) => {
-            const userData = getSessionUser();
-            if (!userData) {
-                alert('Debes iniciar sesión para responder comentarios');
-                return;
-            }
-
-            const replyInput = document.getElementById(`replyInput-${commentId}`);
-            const replyText = replyInput?.value.trim() || '';
-            if (!replyText) {
-                alert('La respuesta no puede estar vacía');
-                return;
-            }
-
+        const postReply = () => {
             alert('Las respuestas estarán disponibles en una siguiente fase.');
         };
 
@@ -469,10 +480,12 @@
         };
 
         // Publicar comentario
-        const postComment = () => {
+        const postComment = async () => {
             const userData = getSessionUser();
-            if (!userData) {
-                alert('Debes iniciar sesión para comentar');
+            const postId = getPostId();
+
+            if (!userData || !isCommentingAllowed(userData)) {
+                alert('Debes iniciar sesión para comentar.');
                 return;
             }
 
@@ -482,7 +495,43 @@
                 return;
             }
 
-            alert('Los comentarios estarán disponibles en una siguiente fase.');
+            if (!postId) {
+                alert('Publicación no encontrada');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/comentarios`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id_usuario: userData.id_usuario,
+                        tipo_contenido: 'publicacion_principal',
+                        id_contenido: postId,
+                        contenido: commentText
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        alert('Debes iniciar sesión para comentar.');
+                        return;
+                    }
+
+                    alert(data.message || 'No se pudo guardar el comentario');
+                    return;
+                }
+
+                document.getElementById('userComment').value = '';
+                document.getElementById('commentCharCount').textContent = '0/500';
+                await loadComments();
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
+            }
         };
 
         // Contador de caracteres en comentario
@@ -495,8 +544,12 @@
             document.querySelector('.comments-container')?.scrollIntoView({ behavior: 'smooth' });
         };
 
-        // Cargar publicación al iniciar
-        loadPost();
+        // Cargar publicación y comentarios al iniciar
+        (async () => {
+            await loadPost();
+            await loadComments();
+            configureCommentForm();
+        })();
     </script>
 </body>
 </html>
