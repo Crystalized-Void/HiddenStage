@@ -93,6 +93,10 @@ const getUserWithRoleById = async (id_usuario) => {
     return rows[0];
 };
 
+const hasRole = (user, allowedRoles) => {
+    return Boolean(user && Array.isArray(allowedRoles) && allowedRoles.includes(Number(user.id_rol)));
+};
+
 app.get('/api/health', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 AS ok');
@@ -433,6 +437,233 @@ app.post('/api/posts', async (req, res) => {
         }
 
         return res.status(500).json({ message: 'Error interno al crear publicación' });
+    }
+});
+
+app.post('/api/publicaciones-principales', async (req, res) => {
+    try {
+        const {
+            id_autor,
+            titulo,
+            encabezado,
+            contenido,
+            categoria,
+            imagen_principal,
+            galeria_json,
+            enlaces_json
+        } = req.body || {};
+
+        const authorId = Number(id_autor);
+        const normalizedTitle = typeof titulo === 'string' ? titulo.trim() : '';
+        const normalizedHeader = typeof encabezado === 'string' ? encabezado.trim() : '';
+        const normalizedContent = typeof contenido === 'string' ? contenido.trim() : '';
+        const normalizedCategory = typeof categoria === 'string' ? categoria.trim() : '';
+        const normalizedMainImage = typeof imagen_principal === 'string' ? imagen_principal.trim() : '';
+
+        if (!authorId || !normalizedTitle || !normalizedHeader || !normalizedContent || !normalizedCategory) {
+            return res.status(400).json({
+                message: 'id_autor, titulo, encabezado, contenido y categoria son obligatorios'
+            });
+        }
+
+        const authorUser = await getUserWithRoleById(authorId);
+
+        if (!authorUser) {
+            return res.status(404).json({ message: 'Autor no encontrado' });
+        }
+
+        if (!hasRole(authorUser, [2, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para crear publicaciones principales' });
+        }
+
+        const normalizedGalleryJson = (() => {
+            if (galeria_json === null || typeof galeria_json === 'undefined' || galeria_json === '') {
+                return null;
+            }
+
+            if (typeof galeria_json === 'string') {
+                try {
+                    JSON.parse(galeria_json);
+                    return galeria_json;
+                } catch (error) {
+                    return '__INVALID_JSON__';
+                }
+            }
+
+            return JSON.stringify(galeria_json);
+        })();
+
+        if (normalizedGalleryJson === '__INVALID_JSON__') {
+            return res.status(400).json({ message: 'galeria_json no contiene un JSON válido' });
+        }
+
+        const normalizedLinksJson = (() => {
+            if (enlaces_json === null || typeof enlaces_json === 'undefined' || enlaces_json === '') {
+                return null;
+            }
+
+            if (typeof enlaces_json === 'string') {
+                try {
+                    JSON.parse(enlaces_json);
+                    return enlaces_json;
+                } catch (error) {
+                    return '__INVALID_JSON__';
+                }
+            }
+
+            return JSON.stringify(enlaces_json);
+        })();
+
+        if (normalizedLinksJson === '__INVALID_JSON__') {
+            return res.status(400).json({ message: 'enlaces_json no contiene un JSON válido' });
+        }
+
+        const [insertResult] = await pool.query(
+            `INSERT INTO publicaciones_principales (
+                id_autor,
+                titulo,
+                encabezado,
+                contenido,
+                categoria,
+                imagen_principal,
+                galeria_json,
+                enlaces_json,
+                estado
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')`,
+            [
+                authorId,
+                normalizedTitle,
+                normalizedHeader,
+                normalizedContent,
+                normalizedCategory,
+                normalizedMainImage || null,
+                normalizedGalleryJson,
+                normalizedLinksJson
+            ]
+        );
+
+        const [createdRows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE p.id_publicacion = ?
+             LIMIT 1`,
+            [Number(insertResult.insertId)]
+        );
+
+        return res.status(201).json({
+            message: 'Publicación principal creada correctamente',
+            publicacion: createdRows[0]
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al crear publicación principal' });
+    }
+});
+
+app.get('/api/publicaciones-principales', async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE p.estado = 'aprobada'
+             ORDER BY p.created_at DESC`
+        );
+
+        return res.json({ publicaciones: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones principales' });
+    }
+});
+
+app.get('/api/publicaciones-principales/autor/:id_autor', async (req, res) => {
+    try {
+        const authorId = Number(req.params.id_autor);
+
+        if (!authorId) {
+            return res.status(400).json({ message: 'id_autor inválido' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE p.id_autor = ?
+             ORDER BY p.created_at DESC`,
+            [authorId]
+        );
+
+        return res.json({ publicaciones: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones del autor' });
+    }
+});
+
+app.get('/api/publicaciones-principales/:id', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id_publicacion inválido' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE p.id_publicacion = ?
+             LIMIT 1`,
+            [publicationId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada' });
+        }
+
+        const publication = rows[0];
+
+        if (publication.estado === 'aprobada') {
+            return res.json({ publicacion: publication });
+        }
+
+        const requesterUserId = Number(req.query.id_usuario);
+
+        if (!requesterUserId) {
+            return res.status(400).json({
+                message: 'Se requiere id_usuario para ver publicaciones no aprobadas'
+            });
+        }
+
+        const requesterUser = await getUserWithRoleById(requesterUserId);
+
+        if (!requesterUser) {
+            return res.status(404).json({ message: 'Usuario solicitante no encontrado' });
+        }
+
+        const canViewNonApproved =
+            Number(requesterUser.id_usuario) === Number(publication.id_autor) ||
+            hasRole(requesterUser, [4, 5]);
+
+        if (!canViewNonApproved) {
+            return res.status(403).json({ message: 'No tienes permisos para ver esta publicación' });
+        }
+
+        return res.json({ publicacion: publication });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicación principal' });
     }
 });
 
