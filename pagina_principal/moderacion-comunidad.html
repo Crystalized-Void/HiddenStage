@@ -375,6 +375,26 @@
 			});
 		};
 
+		const normalizePostsResponse = (data) => {
+			if (Array.isArray(data)) {
+				return data;
+			}
+
+			if (Array.isArray(data?.publicaciones)) {
+				return data.publicaciones;
+			}
+
+			if (Array.isArray(data?.posts)) {
+				return data.posts;
+			}
+
+			if (Array.isArray(data?.data)) {
+				return data.data;
+			}
+
+			return [];
+		};
+
 		async function loadComments() {
 			const user = getStoredUser();
 
@@ -426,6 +446,7 @@
 			try {
 				const response = await fetch(`${API_BASE}/api/moderacion/posts-personales?id_usuario=${encodeURIComponent(user.id_usuario)}`);
 				const data = await response.json().catch(() => ({}));
+				console.log('Respuesta completa de posts personales:', data);
 
 				if (!response.ok) {
 					if (response.status === 403) {
@@ -437,7 +458,8 @@
 					return;
 				}
 
-				const publicaciones = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+				const publicaciones = normalizePostsResponse(data);
+				console.log('Array final de publicaciones usado para renderizar:', publicaciones);
 				renderPosts(publicaciones, user.id_usuario);
 			} catch (error) {
 				errorMessage.textContent = 'No se pudo conectar con el servidor.';
