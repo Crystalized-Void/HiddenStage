@@ -97,6 +97,8 @@ const hasRole = (user, allowedRoles) => {
     return Boolean(user && Array.isArray(allowedRoles) && allowedRoles.includes(Number(user.id_rol)));
 };
 
+const VALID_COMMENT_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
+
 app.get('/api/health', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 AS ok');
@@ -823,6 +825,108 @@ app.patch('/api/moderacion/publicaciones-principales/:id/estado', async (req, re
         }
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al moderar la publicación' });
+    }
+});
+
+app.get('/api/comentarios', async (req, res) => {
+    try {
+        const { tipo_contenido, id_contenido } = req.query || {};
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+
+        if (!normalizedContentType || !contentId) {
+            return res.status(400).json({ message: 'tipo_contenido e id_contenido son obligatorios' });
+        }
+
+        if (!VALID_COMMENT_CONTENT_TYPES.includes(normalizedContentType)) {
+            return res.status(400).json({
+                message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'"
+            });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT c.id_comentario, c.id_usuario, c.tipo_contenido, c.id_contenido,
+                    c.contenido, c.estado, c.created_at, c.updated_at,
+                    u.username, u.foto_perfil
+             FROM comentarios c
+             INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+             WHERE c.tipo_contenido = ?
+               AND c.id_contenido = ?
+               AND c.estado = 'activo'
+             ORDER BY c.created_at ASC`,
+            [normalizedContentType, contentId]
+        );
+
+        return res.json({ comentarios: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener comentarios' });
+    }
+});
+
+app.post('/api/comentarios', async (req, res) => {
+    try {
+        const {
+            id_usuario,
+            tipo_contenido,
+            id_contenido,
+            contenido
+        } = req.body || {};
+
+        const userId = Number(id_usuario);
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+        const normalizedText = typeof contenido === 'string' ? contenido.trim() : '';
+
+        if (!userId || !normalizedContentType || !contentId || !normalizedText) {
+            return res.status(400).json({
+                message: 'id_usuario, tipo_contenido, id_contenido y contenido son obligatorios'
+            });
+        }
+
+        if (!VALID_COMMENT_CONTENT_TYPES.includes(normalizedContentType)) {
+            return res.status(400).json({
+                message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'"
+            });
+        }
+
+        const user = await getUserWithRoleById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if (!hasRole(user, [1, 2, 3, 4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para comentar' });
+        }
+
+        const [insertResult] = await pool.query(
+            `INSERT INTO comentarios (
+                id_usuario,
+                tipo_contenido,
+                id_contenido,
+                contenido,
+                estado
+            ) VALUES (?, ?, ?, ?, 'activo')`,
+            [userId, normalizedContentType, contentId, normalizedText]
+        );
+
+        const [createdRows] = await pool.query(
+            `SELECT c.id_comentario, c.id_usuario, c.tipo_contenido, c.id_contenido,
+                    c.contenido, c.estado, c.created_at, c.updated_at,
+                    u.username, u.foto_perfil
+             FROM comentarios c
+             INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+             WHERE c.id_comentario = ?
+             LIMIT 1`,
+            [Number(insertResult.insertId)]
+        );
+
+        return res.status(201).json({
+            message: 'Comentario creado correctamente',
+            comentario: createdRows[0]
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al crear comentario' });
     }
 });
 
