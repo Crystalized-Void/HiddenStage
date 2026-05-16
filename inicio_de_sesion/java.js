@@ -57,23 +57,19 @@
     };
 
     const saveSessionUser = (user) => {
-        localStorage.setItem('hiddenstageUser', JSON.stringify(user));
+        if (!user || typeof user !== 'object') {
+            return;
+        }
+
+        const { password, ...safeUser } = user;
+        localStorage.setItem('hiddenstageUser', JSON.stringify(safeUser));
     };
 
     const buildGuestUser = () => ({
-        id_usuario: null,
         username: 'Invitado',
-        email: '',
-        biografia: 'Explorando HiddenStage como visitante.',
-        pronombres: '',
-        red_social_1: '',
-        red_social_2: '',
-        red_social_3: '',
-        red_social_4: '',
-        red_social_5: '',
-        foto_perfil: '',
-        banner_perfil: '',
-        isGuest: true
+        isGuest: true,
+        id_rol: 6,
+        nombre_rol: 'Visitante'
     });
 
     applyTheme(readStoredTheme());
