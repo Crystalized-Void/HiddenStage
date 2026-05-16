@@ -98,6 +98,8 @@ const hasRole = (user, allowedRoles) => {
 };
 
 const VALID_COMMENT_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
+const VALID_REACTION_CONTENT_TYPES = ['publicacion_principal', 'post_perfil'];
+const VALID_REACTION_TYPES = ['like', 'hype'];
 
 app.get('/api/health', async (req, res) => {
     try {
@@ -927,6 +929,188 @@ app.post('/api/comentarios', async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al crear comentario' });
+    }
+});
+
+app.get('/api/reacciones/resumen', async (req, res) => {
+    try {
+        const { tipo_contenido, id_contenido, id_usuario } = req.query || {};
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+        const userId = Number(id_usuario);
+
+        if (!normalizedContentType || !contentId) {
+            return res.status(400).json({ message: 'tipo_contenido e id_contenido son obligatorios' });
+        }
+
+        if (!VALID_REACTION_CONTENT_TYPES.includes(normalizedContentType)) {
+            return res.status(400).json({
+                message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'"
+            });
+        }
+
+        const [summaryRows] = await pool.query(
+            `SELECT
+                COALESCE(SUM(CASE WHEN tipo_reaccion = 'like' THEN 1 ELSE 0 END), 0) AS total_like,
+                COALESCE(SUM(CASE WHEN tipo_reaccion = 'hype' THEN 1 ELSE 0 END), 0) AS total_hype
+             FROM reacciones
+             WHERE tipo_contenido = ?
+               AND id_contenido = ?`,
+            [normalizedContentType, contentId]
+        );
+
+        let userLike = false;
+        let userHype = false;
+
+        if (userId) {
+            const [userRows] = await pool.query(
+                `SELECT tipo_reaccion
+                 FROM reacciones
+                 WHERE tipo_contenido = ?
+                   AND id_contenido = ?
+                   AND id_usuario = ?
+                 LIMIT 2`,
+                [normalizedContentType, contentId, userId]
+            );
+
+            userLike = userRows.some((row) => row.tipo_reaccion === 'like');
+            userHype = userRows.some((row) => row.tipo_reaccion === 'hype');
+        }
+
+        return res.json({
+            total_like: Number(summaryRows[0]?.total_like || 0),
+            total_hype: Number(summaryRows[0]?.total_hype || 0),
+            user_like: userLike,
+            user_hype: userHype
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener resumen de reacciones' });
+    }
+});
+
+app.post('/api/reacciones', async (req, res) => {
+    try {
+        const {
+            id_usuario,
+            tipo_contenido,
+            id_contenido,
+            tipo_reaccion
+        } = req.body || {};
+
+        const userId = Number(id_usuario);
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+        const normalizedReactionType = typeof tipo_reaccion === 'string' ? tipo_reaccion.trim().toLowerCase() : '';
+
+        if (!userId || !normalizedContentType || !contentId || !normalizedReactionType) {
+            return res.status(400).json({
+                message: 'id_usuario, tipo_contenido, id_contenido y tipo_reaccion son obligatorios'
+            });
+        }
+
+        if (!VALID_REACTION_CONTENT_TYPES.includes(normalizedContentType)) {
+            return res.status(400).json({
+                message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'"
+            });
+        }
+
+        if (!VALID_REACTION_TYPES.includes(normalizedReactionType)) {
+            return res.status(400).json({
+                message: "tipo_reaccion solo puede ser 'like' o 'hype'"
+            });
+        }
+
+        const user = await getUserWithRoleById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if (!hasRole(user, [1, 2, 3, 4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para reaccionar' });
+        }
+
+        try {
+            const [insertResult] = await pool.query(
+                `INSERT INTO reacciones (
+                    id_usuario,
+                    tipo_contenido,
+                    id_contenido,
+                    tipo_reaccion
+                ) VALUES (?, ?, ?, ?)`,
+                [userId, normalizedContentType, contentId, normalizedReactionType]
+            );
+
+            return res.status(201).json({
+                message: 'Reacción creada correctamente',
+                reaccion: {
+                    id_reaccion: insertResult.insertId,
+                    id_usuario: userId,
+                    tipo_contenido: normalizedContentType,
+                    id_contenido: contentId,
+                    tipo_reaccion: normalizedReactionType
+                }
+            });
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ message: 'Ya existe esa reacción para este contenido' });
+            }
+
+            throw error;
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al crear reacción' });
+    }
+});
+
+app.delete('/api/reacciones', async (req, res) => {
+    try {
+        const {
+            id_usuario,
+            tipo_contenido,
+            id_contenido,
+            tipo_reaccion
+        } = req.body || {};
+
+        const userId = Number(id_usuario);
+        const normalizedContentType = typeof tipo_contenido === 'string' ? tipo_contenido.trim() : '';
+        const contentId = Number(id_contenido);
+        const normalizedReactionType = typeof tipo_reaccion === 'string' ? tipo_reaccion.trim().toLowerCase() : '';
+
+        if (!userId || !normalizedContentType || !contentId || !normalizedReactionType) {
+            return res.status(400).json({
+                message: 'id_usuario, tipo_contenido, id_contenido y tipo_reaccion son obligatorios'
+            });
+        }
+
+        if (!VALID_REACTION_CONTENT_TYPES.includes(normalizedContentType)) {
+            return res.status(400).json({
+                message: "tipo_contenido solo puede ser 'publicacion_principal' o 'post_perfil'"
+            });
+        }
+
+        if (!VALID_REACTION_TYPES.includes(normalizedReactionType)) {
+            return res.status(400).json({
+                message: "tipo_reaccion solo puede ser 'like' o 'hype'"
+            });
+        }
+
+        const [deleteResult] = await pool.query(
+            `DELETE FROM reacciones
+             WHERE id_usuario = ?
+               AND tipo_contenido = ?
+               AND id_contenido = ?
+               AND tipo_reaccion = ?`,
+            [userId, normalizedContentType, contentId, normalizedReactionType]
+        );
+
+        if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'No se encontró esa reacción para eliminar' });
+        }
+
+        return res.json({ message: 'Reacción eliminada correctamente' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al eliminar reacción' });
     }
 });
 
