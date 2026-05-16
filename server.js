@@ -667,6 +667,165 @@ app.get('/api/publicaciones-principales/:id', async (req, res) => {
     }
 });
 
+app.get('/api/moderacion/publicaciones-pendientes', async (req, res) => {
+    try {
+        const reviewerUserId = Number(req.query.id_usuario);
+
+        if (!reviewerUserId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const reviewerUser = await getUserWithRoleById(reviewerUserId);
+
+        if (!reviewerUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if (!hasRole(reviewerUser, [4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para revisar publicaciones pendientes' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE p.estado = 'pendiente'
+             ORDER BY p.created_at ASC`
+        );
+
+        return res.json({ publicaciones: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones pendientes' });
+    }
+});
+
+app.patch('/api/moderacion/publicaciones-principales/:id/estado', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+        const { id_moderador, estado, motivo_rechazo } = req.body || {};
+
+        const moderatorUserId = Number(id_moderador);
+        const normalizedState = typeof estado === 'string' ? estado.trim().toLowerCase() : '';
+        const normalizedReason = typeof motivo_rechazo === 'string' ? motivo_rechazo.trim() : '';
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id de publicación inválido' });
+        }
+
+        if (!moderatorUserId) {
+            return res.status(400).json({ message: 'id_moderador es obligatorio' });
+        }
+
+        if (!normalizedState) {
+            return res.status(400).json({ message: 'estado es obligatorio' });
+        }
+
+        if (!['aprobada', 'rechazada'].includes(normalizedState)) {
+            return res.status(400).json({ message: "estado solo puede ser 'aprobada' o 'rechazada'" });
+        }
+
+        const moderatorUser = await getUserWithRoleById(moderatorUserId);
+
+        if (!moderatorUser) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderatorUser, [4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para moderar publicaciones' });
+        }
+
+        const [publicationRows] = await pool.query(
+            `SELECT id_publicacion, id_autor, titulo, encabezado, contenido, categoria,
+                    imagen_principal, galeria_json, enlaces_json, estado, motivo_rechazo,
+                    created_at, updated_at
+             FROM publicaciones_principales
+             WHERE id_publicacion = ?
+             LIMIT 1`,
+            [publicationId]
+        );
+
+        if (publicationRows.length === 0) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada' });
+        }
+
+        const currentPublication = publicationRows[0];
+
+        if (currentPublication.estado !== 'pendiente') {
+            return res.status(409).json({ message: 'Solo se pueden moderar publicaciones pendientes' });
+        }
+
+        if (normalizedState === 'rechazada' && !normalizedReason) {
+            return res.status(400).json({ message: 'motivo_rechazo es obligatorio al rechazar' });
+        }
+
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const nextReason = normalizedState === 'rechazada' ? normalizedReason : null;
+
+            await connection.query(
+                `UPDATE publicaciones_principales
+                 SET estado = ?,
+                     motivo_rechazo = ?
+                 WHERE id_publicacion = ?
+                 LIMIT 1`,
+                [normalizedState, nextReason, publicationId]
+            );
+
+            const tipoAccion = normalizedState === 'aprobada'
+                ? 'aprobar_publicacion'
+                : 'rechazar_publicacion';
+            const detalle = normalizedState === 'aprobada'
+                ? 'Publicación principal aprobada'
+                : normalizedReason;
+
+            await connection.query(
+                `INSERT INTO moderacion_historial (
+                    id_moderador,
+                    tipo_accion,
+                    tipo_contenido,
+                    id_contenido,
+                    detalle
+                ) VALUES (?, ?, 'publicacion_principal', ?, ?)`,
+                [moderatorUserId, tipoAccion, publicationId, detalle]
+            );
+
+            await connection.commit();
+
+            const [updatedRows] = await connection.query(
+                `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                        p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                        p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                        u.username, u.foto_perfil
+                 FROM publicaciones_principales p
+                 INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+                 WHERE p.id_publicacion = ?
+                 LIMIT 1`,
+                [publicationId]
+            );
+
+            return res.json({
+                message: normalizedState === 'aprobada'
+                    ? 'Publicación aprobada correctamente'
+                    : 'Publicación rechazada correctamente',
+                publicacion: updatedRows[0]
+            });
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al moderar la publicación' });
+    }
+});
+
 app.post('/api/support-ticket', async (req, res) => {
     try {
         const {
