@@ -330,6 +330,10 @@
                 <i class="fas fa-clipboard-check"></i>
                 <span>Revisar publicaciones</span>
             </button>
+            <button id="community-moderation-option" class="create-option" onclick="redirectToCommunityModeration()" style="display: none;">
+                <i class="fas fa-shield-alt"></i>
+                <span>Moderar comunidad</span>
+            </button>
         </div>
     </div>
 </div>
@@ -415,6 +419,23 @@
         }
 
         window.location.href = 'revision-publicaciones.html';
+    }
+
+    function redirectToCommunityModeration() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder a moderación.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (![3, 5].includes(getUserRoleId(storedUser))) {
+            alert('No tienes permisos para moderar comunidad.');
+            return;
+        }
+
+        window.location.href = 'moderacion-comunidad.html';
     }
 
     const escapeHtml = (value) => String(value || '')
@@ -539,6 +560,7 @@
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
         const reviewPostsOption = document.getElementById('review-posts-option');
+        const communityModerationOption = document.getElementById('community-moderation-option');
 
         const normalizeUsername = (username) => {
             if (typeof username !== 'string') {
@@ -602,6 +624,16 @@
             reviewPostsOption.style.display = canReview ? '' : 'none';
         };
 
+        const updateCommunityModerationVisibility = () => {
+            if (!communityModerationOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const canModerateCommunity = [3, 5].includes(getUserRoleId(storedUser));
+            communityModerationOption.style.display = canModerateCommunity ? '' : 'none';
+        };
+
         const applyTheme = (themeName) => {
             const isDarkTheme = themeName === 'dark';
 
@@ -637,18 +669,21 @@
 
         renderSessionUser();
         updateReviewPostsVisibility();
+        updateCommunityModerationVisibility();
         applyTheme(readStoredTheme());
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
                 renderSessionUser();
                 updateReviewPostsVisibility();
+                updateCommunityModerationVisibility();
             }
         });
 
         window.addEventListener('focus', () => {
             renderSessionUser();
             updateReviewPostsVisibility();
+            updateCommunityModerationVisibility();
         });
 
         if (openProfileMenuLink) {
