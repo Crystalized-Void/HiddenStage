@@ -160,8 +160,70 @@
 
     <script>
         const SESSION_KEY = 'hiddenstageUser';
-        const POSTS_KEY = 'hiddenstagePosts';
         const THEME_KEY = 'hiddenstageTheme';
+        const LOCAL_API_ORIGIN = 'http://localhost:3000';
+        const isLocalFrontend =
+            window.location.protocol === 'file:' ||
+            ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+        const API_BASE = isLocalFrontend && !isBackendOrigin
+            ? LOCAL_API_ORIGIN
+            : '';
+
+        const MAIN_PAGE_URL = 'pagina_principal.html';
+
+        const getStoredUser = () => {
+            try {
+                return JSON.parse(localStorage.getItem(SESSION_KEY));
+            } catch (error) {
+                return null;
+            }
+        };
+
+        const getUserRoleId = (user) => Number(user?.id_rol);
+
+        const showStatusMessage = (message, type = 'info') => {
+            const existing = document.getElementById('createPostStatusMessage');
+
+            if (existing) {
+                existing.remove();
+            }
+
+            const container = document.querySelector('.container');
+            const messageBox = document.createElement('div');
+            messageBox.id = 'createPostStatusMessage';
+            messageBox.textContent = message;
+            messageBox.style.margin = '0 0 16px';
+            messageBox.style.padding = '12px 14px';
+            messageBox.style.borderRadius = '10px';
+            messageBox.style.fontWeight = '700';
+            messageBox.style.lineHeight = '1.4';
+            messageBox.style.background = type === 'error' ? 'rgba(192, 57, 43, 0.15)' : 'rgba(52, 152, 219, 0.15)';
+            messageBox.style.color = type === 'error' ? '#c0392b' : '#1f4e79';
+            messageBox.style.border = type === 'error' ? '1px solid rgba(192, 57, 43, 0.35)' : '1px solid rgba(52, 152, 219, 0.35)';
+
+            if (container) {
+                container.insertBefore(messageBox, container.firstChild);
+            }
+        };
+
+        const disableForm = () => {
+            const form = document.getElementById('postForm');
+            if (form) {
+                Array.from(form.elements).forEach((element) => {
+                    if (element.tagName !== 'BUTTON' || element.type !== 'button') {
+                        element.disabled = true;
+                    }
+                });
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
+            }
+        };
+
+        const userData = getStoredUser();
 
         // Aplicar tema
         const applyTheme = () => {
@@ -172,9 +234,12 @@
         applyTheme();
 
         // Verificar sesión
-        if (!localStorage.getItem(SESSION_KEY)) {
+        if (!userData) {
             alert('Debes iniciar sesión para crear una publicación');
             window.location.href = '../inicio_de_sesion/index.html';
+        } else if (![2, 5].includes(getUserRoleId(userData))) {
+            disableForm();
+            showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
         }
 
         // Contadores de caracteres
@@ -270,8 +335,17 @@
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const userData = JSON.parse(localStorage.getItem(SESSION_KEY));
-            const posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || [];
+            if (!userData) {
+                alert('Debes iniciar sesión para crear una publicación');
+                window.location.href = '../inicio_de_sesion/index.html';
+                return;
+            }
+
+            if (![2, 5].includes(getUserRoleId(userData))) {
+                showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
+                alert('No tienes permiso para crear publicaciones principales.');
+                return;
+            }
 
             // Recopilar enlaces
             const links = [];
@@ -303,30 +377,74 @@
                 imagenGaleria.push(await fileToDataURL(file));
             }
 
-            // Crear publicación
-            const post = {
-                id: Date.now(),
-                userId: userData.id || userData.username,
-                username: userData.username,
-                userAvatar: userData.foto_perfil || '',
-                titulo: document.getElementById('titulo').value,
-                encabezado: document.getElementById('encabezado').value,
+            const payload = {
+                id_autor: userData.id_usuario,
+                titulo: document.getElementById('titulo').value.trim(),
+                encabezado: document.getElementById('encabezado').value.trim(),
                 categoria: document.getElementById('categoria').value,
-                contenido: document.getElementById('contenido').value,
-                imagenPrincipal: imagenPrincipal,
-                imagenGaleria: imagenGaleria,
-                links: links,
-                fecha: new Date().toISOString(),
-                likes: 0,
-                comentarios: [],
-                hypes: []
+                contenido: document.getElementById('contenido').value.trim(),
+                imagen_principal: imagenPrincipal || '',
+                galeria_json: JSON.stringify(imagenGaleria),
+                enlaces_json: JSON.stringify(links)
             };
 
-            posts.push(post);
-            localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+            try {
+                const response = await fetch(`${API_BASE}/api/publicaciones-principales`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            alert('¡Publicación creada exitosamente!');
-            window.location.href = 'pagina_principal.html#' + post.categoria;
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
+                        alert('No tienes permiso para crear publicaciones principales.');
+                        return;
+                    }
+
+                    showStatusMessage(data.message || 'No se pudo enviar la publicación a revisión.', 'error');
+                    alert(data.message || 'No se pudo enviar la publicación a revisión.');
+                    return;
+                }
+
+                showStatusMessage('Tu publicación fue enviada a revisión y aparecerá cuando sea aprobada.');
+                alert('Tu publicación fue enviada a revisión y aparecerá cuando sea aprobada.');
+                document.getElementById('postForm').reset();
+                document.getElementById('tituloCount').textContent = '0/100';
+                document.getElementById('encabezadoCount').textContent = '0/200';
+                document.getElementById('contenidoCount').textContent = '0/5000';
+                document.getElementById('imagenPreview').innerHTML = '';
+                document.getElementById('galeriaPreview').innerHTML = '';
+                document.getElementById('linksContainer').innerHTML = `
+                    <div class="link-input-group">
+                        <input 
+                            type="text" 
+                            class="link-title" 
+                            placeholder="Nombre del enlace"
+                            maxlength="50"
+                        >
+                        <input 
+                            type="url" 
+                            class="link-url" 
+                            placeholder="https://ejemplo.com"
+                        >
+                        <button type="button" class="btn-remove-link" onclick="removeLink(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    window.location.href = MAIN_PAGE_URL;
+                }, 2000);
+            } catch (error) {
+                showStatusMessage('No se pudo conectar con el servidor. Inténtalo nuevamente.', 'error');
+                alert('No se pudo conectar con el servidor.');
+            }
         });
     </script>
 </body>
