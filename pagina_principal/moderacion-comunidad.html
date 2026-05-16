@@ -35,12 +35,37 @@
 		</section>
 
 		<section id="contentState" class="content-shell hidden">
-			<div class="tabs-bar" role="tablist" aria-label="Secciones de moderación">
-				<button id="commentsTab" class="tab-btn active" type="button" data-tab="comments">Comentarios</button>
-				<button id="postsTab" class="tab-btn" type="button" data-tab="posts">Publicaciones personales</button>
-			</div>
+					function switchPanel(panelName) {
+						const isPostsPanel = panelName === 'posts';
 
-			<section id="commentsPanel" class="panel active" aria-labelledby="commentsTab">
+						if (isPostsPanel) {
+							postsPanel.style.display = 'grid';
+							postsPanel.classList.remove('hidden');
+							postsPanel.classList.add('active');
+
+							commentsPanel.style.display = 'none';
+							commentsPanel.classList.add('hidden');
+							commentsPanel.classList.remove('active');
+
+							postsTab.classList.add('active');
+							commentsTab.classList.remove('active');
+						} else {
+							commentsPanel.style.display = 'grid';
+							commentsPanel.classList.remove('hidden');
+							commentsPanel.classList.add('active');
+
+							postsPanel.style.display = 'none';
+							postsPanel.classList.add('hidden');
+							postsPanel.classList.remove('active');
+
+							commentsTab.classList.add('active');
+							postsTab.classList.remove('active');
+						}
+
+						console.log('panel activo:', panelName);
+						console.log('display de commentsPanel:', window.getComputedStyle(commentsPanel).display);
+						console.log('display de postsPanel:', window.getComputedStyle(postsPanel).display);
+					}
 				<div class="panel-header">
 					<h2>Comentarios</h2>
 					<p id="commentsSummary" class="panel-summary"></p>
@@ -77,10 +102,8 @@
 					<span class="pill state-pill"></span>
 				</div>
 				<div class="card-title-row">
-					<strong class="author-name"></strong>
-					<span class="card-date"></span>
-				</div>
-				<dl class="info-grid">
+					commentsTab.addEventListener('click', () => switchPanel('comments'));
+					postsTab.addEventListener('click', () => switchPanel('posts'));
 					<div><dt>Estado</dt><dd class="comment-state"></dd></div>
 					<div><dt>Tipo contenido</dt><dd class="comment-type"></dd></div>
 					<div><dt>Id contenido</dt><dd class="comment-content-id"></dd></div>
@@ -96,7 +119,7 @@
 					<button type="button" class="action-btn warn-btn btn-hide">Ocultar</button>
 					<button type="button" class="action-btn danger-btn btn-delete">Eliminar</button>
 				</div>
-				<p class="feedback" aria-live="polite"></p>
+						switchPanel('comments');
 			</div>
 		</article>
 	</template>
@@ -203,12 +226,37 @@
 			element.classList.remove('hidden');
 		};
 
-		const showTab = (tabName) => {
-			commentsTab.classList.toggle('active', tabName === 'comments');
-			postsTab.classList.toggle('active', tabName === 'posts');
-			commentsPanel.classList.toggle('active', tabName === 'comments');
-			postsPanel.classList.toggle('active', tabName === 'posts');
-		};
+		function switchPanel(panelName) {
+			const isPostsPanel = panelName === 'posts';
+
+			if (isPostsPanel) {
+				postsPanel.style.display = 'block';
+				postsPanel.classList.remove('hidden');
+				postsPanel.classList.add('active');
+
+				commentsPanel.style.display = 'none';
+				commentsPanel.classList.add('hidden');
+				commentsPanel.classList.remove('active');
+
+				postsTab.classList.add('active');
+				commentsTab.classList.remove('active');
+			} else {
+				commentsPanel.style.display = 'block';
+				commentsPanel.classList.remove('hidden');
+				commentsPanel.classList.add('active');
+
+				postsPanel.style.display = 'none';
+				postsPanel.classList.add('hidden');
+				postsPanel.classList.remove('active');
+
+				commentsTab.classList.add('active');
+				postsTab.classList.remove('active');
+			}
+
+			console.log('panel activo:', panelName);
+			console.log('display de commentsPanel:', window.getComputedStyle(commentsPanel).display);
+			console.log('display de postsPanel:', window.getComputedStyle(postsPanel).display);
+		}
 
 		const isCommentState = (value) => ['activo', 'oculto', 'eliminado'].includes(value);
 
@@ -481,13 +529,13 @@
 			}
 
 			showOnly(contentState);
-			showTab('comments');
+			switchPanel('comments');
 			await loadComments();
 			await loadPosts();
 		};
 
-		commentsTab.addEventListener('click', () => showTab('comments'));
-		postsTab.addEventListener('click', () => showTab('posts'));
+		commentsTab.addEventListener('click', () => switchPanel('comments'));
+		postsTab.addEventListener('click', () => switchPanel('posts'));
 
 		initialize();
 	</script>
