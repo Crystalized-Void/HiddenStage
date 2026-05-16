@@ -74,6 +74,25 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+const getUserWithRoleById = async (id_usuario) => {
+    const [rows] = await pool.query(
+        `SELECT u.id_usuario, u.username, u.email, u.biografia, u.pronombres,
+                u.red_social_1, u.red_social_2, u.red_social_3, u.red_social_4, u.red_social_5,
+                u.foto_perfil, u.banner_perfil, u.id_rol, r.nombre_rol
+         FROM usuarios u
+         INNER JOIN roles r ON u.id_rol = r.id_rol
+         WHERE u.id_usuario = ?
+         LIMIT 1`,
+        [Number(id_usuario)]
+    );
+
+    if (rows.length === 0) {
+        return null;
+    }
+
+    return rows[0];
+};
+
 app.get('/api/health', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 AS ok');
@@ -107,19 +126,14 @@ app.post('/api/register', async (req, res) => {
 
         await pool.query(
             `INSERT INTO usuarios (username, email, password, id_rol)
-             VALUES (
-                ?,
-                ?,
-                ?,
-                (SELECT id_rol FROM roles WHERE nombre_rol = 'Usuario registrado' LIMIT 1)
-             )`,
+             VALUES (?, ?, ?, 1)`,
             [normalizedUsername, normalizedEmail, hashedPassword]
         );
 
         return res.status(201).json({ message: 'Usuario registrado correctamente' });
     } catch (error) {
         if (error.code === 'ER_NO_REFERENCED_ROW_2') {
-            return res.status(400).json({ message: 'No existe el rol de Usuario registrado en la tabla roles' });
+            return res.status(400).json({ message: 'No existe el rol con id_rol = 1 en la tabla roles' });
         }
 
         return res.status(500).json({ message: 'Error interno al registrar usuario' });
@@ -137,11 +151,10 @@ app.post('/api/login', async (req, res) => {
         const normalizedEmail = String(email).trim().toLowerCase();
 
         const [users] = await pool.query(
-            `SELECT id_usuario, username, email, password, biografia, pronombres,
-                    red_social_1, red_social_2, red_social_3, red_social_4, red_social_5,
-                    foto_perfil, banner_perfil
-             FROM usuarios
-             WHERE email = ?
+            `SELECT u.id_usuario, u.password
+             FROM usuarios u
+             INNER JOIN roles r ON u.id_rol = r.id_rol
+             WHERE u.email = ?
              LIMIT 1`,
             [normalizedEmail]
         );
@@ -175,21 +188,29 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ message: 'Credenciales inválidas' });
         }
 
+        const userWithRole = await getUserWithRoleById(Number(user.id_usuario));
+
+        if (!userWithRole) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
         return res.json({
             message: 'Inicio de sesión correcto',
             user: {
-                id_usuario: user.id_usuario,
-                username: user.username,
-                email: user.email,
-                biografia: user.biografia || '',
-                pronombres: user.pronombres || '',
-                red_social_1: user.red_social_1 || '',
-                red_social_2: user.red_social_2 || '',
-                red_social_3: user.red_social_3 || '',
-                red_social_4: user.red_social_4 || '',
-                red_social_5: user.red_social_5 || '',
-                foto_perfil: user.foto_perfil || '',
-                banner_perfil: user.banner_perfil || ''
+                id_usuario: userWithRole.id_usuario,
+                username: userWithRole.username,
+                email: userWithRole.email,
+                biografia: userWithRole.biografia || '',
+                pronombres: userWithRole.pronombres || '',
+                red_social_1: userWithRole.red_social_1 || '',
+                red_social_2: userWithRole.red_social_2 || '',
+                red_social_3: userWithRole.red_social_3 || '',
+                red_social_4: userWithRole.red_social_4 || '',
+                red_social_5: userWithRole.red_social_5 || '',
+                foto_perfil: userWithRole.foto_perfil || '',
+                banner_perfil: userWithRole.banner_perfil || '',
+                id_rol: userWithRole.id_rol,
+                nombre_rol: userWithRole.nombre_rol
             }
         });
     } catch (error) {
@@ -300,19 +321,30 @@ app.put('/api/profile', async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        const [updatedUsers] = await pool.query(
-            `SELECT id_usuario, username, email, biografia, pronombres,
-                    red_social_1, red_social_2, red_social_3, red_social_4, red_social_5,
-                    foto_perfil, banner_perfil
-             FROM usuarios
-             WHERE id_usuario = ?
-             LIMIT 1`,
-            [Number(id_usuario)]
-        );
+        const updatedUser = await getUserWithRoleById(Number(id_usuario));
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
 
         return res.json({
             message: 'Perfil actualizado correctamente',
-            user: updatedUsers[0]
+            user: {
+                id_usuario: updatedUser.id_usuario,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                biografia: updatedUser.biografia || '',
+                pronombres: updatedUser.pronombres || '',
+                red_social_1: updatedUser.red_social_1 || '',
+                red_social_2: updatedUser.red_social_2 || '',
+                red_social_3: updatedUser.red_social_3 || '',
+                red_social_4: updatedUser.red_social_4 || '',
+                red_social_5: updatedUser.red_social_5 || '',
+                foto_perfil: updatedUser.foto_perfil || '',
+                banner_perfil: updatedUser.banner_perfil || '',
+                id_rol: updatedUser.id_rol,
+                nombre_rol: updatedUser.nombre_rol
+            }
         });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al actualizar perfil' });
