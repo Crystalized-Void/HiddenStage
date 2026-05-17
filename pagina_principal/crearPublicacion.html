@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Crear Publicación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="crearPublicacion.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+            </a>
+            <h1 class="page-title">Crear Publicación</h1>
+            <div class="spacer"></div>
+        </div>
+    </header>
+
+    <main class="create-post-page">
+        <div class="container">
+            <form id="postForm" class="post-form">
+                <!-- Título -->
+                <div class="form-group">
+                    <label for="titulo">Título de la publicación *</label>
+                    <input 
+                        type="text" 
+                        id="titulo" 
+                        name="titulo" 
+                        placeholder="Ej: Los mejores juegos de 2026"
+                        required
+                        maxlength="100"
+                    >
+                    <small id="tituloCount">0/100</small>
+                </div>
+
+                <!-- Encabezado/Resumen -->
+                <div class="form-group">
+                    <label for="encabezado">Encabezado o resumen *</label>
+                    <input 
+                        type="text" 
+                        id="encabezado" 
+                        name="encabezado" 
+                        placeholder="Breve descripción que aparecerá en la vista previa"
+                        required
+                        maxlength="200"
+                    >
+                    <small id="encabezadoCount">0/200</small>
+                </div>
+
+                <!-- Categoría -->
+                <div class="form-group">
+                    <label for="categoria">Categoría *</label>
+                    <select id="categoria" name="categoria" required>
+                        <option value="">-- Selecciona una categoría --</option>
+                        <option value="guias">Guías</option>
+                        <option value="trucos">Trucos</option>
+                        <option value="carreras">Carreras</option>
+                        <option value="plataformas">Plataformas</option>
+                        <option value="romance">Romance</option>
+                        <option value="porturnos">Por Turnos</option>
+                        <option value="accion">Acción</option>
+                        <option value="aventuras">Aventuras</option>
+                    </select>
+                </div>
+
+                <!-- Imagen Principal -->
+                <div class="form-group">
+                    <label for="imagenPrincipal">Imagen principal (portada)</label>
+                    <div class="image-upload">
+                        <input 
+                            type="file" 
+                            id="imagenPrincipal" 
+                            name="imagenPrincipal" 
+                            accept="image/*"
+                        >
+                        <label for="imagenPrincipal" class="upload-label">
+                            <i class="fas fa-image"></i>
+                            <span>Haz clic para subir imagen</span>
+                        </label>
+                    </div>
+                    <div id="imagenPreview" class="image-preview"></div>
+                </div>
+
+                <!-- Galería de Imágenes -->
+                <div class="form-group">
+                    <label for="imagenGaleria">Galería de imágenes (múltiples)</label>
+                    <div class="image-upload multiple">
+                        <input 
+                            type="file" 
+                            id="imagenGaleria" 
+                            name="imagenGaleria" 
+                            accept="image/*"
+                            multiple
+                        >
+                        <label for="imagenGaleria" class="upload-label">
+                            <i class="fas fa-images"></i>
+                            <span>Haz clic para subir múltiples imágenes</span>
+                        </label>
+                    </div>
+                    <div id="galeriaPreview" class="gallery-preview"></div>
+                </div>
+
+                <!-- Enlaces -->
+                <div class="form-group">
+                    <label>Enlaces útiles</label>
+                    <div id="linksContainer">
+                        <div class="link-input-group">
+                            <input 
+                                type="text" 
+                                class="link-title" 
+                                placeholder="Nombre del enlace"
+                                maxlength="50"
+                            >
+                            <input 
+                                type="url" 
+                                class="link-url" 
+                                placeholder="https://ejemplo.com"
+                            >
+                            <button type="button" class="btn-remove-link" onclick="removeLink(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-link" onclick="addLink()">
+                        <i class="fas fa-plus"></i> Agregar enlace
+                    </button>
+                </div>
+
+                <!-- Contenido de la Publicación -->
+                <div class="form-group">
+                    <label for="contenido">Desarrollo textual de la publicación *</label>
+                    <textarea 
+                        id="contenido" 
+                        name="contenido" 
+                        placeholder="Escribe el contenido completo de tu publicación aquí..."
+                        required
+                        rows="15"
+                        maxlength="5000"
+                    ></textarea>
+                    <small id="contenidoCount">0/5000</small>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Publicar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const SESSION_KEY = 'hiddenstageUser';
+        const THEME_KEY = 'hiddenstageTheme';
+        const LOCAL_API_ORIGIN = 'http://localhost:3000';
+        const isLocalFrontend =
+            window.location.protocol === 'file:' ||
+            ['localhost', '127.0.0.1'].includes(window.location.hostname);
+        const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+        const API_BASE = isLocalFrontend && !isBackendOrigin
+            ? LOCAL_API_ORIGIN
+            : '';
+
+        const MAIN_PAGE_URL = 'pagina_principal.html';
+
+        const getStoredUser = () => {
+            try {
+                return JSON.parse(localStorage.getItem(SESSION_KEY));
+            } catch (error) {
+                return null;
+            }
+        };
+
+        const getUserRoleId = (user) => Number(user?.id_rol);
+
+        const showStatusMessage = (message, type = 'info') => {
+            const existing = document.getElementById('createPostStatusMessage');
+
+            if (existing) {
+                existing.remove();
+            }
+
+            const container = document.querySelector('.container');
+            const messageBox = document.createElement('div');
+            messageBox.id = 'createPostStatusMessage';
+            messageBox.textContent = message;
+            messageBox.style.margin = '0 0 16px';
+            messageBox.style.padding = '12px 14px';
+            messageBox.style.borderRadius = '10px';
+            messageBox.style.fontWeight = '700';
+            messageBox.style.lineHeight = '1.4';
+            messageBox.style.background = type === 'error' ? 'rgba(192, 57, 43, 0.15)' : 'rgba(52, 152, 219, 0.15)';
+            messageBox.style.color = type === 'error' ? '#c0392b' : '#1f4e79';
+            messageBox.style.border = type === 'error' ? '1px solid rgba(192, 57, 43, 0.35)' : '1px solid rgba(52, 152, 219, 0.35)';
+
+            if (container) {
+                container.insertBefore(messageBox, container.firstChild);
+            }
+        };
+
+        const disableForm = () => {
+            const form = document.getElementById('postForm');
+            if (form) {
+                Array.from(form.elements).forEach((element) => {
+                    if (element.tagName !== 'BUTTON' || element.type !== 'button') {
+                        element.disabled = true;
+                    }
+                });
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
+            }
+        };
+
+        const userData = getStoredUser();
+
+        // Aplicar tema
+        const applyTheme = () => {
+            const storedTheme = localStorage.getItem(THEME_KEY);
+            document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+        };
+
+        applyTheme();
+
+        // Verificar sesión
+        if (!userData) {
+            alert('Debes iniciar sesión para crear una publicación');
+            window.location.href = '../inicio_de_sesion/index.html';
+        } else if (![2, 5].includes(getUserRoleId(userData))) {
+            disableForm();
+            showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
+        }
+
+        // Contadores de caracteres
+        document.getElementById('titulo').addEventListener('input', (e) => {
+            document.getElementById('tituloCount').textContent = `${e.target.value.length}/100`;
+        });
+
+        document.getElementById('encabezado').addEventListener('input', (e) => {
+            document.getElementById('encabezadoCount').textContent = `${e.target.value.length}/200`;
+        });
+
+        document.getElementById('contenido').addEventListener('input', (e) => {
+            document.getElementById('contenidoCount').textContent = `${e.target.value.length}/5000`;
+        });
+
+        // Preview de imagen principal
+        document.getElementById('imagenPrincipal').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = document.getElementById('imagenPreview');
+                    preview.innerHTML = `
+                        <div class="preview-item">
+                            <img src="${event.target.result}" alt="Previsualización">
+                            <button type="button" onclick="this.parentElement.remove(); document.getElementById('imagenPrincipal').value=''" class="btn-remove">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Preview de galería de imágenes
+        document.getElementById('imagenGaleria').addEventListener('change', (e) => {
+            const files = e.target.files;
+            const preview = document.getElementById('galeriaPreview');
+            preview.innerHTML = '';
+            
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const item = document.createElement('div');
+                    item.className = 'preview-item';
+                    item.innerHTML = `
+                        <img src="${event.target.result}" alt="Imagen ${index + 1}">
+                        <button type="button" onclick="removeGalleryImage(${index})" class="btn-remove">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    preview.appendChild(item);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        function removeGalleryImage(index) {
+            const fileInput = document.getElementById('imagenGaleria');
+            const dataTransfer = new DataTransfer();
+            
+            Array.from(fileInput.files).forEach((file, i) => {
+                if (i !== index) {
+                    dataTransfer.items.add(file);
+                }
+            });
+            
+            fileInput.files = dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // Funciones para gestionar enlaces
+        function addLink() {
+            const container = document.getElementById('linksContainer');
+            const newLink = document.createElement('div');
+            newLink.className = 'link-input-group';
+            newLink.innerHTML = `
+                <input type="text" class="link-title" placeholder="Nombre del enlace" maxlength="50">
+                <input type="url" class="link-url" placeholder="https://ejemplo.com">
+                <button type="button" class="btn-remove-link" onclick="removeLink(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newLink);
+        }
+
+        function removeLink(btn) {
+            btn.parentElement.remove();
+        }
+
+        // Enviar formulario
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!userData) {
+                alert('Debes iniciar sesión para crear una publicación');
+                window.location.href = '../inicio_de_sesion/index.html';
+                return;
+            }
+
+            if (![2, 5].includes(getUserRoleId(userData))) {
+                showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
+                alert('No tienes permiso para crear publicaciones principales.');
+                return;
+            }
+
+            // Recopilar enlaces
+            const links = [];
+            document.querySelectorAll('.link-input-group').forEach(group => {
+                const title = group.querySelector('.link-title').value;
+                const url = group.querySelector('.link-url').value;
+                if (title && url) {
+                    links.push({ title, url });
+                }
+            });
+
+            // Convertir archivos a Data URLs
+            const fileToDataURL = (file) => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            };
+
+            const imagenPrincipalFiles = document.getElementById('imagenPrincipal').files;
+            const imagenPrincipal = imagenPrincipalFiles.length > 0 
+                ? await fileToDataURL(imagenPrincipalFiles[0]) 
+                : '';
+
+            const imagenGaleriaFiles = document.getElementById('imagenGaleria').files;
+            const imagenGaleria = [];
+            for (let file of imagenGaleriaFiles) {
+                imagenGaleria.push(await fileToDataURL(file));
+            }
+
+            const payload = {
+                id_autor: userData.id_usuario,
+                titulo: document.getElementById('titulo').value.trim(),
+                encabezado: document.getElementById('encabezado').value.trim(),
+                categoria: document.getElementById('categoria').value,
+                contenido: document.getElementById('contenido').value.trim(),
+                imagen_principal: imagenPrincipal || '',
+                galeria_json: JSON.stringify(imagenGaleria),
+                enlaces_json: JSON.stringify(links)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/publicaciones-principales`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        showStatusMessage('Solo los autores verificados pueden crear publicaciones principales.', 'error');
+                        alert('No tienes permiso para crear publicaciones principales.');
+                        return;
+                    }
+
+                    showStatusMessage(data.message || 'No se pudo enviar la publicación a revisión.', 'error');
+                    alert(data.message || 'No se pudo enviar la publicación a revisión.');
+                    return;
+                }
+
+                showStatusMessage('Tu publicación fue enviada a revisión y aparecerá cuando sea aprobada.');
+                alert('Tu publicación fue enviada a revisión y aparecerá cuando sea aprobada.');
+                document.getElementById('postForm').reset();
+                document.getElementById('tituloCount').textContent = '0/100';
+                document.getElementById('encabezadoCount').textContent = '0/200';
+                document.getElementById('contenidoCount').textContent = '0/5000';
+                document.getElementById('imagenPreview').innerHTML = '';
+                document.getElementById('galeriaPreview').innerHTML = '';
+                document.getElementById('linksContainer').innerHTML = `
+                    <div class="link-input-group">
+                        <input 
+                            type="text" 
+                            class="link-title" 
+                            placeholder="Nombre del enlace"
+                            maxlength="50"
+                        >
+                        <input 
+                            type="url" 
+                            class="link-url" 
+                            placeholder="https://ejemplo.com"
+                        >
+                        <button type="button" class="btn-remove-link" onclick="removeLink(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    window.location.href = MAIN_PAGE_URL;
+                }, 2000);
+            } catch (error) {
+                showStatusMessage('No se pudo conectar con el servidor. Inténtalo nuevamente.', 'error');
+                alert('No se pudo conectar con el servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

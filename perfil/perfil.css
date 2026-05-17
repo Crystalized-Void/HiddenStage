@@ -797,7 +797,6 @@ body[data-theme="dark"] .delete-post-btn {
 body[data-theme="dark"] .delete-post-btn:hover:not(:disabled) {
     background: #ff5c66;
 }
-
 @media (max-width: 900px) {
     .profile-tabs-strip {
         margin: 0;

@@ -1,0 +1,224 @@
+:root {
+    --bg-1: #f4e8fc;
+    --bg-2: #efe2f7;
+    --panel: #ffffff;
+    --text: #1f1f1f;
+    --muted: #5e5e5e;
+    --accent: #9582c1;
+    --accent-2: #7c69a8;
+}
+
+body[data-theme="dark"] {
+    --bg-1: #191325;
+    --bg-2: #211933;
+    --panel: #251c38;
+    --text: #f4edff;
+    --muted: #cfbedf;
+    --accent: #b09adf;
+    --accent-2: #8e74c4;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Lato", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    color: var(--text);
+    background: radial-gradient(circle at top left, var(--bg-2, var(--bg-1)), var(--bg-1) 45%, var(--bg-1) 100%);
+}
+
+.create-post-page {
+    width: min(860px, 92%);
+    margin: 28px auto;
+    display: grid;
+    gap: 16px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.top-actions h1 {
+    font-size: 30px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body[data-theme="dark"] .back-link {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid #d9d9d9;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .mini-post {
+    border-color: rgba(124, 105, 168, 0.4);
+    background: color-mix(in srgb, var(--panel) 88%, #ffffff 12%);
+}
+
+.help-text {
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+.post-form {
+    display: grid;
+    gap: 8px;
+}
+
+.post-form label {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.help-small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.post-form input,
+.post-form textarea {
+    width: 100%;
+    border: 1px solid #d9d9d9;
+    background: #f7f7f7;
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+body[data-theme="dark"] .post-form input,
+body[data-theme="dark"] .post-form textarea {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+    color: #ffffff;
+}
+
+body[data-theme="dark"] .post-form input::placeholder,
+body[data-theme="dark"] .post-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.post-form textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.single-media-preview,
+.media-preview-grid {
+    border: 1px dashed #bdbdbd;
+    border-radius: 10px;
+    min-height: 72px;
+    padding: 10px;
+    background: #f2f2f2;
+}
+
+body[data-theme="dark"] .single-media-preview,
+body[data-theme="dark"] .media-preview-grid {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+}
+
+.single-media-preview img,
+.single-media-preview video {
+    width: min(320px, 100%);
+    border-radius: 10px;
+    display: block;
+}
+
+.media-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+.media-preview-grid img {
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.form-actions {
+    margin-top: 6px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-primary {
+    border: 1px solid #7c69a8;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.recent-posts h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.my-posts-list {
+    display: grid;
+    gap: 10px;
+}
+
+.mini-post {
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.mini-post h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.mini-post p,
+.empty-state {
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+.mini-post-meta {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #7c69a8;
+}
+
+@media (max-width: 640px) {
+    .top-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .top-actions h1 {
+        font-size: 26px;
+    }
+}

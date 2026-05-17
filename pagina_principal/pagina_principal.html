@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="principal.css">
+</head>
+<body id="inicio">
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo" onclick="Menu()">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+            </div>
+
+            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
+                <i class="fas fa-plus"></i>
+            </button>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
+                    <span data-user-name></span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <a href="#" data-open-profile-menu>PERFIL</a>
+                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+    </header>
+<div class="page-shell">
+<nav class="nav-bar">
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+</nav>
+<div id="sideMenu" class="side-menu">
+    <div class="menu-header">
+        <img src="../img/LogoHS.png" onclick="Menu()">
+        <i class="fas fa-times close-icon" onclick="Menu()"></i>
+    </div>
+    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+</div>
+<div id="sideProfile" class="side-profile">
+    <div class="menu-header">
+        <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+    </div>
+    <div class="side-profile-header">
+        <div class="side-profile-avatar" data-side-avatar aria-hidden="true">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="side-profile-meta">
+            <strong data-side-username>Invitado</strong>
+            <span data-side-handle>@hiddenstage</span>
+        </div>
+    </div>
+    <span class="menu-section-title">Cuenta</span>
+    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+    <button type="button" class="theme-toggle-link" data-theme-toggle>
+        <i class="fas fa-moon" data-theme-icon></i>
+        <span data-theme-label>Tema oscuro</span>
+    </button>
+    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+    <span class="menu-section-title">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+</div>
+    
+<main id="relevancia" class="container">
+    <section class="featured">
+        <div class="featured-image">
+            <img src="../img/Imagendeprueba.png" alt="Post Destacado">
+        </div>
+        <div class="featured-text">
+            <h2><i class="fas fa-star"></i> Team Cherry nos la hace otra vez</h2>
+            <p>Team Cherry confirma que el nuevo DLC de silksong sera un juego nuevo</p>
+        </div>
+    </section>
+    <aside class="sidebar">
+        <div class="sidepost">
+            <img src="" alt="Publicación 1">
+            <div class="post-info">
+                <h4>Publicación 1</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+        <div class="sidepost">
+            <img src="" alt="Publicación 2">
+            <div class="post-info">
+                <h4>Publicación 2</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+        <div class="sidepost">
+            <img src="" alt="Publicación 3">
+            <div class="post-info">
+                <h4>Publicación 3</h4>
+                <p>Contenido breve</p>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<section class="Populares">
+    <h2><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="reciente" class="Recientes">
+    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="guias" class="Guias">
+    <h2><i class="fas fa-book"></i> GUIAS </h2>
+        <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="trucos" class="Trucos">
+    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="carreras" class="Carreras">
+    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="plataformas" class="Plataformas">
+    <h2><i class="fas fa-server"></i> PLATAFORMAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="romance" class="Romance">
+    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="porturnos" class="Porturnos">
+    <h2><i class="fas fa-mask"></i> POR TURNOS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="accion" class="Accion">
+    <h2><i class="fas fa-explosion"></i> ACCIÓN </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+
+<section id="aventuras" class="Aventuras">
+    <h2><i class="fas fa-map"></i> AVENTURAS </h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+
+        <div class="card">
+            <img src="">
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- Modal: Crear Publicación -->
+<div id="createModal" class="modal-create-post">
+    <div class="modal-overlay" onclick="toggleCreateModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Crear publicación</h2>
+            <button class="modal-close" onclick="toggleCreateModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <button class="create-option" onclick="redirectToCreatePost()">
+                <i class="fas fa-pen"></i>
+                <span>Crear nota</span>
+            </button>
+            <button id="admin-panel-option" class="create-option" onclick="redirectToAdminPanel()" style="display: none;">
+                <i class="fas fa-user-shield"></i>
+                <span>Panel administrador</span>
+            </button>
+            <button id="review-posts-option" class="create-option" onclick="redirectToReviewPosts()" style="display: none;">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Revisar publicaciones</span>
+            </button>
+            <button id="community-moderation-option" class="create-option" onclick="redirectToCommunityModeration()" style="display: none;">
+                <i class="fas fa-shield-alt"></i>
+                <span>Moderar comunidad</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SESSION_KEY = 'hiddenstageUser';
+    const THEME_KEY = 'hiddenstageTheme';
+    const LOCAL_API_ORIGIN = 'http://localhost:3000';
+    const isLocalFrontend =
+        window.location.protocol === 'file:' ||
+        ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+    const API_BASE = isLocalFrontend && !isBackendOrigin
+        ? LOCAL_API_ORIGIN
+        : '';
+
+    const MAIN_PAGE_URL = 'pagina_principal.html';
+
+    const getStoredUser = () => {
+        try {
+            const raw = localStorage.getItem(SESSION_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const getUserRoleId = (user) => Number(user?.id_rol);
+
+    function Menu() {
+        document.getElementById('sideMenu').classList.toggle('active');
+    }
+
+    function AjustesPerfil() {
+        document.getElementById('sideProfile').classList.toggle('active');
+    }
+
+    function toggleUserMenu() {
+        AjustesPerfil();
+    }
+
+    function Generos() {
+        window.location.href = 'generos.html';
+    }
+
+    function toggleCreateModal() {
+        const modal = document.getElementById('createModal');
+        if (modal) {
+            modal.classList.toggle('active');
+        }
+    }
+
+    function redirectToCreatePost() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para crear una publicación');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (![2, 5].includes(getUserRoleId(storedUser))) {
+            alert('Solo los autores verificados pueden crear publicaciones principales.');
+            return;
+        }
+
+        window.location.href = 'crearPublicacion.html';
+    }
+
+    function redirectToReviewPosts() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder a revisión.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (![4, 5].includes(getUserRoleId(storedUser))) {
+            alert('No tienes permisos para revisar publicaciones.');
+            return;
+        }
+
+        window.location.href = 'revision-publicaciones.html';
+    }
+
+    function redirectToCommunityModeration() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder a moderación.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (![3, 5].includes(getUserRoleId(storedUser))) {
+            alert('No tienes permisos para moderar comunidad.');
+            return;
+        }
+
+        window.location.href = 'moderacion-comunidad.html';
+    }
+
+    function redirectToAdminPanel() {
+        const storedUser = getStoredUser();
+
+        if (!storedUser) {
+            alert('Debes iniciar sesión para acceder al panel administrador.');
+            window.location.href = '../inicio_de_sesion/index.html';
+            return;
+        }
+
+        if (getUserRoleId(storedUser) !== 5) {
+            alert('No tienes permisos para acceder al panel administrador.');
+            return;
+        }
+
+        window.location.href = 'admin-panel.html';
+    }
+
+    const escapeHtml = (value) => String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    // Cargar publicaciones aprobadas desde backend
+    async function loadPublications() {
+        const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
+        const categoryLabels = {
+            guias: 'Guías',
+            trucos: 'Trucos',
+            carreras: 'Carreras',
+            plataformas: 'Plataformas',
+            romance: 'Romance',
+            porturnos: 'Por Turnos',
+            accion: 'Acción',
+            aventuras: 'Aventuras'
+        };
+
+        const setEmptyMessage = (message) => {
+            const firstSection = document.querySelector('section.Populares .cards');
+            if (firstSection) {
+                firstSection.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
+            }
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/api/publicaciones-principales`);
+            const data = await response.json();
+            const posts = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+
+            if (!response.ok) {
+                setEmptyMessage(data.message || 'Aún no hay publicaciones aprobadas.');
+                return;
+            }
+
+            if (posts.length === 0) {
+                setEmptyMessage('Aún no hay publicaciones aprobadas.');
+                return;
+            }
+
+            categories.forEach((category) => {
+                const section = document.getElementById(category);
+                if (!section) return;
+
+                const cards = section.querySelector('.cards');
+                if (!cards) return;
+
+                cards.innerHTML = '';
+
+                const categoryPosts = posts.filter((post) => post.categoria === category);
+
+                if (categoryPosts.length === 0) {
+                    cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones aprobadas en esta categoría aún.</p>';
+                    return;
+                }
+
+                categoryPosts.forEach((post) => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card';
+                    card.onclick = () => window.location.href = `publicacion.html?id=${post.id_publicacion}`;
+
+                    const authorName = post.username || 'Autor';
+                    const avatarInitials = authorName.substring(0, 2).toUpperCase();
+                    const avatarStyle = post.foto_perfil ? `background-image: url('${post.foto_perfil}')` : '';
+                    const postDate = post.created_at ? formatPostDate(post.created_at) : '';
+                    const categoryLabel = categoryLabels[post.categoria] || post.categoria || '';
+
+                    card.innerHTML = `
+                        ${post.imagen_principal ? `<img src="${post.imagen_principal}" alt="${escapeHtml(post.titulo)}" class="post-card-image">` : '<div class="post-card-image"></div>'}
+                        <div class="post-card-content">
+                            <div class="post-card-title">${escapeHtml(post.titulo)}</div>
+                            <div class="post-card-heading">${escapeHtml(post.encabezado)}</div>
+                            <div class="post-card-meta">
+                                <div class="post-card-avatar" style="${avatarStyle}">${!post.foto_perfil ? avatarInitials : ''}</div>
+                                <span>${escapeHtml(authorName)}</span>
+                                <span>•</span>
+                                <span>${escapeHtml(categoryLabel)}</span>
+                                <span>•</span>
+                                <span>${escapeHtml(postDate)}</span>
+                            </div>
+                        </div>
+                    `;
+                    cards.appendChild(card);
+                });
+            });
+        } catch (error) {
+            setEmptyMessage('Aún no hay publicaciones aprobadas.');
+        }
+    }
+
+    function formatPostDate(isoDate) {
+        const date = new Date(isoDate);
+        const now = new Date();
+        const diff = now - date;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        if (days === 0) return 'Hoy';
+        if (days === 1) return 'Ayer';
+        if (days < 7) return `${days}d`;
+        if (days < 30) return `${Math.floor(days / 7)}sem`;
+        return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+    }
+
+    (() => {
+        const userPanel = document.querySelector('.user-panel');
+        const userTrigger = document.querySelector('.user-trigger');
+        const userNameText = document.querySelector('[data-user-name]');
+        const userFullNameText = document.querySelector('[data-user-fullname]');
+        const userTopAvatar = document.querySelector('[data-user-avatar]');
+        const sideAvatar = document.querySelector('[data-side-avatar]');
+        const sideUsername = document.querySelector('[data-side-username]');
+        const sideHandle = document.querySelector('[data-side-handle]');
+        const openProfileMenuLink = document.querySelector('[data-open-profile-menu]');
+        const sideProfile = document.getElementById('sideProfile');
+        const logoutLinks = document.querySelectorAll('[data-logout-link]');
+        const themeToggleButton = document.querySelector('[data-theme-toggle]');
+        const themeLabel = document.querySelector('[data-theme-label]');
+        const themeIcon = document.querySelector('[data-theme-icon]');
+        const adminPanelOption = document.getElementById('admin-panel-option');
+        const reviewPostsOption = document.getElementById('review-posts-option');
+        const communityModerationOption = document.getElementById('community-moderation-option');
+
+        const normalizeUsername = (username) => {
+            if (typeof username !== 'string') {
+                return 'Invitado';
+            }
+
+            const cleaned = username.trim();
+            return cleaned || 'Invitado';
+        };
+
+        const buildHandle = (username) => `@${username.toLowerCase().replace(/\s+/g, '_')}`;
+
+        const applyAvatar = (element, photo) => {
+            if (!element) {
+                return;
+            }
+
+            if (photo) {
+                element.style.backgroundImage = `url(${photo})`;
+                element.classList.add('has-photo');
+            } else {
+                element.style.backgroundImage = '';
+                element.classList.remove('has-photo');
+            }
+        };
+
+        const readStoredUser = getStoredUser;
+
+        const renderSessionUser = () => {
+            const storedUser = readStoredUser();
+            const username = normalizeUsername(storedUser?.username);
+            const photo = typeof storedUser?.foto_perfil === 'string' ? storedUser.foto_perfil.trim() : '';
+
+            if (userNameText) {
+                userNameText.textContent = username;
+            }
+
+            if (userFullNameText) {
+                userFullNameText.textContent = username;
+            }
+
+            if (sideUsername) {
+                sideUsername.textContent = username;
+            }
+
+            if (sideHandle) {
+                sideHandle.textContent = buildHandle(username);
+            }
+
+            applyAvatar(userTopAvatar, photo);
+            applyAvatar(sideAvatar, photo);
+        };
+
+        const updateReviewPostsVisibility = () => {
+            if (!reviewPostsOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const canReview = [4, 5].includes(getUserRoleId(storedUser));
+            reviewPostsOption.style.display = canReview ? '' : 'none';
+        };
+
+        const updateAdminPanelVisibility = () => {
+            if (!adminPanelOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const isAdmin = getUserRoleId(storedUser) === 5;
+            adminPanelOption.style.display = isAdmin ? '' : 'none';
+        };
+
+        const updateCommunityModerationVisibility = () => {
+            if (!communityModerationOption) {
+                return;
+            }
+
+            const storedUser = readStoredUser();
+            const canModerateCommunity = [3, 5].includes(getUserRoleId(storedUser));
+            communityModerationOption.style.display = canModerateCommunity ? '' : 'none';
+        };
+
+        const applyTheme = (themeName) => {
+            const isDarkTheme = themeName === 'dark';
+
+            document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
+
+            if (themeLabel) {
+                themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
+            }
+
+            if (themeIcon) {
+                themeIcon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        };
+
+        const readStoredTheme = () => {
+            const storedTheme = localStorage.getItem(THEME_KEY);
+            return storedTheme === 'dark' ? 'dark' : 'light';
+        };
+
+        const toggleTheme = () => {
+            const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, nextTheme);
+            applyTheme(nextTheme);
+        };
+
+        const closeUserMenu = () => {
+            if (!userPanel) {
+                return;
+            }
+
+            userPanel.setAttribute('aria-expanded', 'false');
+        };
+
+        renderSessionUser();
+        updateAdminPanelVisibility();
+        updateReviewPostsVisibility();
+        updateCommunityModerationVisibility();
+        applyTheme(readStoredTheme());
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === SESSION_KEY) {
+                renderSessionUser();
+                updateAdminPanelVisibility();
+                updateReviewPostsVisibility();
+                updateCommunityModerationVisibility();
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            renderSessionUser();
+            updateAdminPanelVisibility();
+            updateReviewPostsVisibility();
+            updateCommunityModerationVisibility();
+        });
+
+        if (openProfileMenuLink) {
+            openProfileMenuLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (sideProfile) {
+                    sideProfile.classList.add('active');
+                }
+                closeUserMenu();
+            });
+        }
+
+        logoutLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                localStorage.removeItem(SESSION_KEY);
+            });
+        });
+
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', () => {
+                toggleTheme();
+            });
+        }
+
+        if (!userPanel || !userTrigger) {
+            return;
+        }
+
+        userTrigger.addEventListener('click', () => {
+            if (sideProfile) {
+                sideProfile.classList.toggle('active');
+            }
+            userPanel.setAttribute('aria-expanded', 'false');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!userPanel.contains(event.target)) {
+                closeUserMenu();
+            }
+
+            if (sideProfile && sideProfile.classList.contains('active')) {
+                const clickedInsideProfileMenu = sideProfile.contains(event.target);
+                const clickedProfileTrigger = openProfileMenuLink?.contains(event.target);
+                const clickedTopTrigger = userTrigger.contains(event.target);
+                if (!clickedInsideProfileMenu && !clickedProfileTrigger && !clickedTopTrigger) {
+                    sideProfile.classList.remove('active');
+                }
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeUserMenu();
+                sideProfile?.classList.remove('active');
+            }
+        });
+
+        // Cargar publicaciones aprobadas al iniciar
+        loadPublications();
+    })();
+</script>
+</body>
+</html>

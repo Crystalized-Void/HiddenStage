@@ -1,0 +1,343 @@
+:root {
+    --bg-1: #f4e8fc;
+    --bg-2: #efe2f7;
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-strong: #ffffff;
+    --surface-soft: #f2edf8;
+    --text: #1f1f1f;
+    --muted: #5e5e5e;
+    --line: rgba(124, 105, 168, 0.28);
+    --primary: #9582c1;
+    --primary-strong: #7c69a8;
+    --accent: #8e74c4;
+    --shadow: 0 24px 50px rgba(49, 39, 75, 0.2);
+}
+
+body[data-theme="dark"] {
+    --bg-1: #191325;
+    --bg-2: #211933;
+    --surface: rgba(32, 25, 47, 0.94);
+    --surface-strong: #221a35;
+    --surface-soft: #2b2140;
+    --text: #f4edff;
+    --muted: #cfbedf;
+    --line: rgba(176, 154, 223, 0.28);
+    --primary: #b09adf;
+    --primary-strong: #8e74c4;
+    --accent: #7c69a8;
+    --shadow: 0 26px 56px rgba(7, 5, 14, 0.62);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Manrope", sans-serif;
+    color: var(--text);
+    background: radial-gradient(circle at top left, var(--bg-2), var(--bg-1) 40%, var(--bg-1) 100%);
+    display: grid;
+    place-items: center;
+    padding: 1.2rem;
+    transition: background-color 0.4s ease;
+}
+
+.auth-shell {
+    width: min(640px, 100%);
+    min-height: min(740px, 96vh);
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+}
+
+.auth-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem 1.2rem 1rem;
+}
+
+.panel-top {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.theme-toggle {
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text);
+    border-radius: 999px;
+    height: 38px;
+    padding: 0 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-1px);
+    background: var(--surface-soft);
+}
+
+.logo-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.brand-copy {
+    margin-top: -2.6rem;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--muted);
+    max-width: 38ch;
+}
+
+.form {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 460px;
+}
+
+.login,
+.register {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(430px, 84%);
+}
+
+.login {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.form.toggle .login {
+    transform: translate(76%, -50%);
+    opacity: 0;
+}
+
+.register {
+    transform: translate(-184%, -50%);
+    opacity: 0;
+    transition: transform 0.7s ease, opacity 0.7s ease;
+}
+
+.form.toggle .register {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+}
+
+.form h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.5rem, 2.1vw, 2rem);
+    line-height: 1.2;
+    padding-bottom: 0.08rem;
+    margin-bottom: 0.95rem;
+}
+
+.form p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin-bottom: 1.15rem;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.95rem;
+}
+
+.input label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.input input {
+    height: 45px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-strong);
+    color: var(--text);
+    padding: 0 0.82rem;
+    font-size: 0.86rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input input::placeholder {
+    color: color-mix(in srgb, var(--muted) 82%, #ffffff 18%);
+}
+
+.input input:focus {
+    border-color: color-mix(in srgb, var(--primary) 72%, white 28%);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.reminder {
+    margin-top: 0.2rem;
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.checkbox-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.forgot {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.buttons {
+    display: grid;
+    gap: 0.64rem;
+    margin-bottom: 1rem;
+}
+
+.buttons button {
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.primary-button {
+    background: linear-gradient(130deg, var(--primary) 0%, var(--primary-strong) 100%);
+    color: #ffffff;
+}
+
+.primary-button:hover {
+    transform: translateY(-1px);
+}
+
+.secondary-button {
+    background: var(--surface-soft);
+    color: var(--text);
+    border-color: var(--line);
+}
+
+.secondary-button:hover {
+    background: color-mix(in srgb, var(--surface-soft) 84%, var(--primary) 16%);
+}
+
+.account {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.account a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.panel-bottom {
+    font-size: 0.68rem;
+    color: var(--muted);
+    opacity: 0.9;
+    text-align: center;
+    margin-top: 0.8rem;
+}
+
+.banner-logo {
+    width: min(100%, 235px);
+    display: block;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 0.8rem;
+    }
+
+    .auth-panel {
+        padding: 1rem;
+    }
+
+    .logo-wrap {
+        margin-top: -2.3rem;
+        margin-bottom: -1.9rem;
+    }
+
+    .brand-copy {
+        font-size: 0.72rem;
+        max-width: 32ch;
+        margin-top: -2.1rem;
+    }
+
+    .banner-logo {
+        width: min(100%, 210px);
+    }
+
+    .theme-toggle {
+        height: 34px;
+        padding: 0 0.6rem;
+    }
+
+    .theme-toggle-label {
+        display: none;
+    }
+
+    .form {
+        min-height: 520px;
+    }
+
+    .login,
+    .register {
+        width: min(430px, 95%);
+    }
+
+    .form.toggle .login {
+        transform: translate(100%, -50%);
+    }
+
+    .register {
+        transform: translate(-210%, -50%);
+    }
+
+    .panel-bottom {
+        margin-top: 0.4rem;
+    }
+}

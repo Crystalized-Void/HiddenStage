@@ -1,0 +1,376 @@
+:root {
+	--bg-deep: #120f1e;
+	--bg-soft: #1b1530;
+	--panel: rgba(33, 25, 52, 0.94);
+	--panel-strong: rgba(43, 33, 68, 0.98);
+	--border: rgba(180, 142, 255, 0.24);
+	--text: #f4efff;
+	--muted: #cdbfe5;
+	--accent: #9f70ff;
+	--accent-strong: #c2a4ff;
+	--danger: #ff6f93;
+	--success: #65dbb0;
+	--shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	min-height: 100%;
+	font-family: 'Lato', sans-serif;
+	color: var(--text);
+	background:
+		radial-gradient(circle at top left, rgba(159, 112, 255, 0.2), transparent 34%),
+		radial-gradient(circle at top right, rgba(255, 111, 147, 0.12), transparent 28%),
+		linear-gradient(180deg, #0f0c18 0%, #181327 100%);
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.topbar {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	backdrop-filter: blur(18px);
+	background: rgba(11, 9, 18, 0.82);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.topbar-inner {
+	width: min(1200px, calc(100% - 32px));
+	margin: 0 auto;
+	min-height: 84px;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 18px;
+}
+
+.brand-logo {
+	width: 54px;
+	height: 54px;
+	object-fit: contain;
+	display: block;
+}
+
+.header-copy {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	font-size: 0.75rem;
+	font-weight: 800;
+	color: var(--accent-strong);
+}
+
+.header-copy h1 {
+	margin: 0;
+	font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+}
+
+.back-link,
+.action-btn,
+.ghost-btn,
+.save-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.back-link,
+.action-btn,
+.ghost-btn {
+	padding: 0.75rem 1rem;
+}
+
+.back-link,
+.ghost-btn {
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--text);
+}
+
+.action-btn,
+.save-btn {
+	background: linear-gradient(135deg, rgba(159, 112, 255, 0.34), rgba(194, 164, 255, 0.25));
+	border-color: rgba(194, 164, 255, 0.48);
+	color: var(--text);
+}
+
+.save-btn {
+	padding: 0.62rem 0.95rem;
+}
+
+.back-link:hover,
+.action-btn:hover,
+.ghost-btn:hover,
+.save-btn:hover {
+	transform: translateY(-1px);
+}
+
+.admin-page {
+	width: min(1200px, calc(100% - 32px));
+	margin: 28px auto 44px;
+}
+
+.state-card,
+.content-shell {
+	border: 1px solid var(--border);
+	border-radius: 24px;
+	background: var(--panel);
+	box-shadow: var(--shadow);
+}
+
+.state-card {
+	padding: 30px 26px;
+	text-align: center;
+}
+
+.state-card h2 {
+	margin: 0 0 10px;
+	font-size: 1.35rem;
+}
+
+.state-card p {
+	margin: 0;
+	color: var(--muted);
+}
+
+.content-shell {
+	padding: 20px;
+}
+
+.toolbar {
+	display: grid;
+	grid-template-columns: minmax(240px, 1.5fr) minmax(200px, 1fr) auto;
+	gap: 12px;
+	align-items: end;
+	margin-bottom: 16px;
+}
+
+.toolbar-item {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.toolbar-item label {
+	color: var(--muted);
+	font-size: 0.88rem;
+	font-weight: 700;
+}
+
+input,
+select {
+	width: 100%;
+	border: 1px solid rgba(194, 164, 255, 0.28);
+	background: rgba(255, 255, 255, 0.05);
+	color: var(--text);
+	border-radius: 12px;
+	padding: 0.72rem 0.82rem;
+	font: inherit;
+}
+
+select option {
+	color: #1b1530;
+}
+
+.toolbar-actions {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+}
+
+.summary-row {
+	margin-bottom: 8px;
+}
+
+.summary-row p {
+	margin: 0;
+	color: var(--muted);
+	font-weight: 700;
+}
+
+.feedback {
+	margin: 0 0 12px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	border: 1px solid transparent;
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.feedback.ok {
+	border-color: rgba(101, 219, 176, 0.45);
+	color: var(--success);
+}
+
+.feedback.error {
+	border-color: rgba(255, 111, 147, 0.45);
+	color: var(--danger);
+}
+
+.inner-state {
+	margin: 0 0 12px;
+	background: rgba(255, 255, 255, 0.03);
+}
+
+.users-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 16px;
+}
+
+.user-card {
+	border: 1px solid rgba(180, 142, 255, 0.2);
+	border-radius: 20px;
+	background: var(--panel-strong);
+	box-shadow: 0 16px 30px rgba(0, 0, 0, 0.26);
+	padding: 16px;
+	display: grid;
+	gap: 14px;
+}
+
+.user-top {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	gap: 10px;
+	align-items: center;
+}
+
+.avatar {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid rgba(194, 164, 255, 0.35);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.user-headings {
+	min-width: 0;
+}
+
+.user-headings h2 {
+	margin: 0;
+	font-size: 1.03rem;
+	overflow-wrap: anywhere;
+}
+
+.user-headings p {
+	margin: 4px 0 0;
+	color: var(--muted);
+	font-size: 0.9rem;
+	overflow-wrap: anywhere;
+}
+
+.role-pill {
+	border: 1px solid rgba(194, 164, 255, 0.45);
+	border-radius: 999px;
+	padding: 0.34rem 0.68rem;
+	font-size: 0.8rem;
+	font-weight: 800;
+	background: rgba(159, 112, 255, 0.18);
+	white-space: nowrap;
+}
+
+.meta-grid {
+	margin: 0;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.meta-grid div {
+	border: 1px solid rgba(194, 164, 255, 0.18);
+	border-radius: 12px;
+	padding: 8px;
+	background: rgba(255, 255, 255, 0.02);
+}
+
+.meta-grid dt {
+	color: var(--muted);
+	font-size: 0.76rem;
+	margin: 0 0 4px;
+}
+
+.meta-grid dd {
+	margin: 0;
+	font-weight: 700;
+	font-size: 0.88rem;
+	overflow-wrap: anywhere;
+}
+
+.role-editor {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 10px;
+	align-items: end;
+}
+
+.inline-label {
+	display: grid;
+	gap: 6px;
+	color: var(--muted);
+	font-size: 0.88rem;
+	font-weight: 700;
+}
+
+.card-message {
+	margin: 0;
+	min-height: 1.2em;
+	font-size: 0.9rem;
+	color: var(--muted);
+}
+
+.card-message.error {
+	color: var(--danger);
+}
+
+@media (max-width: 900px) {
+	.toolbar {
+		grid-template-columns: 1fr;
+	}
+
+	.toolbar-actions {
+		justify-content: flex-start;
+	}
+}
+
+@media (max-width: 720px) {
+	.topbar-inner {
+		grid-template-columns: auto 1fr;
+	}
+
+	.back-link {
+		grid-column: 1 / -1;
+	}
+
+	.meta-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.role-editor {
+		grid-template-columns: 1fr;
+	}
+}

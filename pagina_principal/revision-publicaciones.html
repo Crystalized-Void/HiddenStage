@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>HiddenStage | Revisión de publicaciones</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="revision-publicaciones.css">
+</head>
+<body>
+	<header class="topbar">
+		<div class="topbar-inner">
+			<a class="brand" href="pagina_principal.html" aria-label="Volver al inicio">
+				<img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+			</a>
+
+			<div class="header-copy">
+				<span class="eyebrow">Panel de moderación</span>
+				<h1>Revisión de publicaciones</h1>
+			</div>
+
+			<a class="back-link" href="pagina_principal.html">Volver a inicio</a>
+		</div>
+	</header>
+
+	<main class="moderation-page">
+		<section id="loadingState" class="state-card">
+			<p>Cargando publicaciones pendientes...</p>
+		</section>
+
+		<section id="deniedState" class="state-card hidden">
+			<h2>Acceso denegado</h2>
+			<p>Solo moderadores de contenido y administradores pueden acceder a esta sección.</p>
+			<a class="primary-link" href="pagina_principal.html">Regresar a pagina_principal.html</a>
+		</section>
+
+		<section id="emptyState" class="state-card hidden">
+			<h2>No hay publicaciones pendientes por revisar.</h2>
+		</section>
+
+		<section id="errorState" class="state-card hidden">
+			<h2>No se pudo cargar la moderación</h2>
+			<p id="errorMessage">Inténtalo nuevamente en unos momentos.</p>
+		</section>
+
+		<section id="cardsState" class="cards-grid hidden"></section>
+	</main>
+
+	<template id="cardTemplate">
+		<article class="review-card">
+			<div class="cover-wrap">
+				<img class="cover-image" alt="Imagen principal de la publicación">
+			</div>
+
+			<div class="card-content">
+				<div class="meta-row">
+					<span class="pill category-pill"></span>
+					<span class="pill status-pill">pendiente</span>
+				</div>
+
+				<h2 class="post-title"></h2>
+				<p class="post-heading"></p>
+
+				<div class="author-row">
+					<span class="author-name"></span>
+					<span class="separator">•</span>
+					<span class="post-date"></span>
+				</div>
+
+				<div class="post-content"></div>
+
+				<label class="reason-label">
+					Motivo de rechazo (opcional)
+					<textarea class="reject-reason" rows="3" maxlength="500" placeholder="Puedes explicar por qué se rechaza esta publicación"></textarea>
+				</label>
+
+				<div class="actions-row">
+					<button type="button" class="action-btn approve-btn">Aprobar</button>
+					<button type="button" class="action-btn reject-btn">Rechazar</button>
+				</div>
+
+				<p class="feedback" aria-live="polite"></p>
+			</div>
+		</article>
+	</template>
+
+	<script>
+		const SESSION_KEY = 'hiddenstageUser';
+		const LOCAL_API_ORIGIN = 'http://localhost:3000';
+		const isLocalFrontend =
+			window.location.protocol === 'file:' ||
+			['localhost', '127.0.0.1'].includes(window.location.hostname);
+		const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+
+		const API_BASE = isLocalFrontend && !isBackendOrigin
+			? LOCAL_API_ORIGIN
+			: '';
+
+		const loadingState = document.getElementById('loadingState');
+		const deniedState = document.getElementById('deniedState');
+		const emptyState = document.getElementById('emptyState');
+		const errorState = document.getElementById('errorState');
+		const errorMessage = document.getElementById('errorMessage');
+		const cardsState = document.getElementById('cardsState');
+		const cardTemplate = document.getElementById('cardTemplate');
+
+		const getSessionUser = () => {
+			try {
+				const raw = localStorage.getItem(SESSION_KEY);
+				return raw ? JSON.parse(raw) : null;
+			} catch (error) {
+				return null;
+			}
+		};
+
+		const canModerate = (user) => {
+			const roleId = Number(user?.id_rol);
+			return roleId === 4 || roleId === 5;
+		};
+
+		const escapeHtml = (value) => String(value || '')
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+
+		const formatDate = (isoDate) => {
+			if (!isoDate) {
+				return 'Sin fecha';
+			}
+
+			const date = new Date(isoDate);
+			if (Number.isNaN(date.getTime())) {
+				return 'Sin fecha';
+			}
+
+			return date.toLocaleString('es-ES', {
+				year: 'numeric',
+				month: 'short',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit'
+			});
+		};
+
+		const showState = (name) => {
+			[loadingState, deniedState, emptyState, errorState, cardsState].forEach((node) => {
+				node.classList.add('hidden');
+			});
+
+			if (name === 'loading') loadingState.classList.remove('hidden');
+			if (name === 'denied') deniedState.classList.remove('hidden');
+			if (name === 'empty') emptyState.classList.remove('hidden');
+			if (name === 'error') errorState.classList.remove('hidden');
+			if (name === 'cards') cardsState.classList.remove('hidden');
+		};
+
+		const sendModerationAction = async (idPublicacion, idModerador, estado, motivoRechazo) => {
+			const response = await fetch(`${API_BASE}/api/moderacion/publicaciones-principales/${idPublicacion}/estado`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					id_moderador: idModerador,
+					estado,
+					motivo_rechazo: motivoRechazo
+				})
+			});
+
+			const data = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				throw new Error(data.message || 'No se pudo completar la acción de moderación');
+			}
+
+			return data;
+		};
+
+		const renderCards = (publicaciones, moderatorUser) => {
+			cardsState.innerHTML = '';
+
+			publicaciones.forEach((publication) => {
+				const card = cardTemplate.content.firstElementChild.cloneNode(true);
+
+				const coverWrap = card.querySelector('.cover-wrap');
+				const coverImage = card.querySelector('.cover-image');
+				const categoryPill = card.querySelector('.category-pill');
+				const titleEl = card.querySelector('.post-title');
+				const headingEl = card.querySelector('.post-heading');
+				const authorEl = card.querySelector('.author-name');
+				const dateEl = card.querySelector('.post-date');
+				const contentEl = card.querySelector('.post-content');
+				const reasonInput = card.querySelector('.reject-reason');
+				const approveBtn = card.querySelector('.approve-btn');
+				const rejectBtn = card.querySelector('.reject-btn');
+				const feedbackEl = card.querySelector('.feedback');
+
+				if (publication.imagen_principal) {
+					coverImage.src = publication.imagen_principal;
+				} else {
+					coverWrap.classList.add('hidden');
+				}
+
+				categoryPill.textContent = publication.categoria || 'Sin categoría';
+				titleEl.textContent = publication.titulo || 'Sin título';
+				headingEl.textContent = publication.encabezado || '';
+				authorEl.textContent = `Autor: ${publication.username || 'Usuario'}`;
+				dateEl.textContent = formatDate(publication.created_at);
+				contentEl.innerHTML = escapeHtml(publication.contenido || '').replace(/\n/g, '<br>');
+
+				const setButtonsDisabled = (disabled) => {
+					approveBtn.disabled = disabled;
+					rejectBtn.disabled = disabled;
+				};
+
+				approveBtn.addEventListener('click', async () => {
+					setButtonsDisabled(true);
+					feedbackEl.textContent = 'Procesando aprobación...';
+
+					try {
+						const result = await sendModerationAction(
+							publication.id_publicacion,
+							Number(moderatorUser.id_usuario),
+							'aprobada',
+							''
+						);
+
+						feedbackEl.textContent = result.message || 'Publicación aprobada correctamente.';
+						await loadPendingPublications();
+					} catch (error) {
+						feedbackEl.textContent = error.message;
+						setButtonsDisabled(false);
+					}
+				});
+
+				rejectBtn.addEventListener('click', async () => {
+					setButtonsDisabled(true);
+					feedbackEl.textContent = 'Procesando rechazo...';
+
+					try {
+						const result = await sendModerationAction(
+							publication.id_publicacion,
+							Number(moderatorUser.id_usuario),
+							'rechazada',
+							reasonInput.value.trim()
+						);
+
+						feedbackEl.textContent = result.message || 'Publicación rechazada correctamente.';
+						await loadPendingPublications();
+					} catch (error) {
+						feedbackEl.textContent = error.message;
+						setButtonsDisabled(false);
+					}
+				});
+
+				cardsState.appendChild(card);
+			});
+		};
+
+		const loadPendingPublications = async () => {
+			const user = getSessionUser();
+
+			if (!user) {
+				window.location.href = '../inicio_de_sesion/index.html';
+				return;
+			}
+
+			if (!canModerate(user)) {
+				showState('denied');
+				return;
+			}
+
+			showState('loading');
+
+			try {
+				const response = await fetch(`${API_BASE}/api/moderacion/publicaciones-pendientes?id_usuario=${encodeURIComponent(user.id_usuario)}`);
+				const data = await response.json().catch(() => ({}));
+
+				if (!response.ok) {
+					if (response.status === 403) {
+						showState('denied');
+						return;
+					}
+
+					errorMessage.textContent = data.message || 'No fue posible cargar las publicaciones pendientes.';
+					showState('error');
+					return;
+				}
+
+				const publicaciones = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+
+				if (publicaciones.length === 0) {
+					showState('empty');
+					return;
+				}
+
+				renderCards(publicaciones, user);
+				showState('cards');
+			} catch (error) {
+				errorMessage.textContent = 'No se pudo conectar con el servidor.';
+				showState('error');
+			}
+		};
+
+		loadPendingPublications();
+	</script>
+</body>
+</html>

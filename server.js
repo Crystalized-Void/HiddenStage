@@ -739,7 +739,6 @@ app.delete('/api/posts/:id_post', async (req, res) => {
         return res.status(500).json({ message: 'Error interno al eliminar publicación' });
     }
 });
-
 app.post('/api/publicaciones-principales', async (req, res) => {
     try {
         const {

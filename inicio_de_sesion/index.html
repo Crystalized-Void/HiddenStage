@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Inicio de sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="auth-panel">
+            <header class="panel-top">
+                <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">
+                    <span class="theme-toggle-icon" id="theme-toggle-icon">🌙</span>
+                    <span class="theme-toggle-label" id="theme-toggle-label">Modo oscuro</span>
+                </button>
+            </header>
+
+            <div class="logo-wrap">
+                <img src="/img/LogoSH.png" alt="Logo HiddenStage" class="banner-logo">
+            </div>
+
+            <div class="form" id="form">
+                <form class="login" id="login-form">
+                    <h2>Bienvenido a HiddenStage</h2>
+                    <p>Inicia sesión para seguir explorando publicaciones, guías y novedades.</p>
+
+                    <div class="input">
+                        <label for="login-email">Email</label>
+                        <input type="email" name="email" id="login-email" placeholder="tu@email.com">
+                    </div>
+
+                    <div class="input">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" name="password" id="login-password" placeholder="Ingresa tu contraseña">
+                    </div>
+
+                    <div class="reminder">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="terms">
+                            <label for="terms">Recordar por 30 días</label>
+                        </div>
+                        <span class="forgot">¿Olvidaste tu contraseña?</span>
+                    </div>
+
+                    <div class="buttons">
+                        <button type="submit" class="primary-button">Iniciar sesión</button>
+                        <button type="button" class="secondary-button" id="guest-access">Entrar como visitante</button>
+                    </div>
+
+                    <p class="account">¿No tienes cuenta? <a href="#" id="sign-up">Crear una ahora</a></p>
+                </form>
+
+                <form class="register" id="register-form">
+                    <h2>Crea tu cuenta</h2>
+                    <p>Regístrate con un apodo y empieza tu perfil gamer.</p>
+
+                    <div class="input">
+                        <label for="register-name">Apodo</label>
+                        <input type="text" name="name" id="register-name" placeholder="Ej: NightRider">
+                    </div>
+
+                    <div class="input">
+                        <label for="register-email">Email</label>
+                        <input type="email" name="email" id="register-email" placeholder="tu@email.com">
+                    </div>
+
+                    <div class="input">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" name="password" id="register-password" placeholder="Crea una contraseña segura">
+                    </div>
+
+                    <div class="buttons">
+                        <button type="submit" class="primary-button">Crear cuenta</button>
+                    </div>
+
+                    <p class="account">¿Ya tienes cuenta? <a href="#" id="sign-in">Inicia sesión</a></p>
+                </form>
+            </div>
+
+            <footer class="panel-bottom">
+                <span>© HiddenStage 2026</span>
+            </footer>
+        </section>
+    </main>
+
+    <script src="java.js"></script>
+</body>
+</html>

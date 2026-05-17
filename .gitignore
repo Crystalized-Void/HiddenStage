@@ -1,0 +1,23 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Carpeta de dependencias
+node_modules/
+
+# Archivos de entorno
+.env
+
+# Archivos de logs
+*.log
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos del sistema operativo
+desktop.ini

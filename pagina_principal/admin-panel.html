@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>HiddenStage | Panel de administrador</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="admin-panel.css">
+</head>
+<body>
+	<header class="topbar">
+		<div class="topbar-inner">
+			<a class="brand" href="pagina_principal.html" aria-label="Volver al inicio">
+				<img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+			</a>
+			<div class="header-copy">
+				<span class="eyebrow">Administración</span>
+				<h1>Panel de administrador</h1>
+			</div>
+			<a class="back-link" href="pagina_principal.html">Volver a pagina_principal.html</a>
+		</div>
+	</header>
+
+	<main class="admin-page">
+		<section id="loadingState" class="state-card">
+			<p>Cargando panel de administrador...</p>
+		</section>
+
+		<section id="deniedState" class="state-card hidden">
+			<h2>Acceso denegado</h2>
+			<p>Solo el rol Administrador puede usar este panel.</p>
+		</section>
+
+		<section id="errorState" class="state-card hidden">
+			<h2>Ocurrió un error</h2>
+			<p id="errorMessage">No se pudo completar la operación.</p>
+		</section>
+
+		<section id="contentState" class="content-shell hidden">
+			<div class="toolbar">
+				<div class="toolbar-item search-wrap">
+					<label for="searchInput">Buscar por nombre o correo</label>
+					<input id="searchInput" type="text" placeholder="Ej: oscar o correo@dominio.com">
+				</div>
+
+				<div class="toolbar-item role-wrap">
+					<label for="roleFilter">Filtrar por rol</label>
+					<select id="roleFilter">
+						<option value="">Todos los roles</option>
+					</select>
+				</div>
+
+				<div class="toolbar-actions">
+					<button id="searchButton" class="action-btn" type="button">Buscar</button>
+					<button id="clearButton" class="ghost-btn" type="button">Limpiar</button>
+				</div>
+			</div>
+
+			<div class="summary-row">
+				<p id="summaryText">Total de usuarios cargados: 0</p>
+			</div>
+
+			<p id="feedbackMessage" class="feedback hidden" aria-live="polite"></p>
+
+			<div id="usersEmpty" class="state-card inner-state hidden">
+				<p>No hay usuarios para mostrar.</p>
+			</div>
+
+			<div id="usersList" class="users-grid"></div>
+		</section>
+	</main>
+
+	<template id="userCardTemplate">
+		<article class="user-card">
+			<div class="user-top">
+				<img class="avatar" alt="Foto de perfil del usuario">
+				<div class="user-headings">
+					<h2 class="username"></h2>
+					<p class="email"></p>
+				</div>
+				<span class="role-pill"></span>
+			</div>
+
+			<dl class="meta-grid">
+				<div><dt>ID Usuario</dt><dd class="id-usuario"></dd></div>
+				<div><dt>Rol actual</dt><dd class="rol-actual"></dd></div>
+				<div><dt>Creado</dt><dd class="created-at"></dd></div>
+			</dl>
+
+			<div class="role-editor">
+				<label class="inline-label">
+					Nuevo rol
+					<select class="role-select"></select>
+				</label>
+				<button type="button" class="save-btn">Guardar rol</button>
+			</div>
+
+			<p class="card-message" aria-live="polite"></p>
+		</article>
+	</template>
+
+	<script>
+		const SESSION_KEY = 'hiddenstageUser';
+		const DEFAULT_PROFILE_IMAGE = '../img/Perfil.png';
+		const LOCAL_API_ORIGIN = 'http://localhost:3000';
+		const isLocalFrontend =
+			window.location.protocol === 'file:' ||
+			['localhost', '127.0.0.1'].includes(window.location.hostname);
+		const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+		const API_BASE = isLocalFrontend && !isBackendOrigin ? LOCAL_API_ORIGIN : '';
+
+		const loadingState = document.getElementById('loadingState');
+		const deniedState = document.getElementById('deniedState');
+		const contentState = document.getElementById('contentState');
+		const errorState = document.getElementById('errorState');
+		const errorMessage = document.getElementById('errorMessage');
+
+		const searchInput = document.getElementById('searchInput');
+		const roleFilter = document.getElementById('roleFilter');
+		const searchButton = document.getElementById('searchButton');
+		const clearButton = document.getElementById('clearButton');
+		const summaryText = document.getElementById('summaryText');
+		const feedbackMessage = document.getElementById('feedbackMessage');
+		const usersEmpty = document.getElementById('usersEmpty');
+		const usersList = document.getElementById('usersList');
+		const userCardTemplate = document.getElementById('userCardTemplate');
+
+		let currentAdmin = null;
+		let rolesCatalog = [];
+
+		const showOnly = (node) => {
+			[loadingState, deniedState, contentState, errorState].forEach((item) => item.classList.add('hidden'));
+			node.classList.remove('hidden');
+		};
+
+		const showFeedback = (message, isError = false) => {
+			feedbackMessage.textContent = message;
+			feedbackMessage.classList.remove('hidden');
+			feedbackMessage.classList.toggle('error', isError);
+			feedbackMessage.classList.toggle('ok', !isError);
+		};
+
+		const clearFeedback = () => {
+			feedbackMessage.textContent = '';
+			feedbackMessage.classList.add('hidden');
+			feedbackMessage.classList.remove('error', 'ok');
+		};
+
+		const readSessionUser = () => {
+			try {
+				const raw = localStorage.getItem(SESSION_KEY);
+				return raw ? JSON.parse(raw) : null;
+			} catch (error) {
+				return null;
+			}
+		};
+
+		const buildAvatar = (rawValue) => {
+			const value = typeof rawValue === 'string' ? rawValue.trim() : '';
+
+			if (!value || value === 'null' || value === 'undefined') {
+				return DEFAULT_PROFILE_IMAGE;
+			}
+
+			return value;
+		};
+
+		const formatDate = (value) => {
+			if (!value) return 'Sin fecha';
+			const date = new Date(value);
+			if (Number.isNaN(date.getTime())) return 'Sin fecha';
+			return date.toLocaleString('es-ES', {
+				year: 'numeric',
+				month: 'short',
+				day: '2-digit'
+			});
+		};
+
+		const populateRoleFilter = (roles) => {
+			roleFilter.innerHTML = '<option value="">Todos los roles</option>';
+
+			roles.forEach((role) => {
+				const option = document.createElement('option');
+				option.value = String(role.id_rol);
+				option.textContent = `${role.id_rol} - ${role.nombre_rol}`;
+				roleFilter.appendChild(option);
+			});
+		};
+
+		const createRoleOptions = (selectNode, currentRole) => {
+			selectNode.innerHTML = '';
+
+			rolesCatalog.forEach((role) => {
+				const option = document.createElement('option');
+				option.value = String(role.id_rol);
+				option.textContent = `${role.id_rol} - ${role.nombre_rol}`;
+				if (Number(currentRole) === Number(role.id_rol)) {
+					option.selected = true;
+				}
+				selectNode.appendChild(option);
+			});
+		};
+
+		const saveRole = async (user, roleSelect, cardMessage) => {
+			const nextRole = Number(roleSelect.value);
+
+			if (!nextRole) {
+				cardMessage.textContent = 'Debes seleccionar un rol válido.';
+				cardMessage.classList.add('error');
+				return;
+			}
+
+			if (Number(currentAdmin.id_usuario) === Number(user.id_usuario) && nextRole !== 5) {
+				cardMessage.textContent = 'No puedes quitarte a ti mismo el rol de administrador.';
+				cardMessage.classList.add('error');
+				return;
+			}
+
+			cardMessage.textContent = 'Guardando...';
+			cardMessage.classList.remove('error');
+
+			try {
+				const response = await fetch(`${API_BASE}/api/admin/usuarios/${encodeURIComponent(user.id_usuario)}/rol`, {
+					method: 'PATCH',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						id_admin: currentAdmin.id_usuario,
+						id_rol: nextRole
+					})
+				});
+
+				const data = await response.json().catch(() => ({}));
+
+				if (!response.ok) {
+					const backendMessage = data.message || 'No se pudo actualizar el rol.';
+					cardMessage.textContent = backendMessage;
+					cardMessage.classList.add('error');
+					return;
+				}
+
+				cardMessage.textContent = data.message || 'Rol actualizado correctamente.';
+				cardMessage.classList.remove('error');
+				showFeedback('Rol actualizado correctamente.', false);
+				await loadUsers();
+			} catch (error) {
+				cardMessage.textContent = 'No se pudo conectar con el servidor.';
+				cardMessage.classList.add('error');
+			}
+		};
+
+		const renderUsers = (users) => {
+			usersList.innerHTML = '';
+
+			if (!Array.isArray(users) || users.length === 0) {
+				usersEmpty.classList.remove('hidden');
+				usersList.classList.add('hidden');
+				summaryText.textContent = 'Total de usuarios cargados: 0';
+				return;
+			}
+
+			usersEmpty.classList.add('hidden');
+			usersList.classList.remove('hidden');
+			summaryText.textContent = `Total de usuarios cargados: ${users.length}`;
+
+			users.forEach((user) => {
+				const card = userCardTemplate.content.firstElementChild.cloneNode(true);
+				const avatar = card.querySelector('.avatar');
+				const roleSelect = card.querySelector('.role-select');
+				const saveBtn = card.querySelector('.save-btn');
+				const cardMessage = card.querySelector('.card-message');
+
+				avatar.src = buildAvatar(user.foto_perfil);
+				avatar.alt = `Foto de perfil de ${user.username || 'Usuario'}`;
+				avatar.onerror = () => {
+					avatar.onerror = null;
+					avatar.src = DEFAULT_PROFILE_IMAGE;
+				};
+				card.querySelector('.username').textContent = user.username || 'Sin username';
+				card.querySelector('.email').textContent = user.email || 'Sin correo';
+				card.querySelector('.role-pill').textContent = user.nombre_rol || 'Sin rol';
+				card.querySelector('.id-usuario').textContent = String(user.id_usuario ?? '');
+				card.querySelector('.rol-actual').textContent = user.nombre_rol || 'Sin rol';
+				card.querySelector('.created-at').textContent = formatDate(user.created_at);
+
+				createRoleOptions(roleSelect, user.id_rol);
+
+				saveBtn.addEventListener('click', () => saveRole(user, roleSelect, cardMessage));
+
+				usersList.appendChild(card);
+			});
+		};
+
+		const loadRoles = async () => {
+			const response = await fetch(
+				`${API_BASE}/api/admin/roles?id_admin=${encodeURIComponent(currentAdmin.id_usuario)}`
+			);
+			const data = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				if (response.status === 403) {
+					showOnly(deniedState);
+					return false;
+				}
+
+				throw new Error(data.message || 'No se pudieron cargar los roles.');
+			}
+
+			rolesCatalog = Array.isArray(data.roles) ? data.roles : [];
+			console.log('roles cargados:', rolesCatalog);
+			populateRoleFilter(rolesCatalog);
+			return true;
+		};
+
+		const loadUsers = async () => {
+			clearFeedback();
+
+			const params = new URLSearchParams();
+			params.set('id_admin', String(currentAdmin.id_usuario));
+
+			const searchValue = searchInput.value.trim();
+			const roleValue = roleFilter.value.trim();
+
+			if (searchValue) {
+				params.set('search', searchValue);
+			}
+
+			if (roleValue) {
+				params.set('rol', roleValue);
+			}
+
+			const response = await fetch(`${API_BASE}/api/admin/usuarios?${params.toString()}`);
+			const data = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				if (response.status === 403) {
+					showOnly(deniedState);
+					return;
+				}
+
+				throw new Error(data.message || 'No se pudieron cargar los usuarios.');
+			}
+
+			const users = Array.isArray(data.usuarios) ? data.usuarios : [];
+			console.log('usuarios cargados:', users);
+			renderUsers(users);
+		};
+
+		const handleSearch = async () => {
+			try {
+				await loadUsers();
+			} catch (error) {
+				errorMessage.textContent = error.message || 'No se pudo cargar la lista de usuarios.';
+				showOnly(errorState);
+			}
+		};
+
+		const initialize = async () => {
+			const user = readSessionUser();
+			console.log('usuario admin detectado:', user);
+
+			if (!user) {
+				window.location.href = '../inicio_de_sesion/index.html';
+				return;
+			}
+
+			if (Number(user.id_rol) !== 5) {
+				showOnly(deniedState);
+				return;
+			}
+
+			currentAdmin = user;
+
+			try {
+				const rolesOk = await loadRoles();
+				if (!rolesOk) {
+					return;
+				}
+
+				showOnly(contentState);
+				await loadUsers();
+			} catch (error) {
+				errorMessage.textContent = error.message || 'Error al inicializar el panel de administración.';
+				showOnly(errorState);
+			}
+		};
+
+		searchButton.addEventListener('click', handleSearch);
+
+		clearButton.addEventListener('click', async () => {
+			searchInput.value = '';
+			roleFilter.value = '';
+			await handleSearch();
+		});
+
+		searchInput.addEventListener('keydown', async (event) => {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				await handleSearch();
+			}
+		});
+
+		roleFilter.addEventListener('change', handleSearch);
+
+		initialize();
+	</script>
+</body>
+</html>
