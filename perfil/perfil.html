@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiddenStage | Perfil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" href="../pagina_principal/pagina_principal.html" aria-label="HiddenStage Inicio">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+            </div>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
+                    <span data-user-name>Usuario</span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <a href="#" data-open-profile-menu>PERFIL</a>
+                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="sideProfile" class="side-profile">
+        <div class="menu-header">
+            <i class="fas fa-times close-icon-left" onclick="AjustesPerfil()"></i>
+        </div>
+        <div class="side-profile-header">
+            <div class="side-profile-avatar" data-side-avatar aria-hidden="true">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="side-profile-meta">
+                <strong data-side-username>Invitado</strong>
+                <span data-side-handle>@hiddenstage</span>
+            </div>
+        </div>
+        <span class="menu-section-title">Cuenta</span>
+        <a href="perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
+        <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+        <button type="button" class="theme-toggle-link" data-theme-toggle>
+            <i class="fas fa-moon" data-theme-icon></i>
+            <span data-theme-label>Tema oscuro</span>
+        </button>
+        <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+        <span class="menu-section-title">Sesión</span>
+        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    </div>
+
+    <main class="profile-page">
+        <section class="cover">
+            <a class="home-link" href="../pagina_principal/pagina_principal.html" aria-label="Volver al inicio">
+                <i class="fa-solid fa-house"></i>
+            </a>
+        </section>
+
+        <section class="profile-tabs-strip">
+            <nav class="tabs">
+                <button type="button" class="tab active" data-tab="posts">POST</button>
+                <button type="button" class="tab" data-tab="coleccion">COLECCION</button>
+                <button type="button" class="tab" data-tab="guardados">GUARDADOS</button>
+            </nav>
+        </section>
+
+        <section class="profile-layout">
+            <aside class="profile-sidebar">
+                <div class="avatar-wrap">
+                    <div class="avatar"></div>
+                    <span class="avatar-badge"></span>
+                </div>
+
+                <h1 data-profile-name>Nombre de Usuario/Autor</h1>
+                <p class="handle" data-profile-handle>@example</p>
+                <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
+                <p class="joined">Se unió el 13 de febrero del 2026</p>
+
+                <h2>Socials</h2>
+                <div class="social-grid">
+                    <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="3"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="4"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="5"><i class="fa-solid fa-link"></i></a>
+                </div>
+
+                <div class="following-box">
+                    <div class="following-head">
+                        <h3>Seguidos:</h3>
+                        <a href="#">ver más</a>
+                    </div>
+                    <div class="following-list">
+                        <div class="follow-item"><span></span>Usuario</div>
+                        <div class="follow-item"><span></span>Usuario</div>
+                        <div class="follow-item"><span></span>Usuario</div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="profile-content">
+                <div class="tab-panel" data-panel="posts">
+                    <div class="posts-toolbar">
+                        <a class="create-post-btn" href="crear-post.html">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>Crear post en nueva página</span>
+                        </a>
+                    </div>
+
+                    <div class="post-list" data-post-list></div>
+                </div>
+
+                <div class="tab-panel hidden" data-panel="coleccion">
+                    <section class="collection-panel">
+                        <h3>COLECCION DE VIDEOJUEGOS</h3>
+                        <div class="collection-grid">
+                            <article class="collection-card"></article>
+                            <article class="collection-card"></article>
+                            <article class="collection-card"></article>
+                            <article class="collection-card"></article>
+                            <article class="collection-card"></article>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="tab-panel hidden" data-panel="guardados">
+                    <div class="post-list">
+                        <article class="post-card">
+                            <div class="post-text">
+                                <h3>GUARDADO: GUÍA DE RANKED</h3>
+                                <p>Consejos rápidos para mejorar toma de decisiones en rondas decisivas y subir de rango más estable.</p>
+                            </div>
+                            <div class="post-thumb"></div>
+                        </article>
+
+                        <article class="post-card">
+                            <div class="post-text">
+                                <h3>GUARDADO: CONFIGURACIÓN PRO</h3>
+                                <p>Ajustes recomendados de sensibilidad, crosshair y comunicación para obtener mejor consistencia.</p>
+                            </div>
+                            <div class="post-thumb"></div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        function AjustesPerfil() {
+            document.getElementById('sideProfile')?.classList.toggle('active');
+        }
+
+        (() => {
+            const THEME_KEY = 'hiddenstageTheme';
+            const LOCAL_API_ORIGIN = 'http://localhost:3000';
+            const isLocalFrontend =
+                window.location.protocol === 'file:' ||
+                ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
+            const API_BASE = isLocalFrontend && !isBackendOrigin
+                ? LOCAL_API_ORIGIN
+                : '';
+            const userPanel = document.querySelector('.user-panel');
+            const userTrigger = document.querySelector('.user-trigger');
+            const tabs = document.querySelectorAll('.tab');
+            const panels = document.querySelectorAll('.tab-panel');
+            const userNameText = document.querySelector('[data-user-name]');
+            const userFullNameText = document.querySelector('[data-user-fullname]');
+            const userTopAvatar = document.querySelector('[data-user-avatar]');
+            const sideAvatar = document.querySelector('[data-side-avatar]');
+            const sideUsername = document.querySelector('[data-side-username]');
+            const sideHandle = document.querySelector('[data-side-handle]');
+            const openProfileMenuLink = document.querySelector('[data-open-profile-menu]');
+            const sideProfile = document.getElementById('sideProfile');
+            const themeToggleButton = document.querySelector('[data-theme-toggle]');
+            const themeLabel = document.querySelector('[data-theme-label]');
+            const themeIcon = document.querySelector('[data-theme-icon]');
+            const profileNameText = document.querySelector('[data-profile-name]');
+            const profileHandleText = document.querySelector('[data-profile-handle]');
+            const profileBioText = document.querySelector('[data-profile-bio]');
+            const profileAvatar = document.querySelector('.avatar');
+            const avatarBadge = document.querySelector('.avatar-badge');
+            const profileCover = document.querySelector('.cover');
+            const logoutLinks = document.querySelectorAll('[data-logout-link]');
+            const socialSlots = document.querySelectorAll('[data-social-slot]');
+            const postsList = document.querySelector('[data-post-list]');
+            const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
+            const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
+            let currentSessionUser = null;
+
+            const applyTheme = () => {
+                const storedTheme = localStorage.getItem(THEME_KEY);
+                const isDarkTheme = storedTheme === 'dark';
+                document.body.dataset.theme = isDarkTheme ? 'dark' : 'light';
+
+                if (themeLabel) {
+                    themeLabel.textContent = isDarkTheme ? 'Tema claro' : 'Tema oscuro';
+                }
+
+                if (themeIcon) {
+                    themeIcon.className = isDarkTheme ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            };
+
+            const toggleTheme = () => {
+                const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem(THEME_KEY, nextTheme);
+                applyTheme();
+            };
+
+            const normalizeUrl = (value) => {
+                if (!value || typeof value !== 'string') {
+                    return '';
+                }
+
+                const trimmedValue = value.trim();
+                if (!trimmedValue) {
+                    return '';
+                }
+
+                if (/^https?:\/\//i.test(trimmedValue)) {
+                    return trimmedValue;
+                }
+
+                return `https://${trimmedValue}`;
+            };
+
+            const getSocialIcon = (url) => {
+                const normalized = String(url).toLowerCase();
+
+                if (normalized.includes('instagram.com')) return { icon: 'fa-brands fa-instagram', label: 'Instagram' };
+                if (normalized.includes('x.com') || normalized.includes('twitter.com')) return { icon: 'fa-brands fa-x-twitter', label: 'X' };
+                if (normalized.includes('facebook.com')) return { icon: 'fa-brands fa-facebook-f', label: 'Facebook' };
+                if (normalized.includes('tiktok.com')) return { icon: 'fa-brands fa-tiktok', label: 'TikTok' };
+                if (normalized.includes('youtube.com') || normalized.includes('youtu.be')) return { icon: 'fa-brands fa-youtube', label: 'YouTube' };
+                if (normalized.includes('twitch.tv')) return { icon: 'fa-brands fa-twitch', label: 'Twitch' };
+                if (normalized.includes('discord.gg') || normalized.includes('discord.com')) return { icon: 'fa-brands fa-discord', label: 'Discord' };
+                if (normalized.includes('linkedin.com')) return { icon: 'fa-brands fa-linkedin-in', label: 'LinkedIn' };
+                if (normalized.includes('github.com')) return { icon: 'fa-brands fa-github', label: 'GitHub' };
+
+                return { icon: 'fa-solid fa-link', label: 'Enlace' };
+            };
+
+            const renderSocialLinks = (storedUser) => {
+                if (!socialSlots.length) {
+                    return;
+                }
+
+                const socialLinks = [
+                    storedUser?.red_social_1,
+                    storedUser?.red_social_2,
+                    storedUser?.red_social_3,
+                    storedUser?.red_social_4,
+                    storedUser?.red_social_5
+                ];
+
+                const visibleLinks = socialLinks
+                    .map((link) => normalizeUrl(link))
+                    .filter((link) => Boolean(link));
+
+                socialSlots.forEach((slot, index) => {
+                    const iconNode = slot.querySelector('i');
+                    const normalizedUrl = visibleLinks[index] || '';
+
+                    if (!normalizedUrl) {
+                        slot.classList.add('social-empty');
+                        slot.classList.add('social-hidden');
+                        slot.setAttribute('href', '#');
+                        slot.removeAttribute('target');
+                        slot.removeAttribute('rel');
+                        slot.setAttribute('aria-label', 'Sin red social');
+
+                        if (iconNode) {
+                            iconNode.className = 'fa-solid fa-link';
+                        }
+
+                        return;
+                    }
+
+                    const iconData = getSocialIcon(normalizedUrl);
+                    slot.classList.remove('social-empty');
+                    slot.classList.remove('social-hidden');
+                    slot.setAttribute('href', normalizedUrl);
+                    slot.setAttribute('target', '_blank');
+                    slot.setAttribute('rel', 'noopener noreferrer');
+                    slot.setAttribute('aria-label', iconData.label);
+
+                    if (iconNode) {
+                        iconNode.className = iconData.icon;
+                    }
+                });
+            };
+
+            const readPresenceFromSettings = () => {
+                try {
+                    const rawSettings = localStorage.getItem(PRIVACY_SETTINGS_KEY);
+                    if (!rawSettings) {
+                        return true;
+                    }
+
+                    const parsedSettings = JSON.parse(rawSettings);
+                    return typeof parsedSettings?.showOnlineStatus === 'boolean'
+                        ? parsedSettings.showOnlineStatus
+                        : true;
+                } catch (error) {
+                    return true;
+                }
+            };
+
+            const renderPresenceBadge = (isOnline) => {
+                if (!avatarBadge) {
+                    return;
+                }
+
+                avatarBadge.classList.toggle('offline', !isOnline);
+                avatarBadge.setAttribute('title', isOnline ? 'En línea' : 'No disponible');
+            };
+
+            const getPostsStorageKey = () => {
+                if (!currentSessionUser || typeof currentSessionUser !== 'object') {
+                    return '';
+                }
+
+                const uniqueId = currentSessionUser.id_usuario || currentSessionUser.email || currentSessionUser.username;
+                return uniqueId ? `hiddenstagePosts_${String(uniqueId)}` : '';
+            };
+
+            const readStoredPosts = () => {
+                const storageKey = getPostsStorageKey();
+
+                if (!storageKey) {
+                    return [];
+                }
+
+                try {
+                    const storedPostsRaw = localStorage.getItem(storageKey);
+
+                    if (!storedPostsRaw) {
+                        return [];
+                    }
+
+                    const parsedPosts = JSON.parse(storedPostsRaw);
+                    return Array.isArray(parsedPosts) ? parsedPosts : [];
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const readSqlPosts = async () => {
+                if (!currentSessionUser?.id_usuario) {
+                    return [];
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/posts/${Number(currentSessionUser.id_usuario)}`);
+                    const data = await response.json();
+
+                    if (!response.ok || !Array.isArray(data?.posts)) {
+                        return [];
+                    }
+
+                    return data.posts.map((post) => ({
+                        id: Number(post.id_post),
+                        sql_post_id: Number(post.id_post),
+                        title: post.titulo || '',
+                        content: post.contenido || '',
+                        coverImage: post.portada_url || '',
+                        youtube_url: post.youtube_url || '',
+                        media: [],
+                        createdAt: post.created_at || new Date().toISOString(),
+                        source: 'sql'
+                    }));
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const writeStoredPosts = (posts) => {
+                const storageKey = getPostsStorageKey();
+
+                if (!storageKey) {
+                    return;
+                }
+
+                localStorage.setItem(storageKey, JSON.stringify(posts));
+            };
+
+            const buildPostCard = (post) => {
+                const article = document.createElement('article');
+                article.className = 'post-card post-card-custom';
+
+                const textWrapper = document.createElement('div');
+                textWrapper.className = 'post-text';
+
+                const titleNode = document.createElement('h3');
+                titleNode.textContent = post.title;
+
+                const contentNode = document.createElement('p');
+                contentNode.textContent = post.content;
+
+                textWrapper.appendChild(titleNode);
+                textWrapper.appendChild(contentNode);
+
+                const thumb = document.createElement('div');
+                thumb.className = 'post-thumb';
+
+                const coverImage = typeof post?.coverImage === 'string' && post.coverImage.trim()
+                    ? post.coverImage.trim()
+                    : (typeof post?.coverUrl === 'string' ? post.coverUrl.trim() : '');
+                if (coverImage) {
+                    thumb.style.backgroundImage = `url(${coverImage})`;
+                    thumb.classList.add('post-cover-image');
+                }
+
+                article.appendChild(textWrapper);
+                article.appendChild(thumb);
+
+                const media = Array.isArray(post?.media) ? post.media : [];
+
+                if (typeof post?.youtube_url === 'string' && post.youtube_url.trim()) {
+                    const youtubeMatch = post.youtube_url.match(/(?:watch\?v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+                    if (youtubeMatch?.[1]) {
+                        media.push({
+                            type: 'youtube',
+                            videoId: youtubeMatch[1]
+                        });
+                    }
+                }
+
+                if (media.length) {
+                    const mediaList = document.createElement('div');
+                    mediaList.className = 'post-media-list';
+
+                    media.forEach((item) => {
+                        if (!item || typeof item !== 'object') {
+                            return;
+                        }
+
+                        if (item.type === 'image' && item.src) {
+                            const image = document.createElement('img');
+                            image.className = 'post-media-image';
+                            image.src = item.src;
+                            image.alt = 'Imagen del post';
+                            mediaList.appendChild(image);
+                            return;
+                        }
+
+                        if (item.type === 'youtube' && item.videoId) {
+                            const iframe = document.createElement('iframe');
+                            iframe.className = 'post-media-video';
+                            iframe.src = `https://www.youtube.com/embed/${item.videoId}`;
+                            iframe.title = 'Video de YouTube';
+                            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                            iframe.allowFullscreen = true;
+                            mediaList.appendChild(iframe);
+                            return;
+                        }
+
+                        if (item.type === 'video' && item.src) {
+                            const video = document.createElement('video');
+                            video.className = 'post-media-video';
+                            video.src = item.src;
+                            video.controls = true;
+                            mediaList.appendChild(video);
+                        }
+                    });
+
+                    if (mediaList.childElementCount > 0) {
+                        article.appendChild(mediaList);
+                    }
+                }
+
+                // Agregar contenedor de acciones con botón de eliminar
+                const actionsContainer = document.createElement('div');
+                actionsContainer.className = 'post-actions';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'delete-post-btn';
+                deleteBtn.textContent = 'Eliminar';
+                deleteBtn.setAttribute('title', 'Eliminar esta publicación');
+
+                deleteBtn.addEventListener('click', async (event) => {
+                    event.stopPropagation();
+
+                    if (!confirm('¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.')) {
+                        return;
+                    }
+
+                    try {
+                        deleteBtn.disabled = true;
+                        deleteBtn.textContent = 'Eliminando...';
+
+                        const postId = post.sql_post_id || post.id;
+                        const response = await fetch(`${API_BASE}/api/posts/${postId}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id_usuario: currentSessionUser.id_usuario })
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (!response.ok) {
+                            alert(data.message || 'No se pudo eliminar la publicación');
+                            deleteBtn.disabled = false;
+                            deleteBtn.textContent = 'Eliminar';
+                            return;
+                        }
+
+                        // Recargar posts después de eliminar
+                        await renderMergedPosts();
+                    } catch (error) {
+                        alert('Error al eliminar la publicación: ' + (error.message || 'Error desconocido'));
+                        deleteBtn.disabled = false;
+                        deleteBtn.textContent = 'Eliminar';
+                    }
+                });
+
+                actionsContainer.appendChild(deleteBtn);
+                article.appendChild(actionsContainer);
+
+                return article;
+            };
+
+            const renderCustomPosts = () => {
+                if (!postsList) {
+                    return;
+                }
+
+                const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
+                oldCustomPosts.forEach((card) => card.remove());
+
+                const posts = readStoredPosts();
+                posts
+                    .slice()
+                    .reverse()
+                    .forEach((post) => {
+                        postsList.prepend(buildPostCard(post));
+                    });
+            };
+
+            const renderMergedPosts = async () => {
+                if (!postsList) {
+                    return;
+                }
+
+                const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
+                oldCustomPosts.forEach((card) => card.remove());
+
+                const localPosts = readStoredPosts();
+                const sqlPosts = await readSqlPosts();
+
+                const mergedMap = new Map();
+
+                sqlPosts.forEach((post) => {
+                    mergedMap.set(`sql-${post.id}`, post);
+                });
+
+                localPosts.forEach((post) => {
+                    const sqlId = Number(post?.sql_post_id || 0);
+                    if (sqlId) {
+                        mergedMap.set(`sql-${sqlId}`, {
+                            ...post,
+                            id: sqlId
+                        });
+                        return;
+                    }
+
+                    mergedMap.set(`local-${post.id}`, post);
+                });
+
+                Array.from(mergedMap.values())
+                    .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                    .forEach((post) => {
+                        postsList.prepend(buildPostCard(post));
+                    });
+            };
+
+            const storedUserRaw = localStorage.getItem('hiddenstageUser');
+            renderPresenceBadge(readPresenceFromSettings());
+
+            if (storedUserRaw) {
+                try {
+                    const storedUser = JSON.parse(storedUserRaw);
+                    currentSessionUser = storedUser;
+                    const isOnlineFromUser = typeof storedUser?.status_en_linea === 'boolean'
+                        ? storedUser.status_en_linea
+                        : readPresenceFromSettings();
+                    renderPresenceBadge(isOnlineFromUser);
+
+                    if (storedUser?.username) {
+                        if (userNameText) {
+                            userNameText.textContent = storedUser.username;
+                        }
+
+                        if (userFullNameText) {
+                            userFullNameText.textContent = storedUser.username;
+                        }
+
+                        if (profileNameText) {
+                            profileNameText.textContent = storedUser.username;
+                        }
+
+                        if (profileHandleText) {
+                            profileHandleText.textContent = `@${storedUser.username}`;
+                        }
+
+                        if (sideUsername) {
+                            sideUsername.textContent = storedUser.username;
+                        }
+
+                        if (sideHandle) {
+                            sideHandle.textContent = `@${storedUser.username.toLowerCase().replace(/\s+/g, '_')}`;
+                        }
+                    }
+
+                    if (profileBioText) {
+                        const bio = typeof storedUser?.biografia === 'string'
+                            ? storedUser.biografia.trim()
+                            : '';
+                        profileBioText.textContent = bio || defaultBioText;
+                    }
+
+                    if (profileAvatar) {
+                        const photo = storedUser?.foto_perfil || '';
+                        if (photo) {
+                            profileAvatar.style.backgroundImage = `url(${photo})`;
+                            profileAvatar.classList.add('has-photo');
+                        } else {
+                            profileAvatar.style.backgroundImage = '';
+                            profileAvatar.classList.remove('has-photo');
+                        }
+                    }
+
+                    if (profileCover) {
+                        const banner = storedUser?.banner_perfil || '';
+                        if (banner) {
+                            profileCover.style.backgroundImage = `linear-gradient(108deg, rgba(0, 217, 255, 0.2), rgba(123, 97, 255, 0.22) 45%, rgba(255, 62, 143, 0.25)), url(${banner})`;
+                        }
+                    }
+
+                    if (userTopAvatar) {
+                        const photo = storedUser?.foto_perfil || '';
+                        if (photo) {
+                            userTopAvatar.style.backgroundImage = `url(${photo})`;
+                            userTopAvatar.classList.add('has-photo');
+                            if (sideAvatar) {
+                                sideAvatar.style.backgroundImage = `url(${photo})`;
+                                sideAvatar.classList.add('has-photo');
+                            }
+                        } else {
+                            userTopAvatar.style.backgroundImage = '';
+                            userTopAvatar.classList.remove('has-photo');
+                            if (sideAvatar) {
+                                sideAvatar.style.backgroundImage = '';
+                                sideAvatar.classList.remove('has-photo');
+                            }
+                        }
+                    }
+
+                    renderSocialLinks(storedUser);
+                    renderMergedPosts();
+                } catch (error) {
+                    localStorage.removeItem('hiddenstageUser');
+                }
+            }
+
+            logoutLinks.forEach((logoutLink) => {
+                logoutLink.addEventListener('click', () => {
+                    localStorage.removeItem('hiddenstageUser');
+                });
+            });
+
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    toggleTheme();
+                });
+            }
+
+            applyTheme();
+
+            if (!userPanel || !userTrigger) {
+                return;
+            }
+
+            const closeMenu = () => {
+                userPanel.classList.remove('open');
+                userTrigger.setAttribute('aria-expanded', 'false');
+            };
+
+            userTrigger.addEventListener('click', () => {
+                const isOpen = sideProfile?.classList.toggle('active');
+                userTrigger.setAttribute('aria-expanded', String(Boolean(isOpen)));
+                userPanel.classList.remove('open');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!userPanel.contains(event.target)) {
+                    closeMenu();
+                }
+
+                if (sideProfile && sideProfile.classList.contains('active')) {
+                    const clickedInsideProfileMenu = sideProfile.contains(event.target);
+                    const clickedProfileTrigger = openProfileMenuLink?.contains(event.target);
+                    const clickedTopTrigger = userTrigger.contains(event.target);
+                    if (!clickedInsideProfileMenu && !clickedProfileTrigger && !clickedTopTrigger) {
+                        sideProfile.classList.remove('active');
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMenu();
+                    sideProfile?.classList.remove('active');
+                }
+            });
+
+            if (openProfileMenuLink) {
+                openProfileMenuLink.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    sideProfile?.classList.add('active');
+                    closeMenu();
+                });
+            }
+
+            if (tabs.length && panels.length) {
+                tabs.forEach((tab) => {
+                    tab.addEventListener('click', () => {
+                        const targetPanel = tab.dataset.tab;
+
+                        tabs.forEach((item) => item.classList.remove('active'));
+                        tab.classList.add('active');
+
+                        panels.forEach((panel) => {
+                            panel.classList.toggle('hidden', panel.dataset.panel !== targetPanel);
+                        });
+                    });
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
