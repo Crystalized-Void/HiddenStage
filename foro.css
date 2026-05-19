@@ -47,6 +47,14 @@ textarea {
     font: inherit;
 }
 
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
 .app {
     width: min(1400px, calc(100% - 24px));
     margin: 0 auto;
@@ -623,7 +631,7 @@ textarea {
 }
 
 .reaction-btn {
-    min-width: 44px;
+    min-width: 52px;
     height: 44px;
     border-radius: 16px;
     border: 1px solid rgba(124, 105, 168, 0.14);
@@ -634,6 +642,22 @@ textarea {
     transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+}
+
+.reaction-count {
+    display: inline-flex;
+    min-width: 22px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 700;
+    justify-content: center;
 }
 
 .reaction-btn:hover,
@@ -648,6 +672,15 @@ textarea {
     box-shadow: 0 0 0 3px rgba(149, 130, 193, 0.24);
 }
 
+.reaction-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    background: color-mix(in srgb, var(--panel), #000 12%);
+    color: var(--muted);
+    border-color: rgba(124, 105, 168, 0.08);
+}
+
 .reaction-btn.is-active {
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     color: #fff;
@@ -655,8 +688,20 @@ textarea {
     box-shadow: 0 16px 28px rgba(124, 105, 168, 0.24);
 }
 
+.reaction-btn.shake {
+    animation: reaction-shake 240ms ease;
+}
+
 .reaction-btn.pop {
     animation: reaction-pop 240ms ease;
+}
+
+@keyframes reaction-shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
 }
 
 @keyframes reaction-pop {

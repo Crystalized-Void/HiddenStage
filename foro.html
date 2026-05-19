@@ -135,10 +135,15 @@
                 </div>
               </div>
               <div class="post-actions">
-                <button class="reaction-btn">🎮</button>
-                <button class="reaction-btn">🏆</button>
-                <button class="reaction-btn">❤️</button>
-                <button class="reaction-btn">🔥</button>
+                <button class="reaction-btn" type="button" data-reaction="game" aria-label="Reaccionar con juego">🎮 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="trophy" aria-label="Reaccionar con trofeo">🏆 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="heart" aria-label="Reaccionar con corazón">❤️ <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="fire" aria-label="Reaccionar con fuego">🔥 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="laugh" aria-label="Reaccionar con risa">😄 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">👍 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">👎 <span class="reaction-count">0</span></button>
+                <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">😒 <span class="reaction-count">0</span></button>
+
               </div>
             </div>
             <div class="post-body markdown-body">
@@ -163,8 +168,17 @@
                   </div>
                 </div>
                 <div class="post-actions">
-                  <button class="reaction-btn">🎮</button>
-                  <button class="reaction-btn">❤️</button>
+                  <button class="reaction-btn" type="button" data-reaction="game" aria-label="Reaccionar con juego">🎮 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="heart" aria-label="Reaccionar con corazón">❤️ <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="heart" aria-label="Reaccionar con corazón">🔥 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="laugh" aria-label="Reaccionar con risa">😄 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">👍 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">👎 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">😒 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="game" aria-label="Reaccionar con juego">🏆 <span class="reaction-count">0</span></button>
+
+
+
                 </div>
               </div>
               <div class="post-body">
@@ -429,17 +443,148 @@
         });
       });
 
+      const storedUserRaw = localStorage.getItem('hiddenstageUser');
+      let currentUser = null;
+      try {
+        if (storedUserRaw) {
+          currentUser = JSON.parse(storedUserRaw);
+        }
+      } catch (e) {
+        currentUser = null;
+      }
+
+      const isGuest = !currentUser || !currentUser.username || currentUser.username === 'Invitado';
       const reactionButtons = document.querySelectorAll('.reaction-btn');
       reactionButtons.forEach(button => {
         button.setAttribute('type', 'button');
         button.setAttribute('aria-pressed', 'false');
+        button.dataset.count = '0';
+
+        const updateCount = () => {
+          const count = Number(button.dataset.count || 0);
+          const countSpan = button.querySelector('.reaction-count');
+          if (countSpan) countSpan.textContent = String(count);
+        };
+
+        updateCount();
+
+        if (isGuest) {
+          button.disabled = true;
+          button.setAttribute('aria-disabled', 'true');
+          return;
+        }
+
         button.addEventListener('click', function() {
+          const post = this.closest('.post');
+          const activeButtons = post.querySelectorAll('.reaction-btn.is-active');
+          const isCurrentlyActive = this.classList.contains('is-active');
+
+          if (!isCurrentlyActive && activeButtons.length >= 2) {
+            this.classList.add('shake');
+            window.setTimeout(() => this.classList.remove('shake'), 260);
+            return;
+          }
+
           const isActive = this.classList.toggle('is-active');
           this.setAttribute('aria-pressed', String(isActive));
           this.classList.add('pop');
           window.setTimeout(() => this.classList.remove('pop'), 260);
+
+          const currentCount = Number(this.dataset.count || 0);
+          this.dataset.count = String(isActive ? currentCount + 1 : Math.max(0, currentCount - 1));
+          updateCount();
         });
       });
+
+      const submitReplyBtn = document.getElementById('submit-reply');
+      const replyError = document.getElementById('reply-error');
+      const repliesList = document.getElementById('replies-list');
+
+      if (submitReplyBtn) {
+        submitReplyBtn.setAttribute('type', 'button');
+
+        if (isGuest) {
+          submitReplyBtn.textContent = 'Inicia sesión para comentar';
+          submitReplyBtn.style.cursor = 'pointer';
+          textarea.disabled = true;
+          textarea.placeholder = 'Inicia sesión para comentar antes de escribir';
+          replyError.textContent = 'Solo usuarios registrados pueden publicar respuestas y reaccionar.';
+          replyError.style.opacity = '1';
+          replyError.style.color = 'var(--muted)';
+
+          submitReplyBtn.addEventListener('click', function() {
+            window.location.href = '../inicio_de_sesion/index.html';
+          });
+        } else {
+          submitReplyBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const value = textarea.value.trim();
+
+            if (!value) {
+              replyError.textContent = 'Escribe algo antes de publicar tu respuesta.';
+              replyError.style.opacity = '1';
+              return;
+            }
+
+            replyError.textContent = '';
+            textarea.value = '';
+            charCount.textContent = '0';
+
+            const newReply = document.createElement('article');
+            newReply.className = 'post reply depth-0';
+            newReply.innerHTML = `
+              <div class="post-header">
+                <div class="user-info">
+                  <div class="avatar small"></div>
+                  <div>
+                    <span class="username">@Invitado</span>
+                    <span class="user-rank">Usuario</span>
+                  </div>
+                </div>
+                <div class="post-actions">
+                  <button class="reaction-btn" type="button" data-reaction="game" aria-label="Reaccionar con juego">🎮 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="heart" aria-label="Reaccionar con corazón">❤️ <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="laugh" aria-label="Reaccionar con risa">😄 <span class="reaction-count">0</span></button>
+                  <button class="reaction-btn" type="button" data-reaction="thumbs" aria-label="Reaccionar con me gusta">👍 <span class="reaction-count">0</span></button>
+                </div>
+              </div>
+              <div class="post-body">${value}</div>
+            `;
+
+            repliesList.appendChild(newReply);
+
+            const newReactionButtons = newReply.querySelectorAll('.reaction-btn');
+            newReactionButtons.forEach(button => {
+              button.setAttribute('aria-pressed', 'false');
+              button.dataset.count = '0';
+              const countSpan = button.querySelector('.reaction-count');
+              if (countSpan) countSpan.textContent = '0';
+              button.addEventListener('click', function() {
+                const post = this.closest('.post');
+                const activeButtons = post.querySelectorAll('.reaction-btn.is-active');
+                const isCurrentlyActive = this.classList.contains('is-active');
+
+                if (!isCurrentlyActive && activeButtons.length >= 2) {
+                  this.classList.add('shake');
+                  window.setTimeout(() => this.classList.remove('shake'), 260);
+                  return;
+                }
+
+                const isActive = this.classList.toggle('is-active');
+                this.setAttribute('aria-pressed', String(isActive));
+                this.classList.add('pop');
+                window.setTimeout(() => this.classList.remove('pop'), 260);
+
+                const currentCount = Number(this.dataset.count || 0);
+                const nextCount = isActive ? currentCount + 1 : Math.max(0, currentCount - 1);
+                this.dataset.count = String(nextCount);
+                const countSpan = this.querySelector('.reaction-count');
+                if (countSpan) countSpan.textContent = String(nextCount);
+              });
+            });
+          });
+        }
+      }
     });
   </script>
 
