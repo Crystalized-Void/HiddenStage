@@ -4,28 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HiddenStage · Foro</title>
+  <link rel="stylesheet" href="../pagina_principal/principal.css" />
   <link rel="stylesheet" href="foro.css" />
-
-  <!--
-    COMO IMPLEMENTAR ESTE FORO EN TU PAGINA PRINCIPAL
-    1) Asegurate de que `foro.css` y `Foro.html` esten en la misma carpeta donde cargas tu pagina principal.
-    2) Opcion A (recomendado): enlaza a `Foro.html` desde tu menu (ej: <a href="Foro.html">Foro</a>).
-    3) Opcion B (embebido): copia el contenido del <body> dentro de tu principal, y SOLO mantiene un <link> hacia `foro.css`.
-    4) El spoiler y el editor dependen de `java.js`: si embebes, asegúrate de cargarlo al final igual que aqui.
-  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="app">
-    <header class="app-header">
-      <div class="logo">HiddenStage</div>
-      <nav class="main-nav">
-        <a class="nav-link active">Foro</a>
-        <a class="nav-link" href="index.html">Volver</a>
-      </nav>
-      <div class="user-area">
-        <span class="user-pill">@DemoUser · Noob</span>
-      </div>
+    <header class="topbar">
+        <div class="topbar-main">
+            <a class="brand" aria-label="HiddenStage Inicio" href="../pagina_principal/pagina_principal.html">
+                <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
+            </a>
+
+            <div class="topbar-search">
+                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+            </div>
+
+            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación">
+              <i class="fas fa-plus"></i>
+            </button>
+
+            <div class="user-panel">
+                <button type="button" class="user-trigger" aria-expanded="false" aria-controls="user-menu">
+                    <span data-user-name>Invitado</span>
+                    <span class="user-top-avatar" data-user-avatar aria-hidden="true">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                </button>
+
+                <div id="user-menu" class="user-dropdown">
+                    <div class="user-name">
+                        <span data-user-fullname>NOMBRE USUARIO</span>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <a href="../perfil/perfil.html" data-open-profile-menu>PERFIL</a>
+                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
     </header>
+
+    <div class="top-sections">
+      <div class="section-nav">
+        <a class="section-link active" href="../pagina_principal/pagina_principal.html">Inicio</a>
+        <a class="section-link" href="../pagina_principal/pagina_principal.html#relevancia">Relevancia</a>
+        <a class="section-link" href="../pagina_principal/pagina_principal.html#reciente">Nuevo</a>
+        <a class="section-link" href="../pagina_principal/pagina_principal.html#guias">Guías</a>
+        <a class="section-link" href="../pagina_principal/pagina_principal.html#trucos">Trucos</a>
+        <a class="section-link" href="../Foro/foro.html">Foro</a>
+        <a class="section-link" href="../pagina_principal/generos.html">Géneros</a>
+      </div>
+    </div>
 
     <main class="app-main">
       <aside class="sidebar-left">
@@ -35,7 +69,6 @@
             <li class="category-item active">PC</li>
             <li class="category-item">PlayStation</li>
             <li class="category-item">Xbox</li>
-            <li class="category-item">Nintendo</li>
           </ul>
         </div>
 
@@ -53,16 +86,15 @@
         <div class="search-bar">
           <input type="text" placeholder="Buscar hilos, juegos, usuarios..." />
           <select>
-            <option>Relevancia</option>
-            <option>Más recientes</option>
-            <option>Más populares</option>
+            <option> Relevancia</option>
+            <option> Más recientes</option>
+            <option> Más populares</option>
           </select>
           <select>
-            <option>Todas las categorías</option>
+            <option>   Categorías</option>
             <option>PC</option>
             <option>PlayStation</option>
             <option>Xbox</option>
-            <option>Nintendo</option>
           </select>
         </div>
 
@@ -75,21 +107,21 @@
                 <span class="tag tag-spoiler">[SPOILER]</span>
               </span>
             </div>
-            <h2 class="thread-title">Guía definitiva para subir a Diamante</h2>
+            <h2 class="thread-title">Que tan bueno es Deep Rock Galactic</h2>
             <div class="thread-footer">
-              <span class="author">@PlayerOne · Pro</span>
+              <span class="author">@FergaOne · Pro</span>
               <span class="stats">11 respuestas · 38 vistas</span>
             </div>
           </article>
         </div>
 
-        <article class="thread-view">
+        <article class="thread-view" data-thread-id="thread-1">
           <header class="thread-header">
             <h1>Guía definitiva para subir a Diamante</h1>
             <div class="thread-header-meta">
-              <span class="author">@PlayerOne</span>
+              <span class="author">@FergaOne</span>
               <span class="rank-badge rank-pro">Pro</span>
-              <span class="platform-ids">Steam: playerone_gg</span>
+              <span class="platform-ids">Steam: fergaone_gg</span>
             </div>
           </header>
 
@@ -98,7 +130,7 @@
               <div class="user-info">
                 <div class="avatar"></div>
                 <div>
-                  <span class="username">@PlayerOne</span>
+                  <span class="username">@FergaOne</span>
                   <span class="user-rank">Pro</span>
                 </div>
               </div>
@@ -110,7 +142,7 @@
               </div>
             </div>
             <div class="post-body markdown-body">
-              <p>En esta guía veremos cómo optimizar tu posicionamiento...</p>
+              <p>En esta guía veremos cómo optimizar tus recursos...</p>
               <div class="spoiler-block" data-open="false">
                 <button class="spoiler-toggle">Mostrar SPOILER</button>
                 <div class="spoiler-content">
@@ -120,7 +152,7 @@
             </div>
           </section>
 
-          <section class="replies">
+          <section class="replies" id="replies-list">
             <article class="post reply depth-0">
               <div class="post-header">
                 <div class="user-info">
@@ -192,6 +224,105 @@
   </div>
 
   <!-- Modal para reglas -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const THEME_KEY = 'hiddenstageTheme';
+        // Apply stored theme
+        try {
+          const storedTheme = localStorage.getItem(THEME_KEY);
+          document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
+        } catch (e) {
+          // ignore
+        }
+
+        const userTrigger = document.querySelector('.user-trigger');
+        const userMenu = document.getElementById('user-menu');
+        const userNameSpan = document.querySelector('[data-user-name]');
+        const userFullnameSpan = document.querySelector('[data-user-fullname]');
+        const topAvatar = document.querySelector('[data-user-avatar]');
+        const createPostBtn = document.querySelector('.create-post-btn');
+
+        // Default text
+        if (userNameSpan) userNameSpan.textContent = 'Invitado';
+
+        // Load session user from localStorage and populate UI
+        try {
+          const raw = localStorage.getItem('hiddenstageUser');
+          if (raw) {
+            const user = JSON.parse(raw);
+            if (userNameSpan && user.username) userNameSpan.textContent = user.username;
+            if (userFullnameSpan && (user.nombre || user.fullname || user.username)) userFullnameSpan.textContent = user.nombre || user.fullname || user.username;
+            if (topAvatar && user.foto_perfil) {
+              topAvatar.innerHTML = '';
+              topAvatar.style.backgroundImage = `url(${user.foto_perfil})`;
+              topAvatar.classList.add('has-photo');
+            }
+
+            // Populate right sidebar profile card
+            const sideUsername = document.querySelector('.profile-card .username');
+            const sideAvatar = document.querySelector('.profile-card .avatar');
+            const sideRank = document.querySelector('.profile-card .rank-badge');
+            const sidePlatforms = document.querySelector('.profile-card .platform-ids');
+
+            if (sideUsername && user.username) sideUsername.textContent = `@${user.username}`;
+            if (sideRank) sideRank.textContent = user.nombre_rol || user.rank || 'Noob';
+            if (sideAvatar && user.foto_perfil) {
+              sideAvatar.style.backgroundImage = `url(${user.foto_perfil})`;
+              sideAvatar.classList.add('has-photo');
+            }
+
+            if (sidePlatforms) {
+              // Try common platform fields
+              const steam = user.steam || user.steam_id || user.platform_steam || '—';
+              const psn = user.psn || user.psn_id || '—';
+              const xbox = user.xbox || user.xbox_id || '—';
+              sidePlatforms.innerHTML = `<span>Steam: ${steam || '—'}</span><span>PSN: ${psn || '—'}</span><span>Xbox: ${xbox || '—'}</span>`;
+            }
+          }
+        } catch (e) {
+          // ignore malformed user
+        }
+
+        // Wire user trigger dropdown
+        if (userTrigger) {
+          userTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const expanded = userTrigger.getAttribute('aria-expanded') === 'true';
+            userTrigger.setAttribute('aria-expanded', String(!expanded));
+            if (userMenu) userMenu.classList.toggle('open');
+          });
+        }
+
+        document.addEventListener('click', function(e) {
+          if (!userTrigger?.contains(e.target) && !userMenu?.contains(e.target)) {
+            if (userMenu) userMenu.classList.remove('open');
+            if (userTrigger) userTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // create post button redirects to create page
+        if (createPostBtn) {
+          createPostBtn.addEventListener('click', function() {
+            window.location.href = '../pagina_principal/crearPublicacion.html';
+          });
+        }
+
+        // Make profile card clickable to open full profile or edit
+        const sideProfileCard = document.querySelector('.profile-card');
+        if (sideProfileCard) {
+          sideProfileCard.style.cursor = 'pointer';
+          sideProfileCard.addEventListener('click', function() {
+            window.location.href = '../perfil/perfil.html';
+          });
+
+          // add edit link inside card
+          const actionsDiv = document.createElement('div');
+          actionsDiv.className = 'profile-card-actions';
+          actionsDiv.innerHTML = `<a class="btn btn-small" href="../configuracion/configuracion.html">Editar perfil</a>`;
+          sideProfileCard.appendChild(actionsDiv);
+        }
+      });
+    </script>
   <div id="rules-modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeRulesModal()">&times;</span>
@@ -212,11 +343,15 @@
   <script>
     // MODAL REGLAS
     function showRulesModal() {
-      document.getElementById('rules-modal').style.display = 'block';
+      const modal = document.getElementById('rules-modal');
+      modal.style.display = 'flex';
+      modal.classList.add('open');
     }
 
     function closeRulesModal() {
-      document.getElementById('rules-modal').style.display = 'none';
+      const modal = document.getElementById('rules-modal');
+      modal.style.display = 'none';
+      modal.classList.remove('open');
     }
 
     window.onclick = function(event) {
@@ -291,6 +426,18 @@
             this.textContent = 'Ocultar SPOILER';
             block.classList.add('open');
           }
+        });
+      });
+
+      const reactionButtons = document.querySelectorAll('.reaction-btn');
+      reactionButtons.forEach(button => {
+        button.setAttribute('type', 'button');
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', function() {
+          const isActive = this.classList.toggle('is-active');
+          this.setAttribute('aria-pressed', String(isActive));
+          this.classList.add('pop');
+          window.setTimeout(() => this.classList.remove('pop'), 260);
         });
       });
     });
