@@ -1,0 +1,120 @@
+h2{
+    color: #1f1f1f;
+}
+
+.community-section{
+    background: #efe2f7;
+    padding:40px;
+    margin-top:40px;
+    border-top:2px solid rgba(124, 105, 168, 0.35);
+    font-family: "Lato", Arial, sans-serif;
+}
+
+.community-section h2{
+    color: #1f1f1f;
+    margin-bottom:20px;
+}
+
+.reaction-bar{
+    margin-bottom:30px;
+}
+
+.reaction-btn{
+    background: #9582c1;
+    border:none;
+    color:white;
+    padding:10px 15px;
+    margin-right:10px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.reaction-btn:hover{
+    background: #7c69a8;
+    color:white;
+}
+
+.reaction-btn:disabled{
+    background: #c9c0dc;
+    color: #f2edf8;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.reaction-btn:disabled:hover{
+    background: #c9c0dc;
+    color: #f2edf8;
+}
+
+.comment{
+    display:flex;
+    align-items:flex-start;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(124, 105, 168, 0.35);
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+.avatar{
+    width:40px;
+    height:40px;
+    background: #9582c1;
+    color:white;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    margin-right:15px;
+}
+
+.comment-content{
+    flex:1;
+}
+
+.username{
+    font-weight:bold;
+    color: #7c69a8;
+}
+
+.comment-content p{
+    margin-top:5px;
+    color: #1f1f1f;
+}
+
+.comment-form textarea{
+    width:100%;
+    background: #f2edf8;
+    border: 1px solid rgba(124, 105, 168, 0.35);
+    padding:10px;
+    color: #1f1f1f;
+    border-radius:5px;
+    margin-bottom:10px;
+}
+
+.logged-user {
+    color: #5e5e5e;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.logged-user strong {
+    color: #7c69a8;
+}
+
+.comment-form button{
+    background: #9582c1;
+    border:none;
+    padding:10px 20px;
+    color:white;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.comment-form button:hover{
+    background: #7c69a8;
+    color:white;
+}

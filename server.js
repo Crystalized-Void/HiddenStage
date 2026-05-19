@@ -689,6 +689,56 @@ app.post('/api/posts', async (req, res) => {
     }
 });
 
+app.delete('/api/posts/:id_post', async (req, res) => {
+    try {
+        const postId = Number(req.params.id_post);
+        const { id_usuario } = req.body || {};
+        const userId = Number(id_usuario);
+
+        if (!postId) {
+            return res.status(400).json({ message: 'id_post inválido' });
+        }
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const [postRows] = await pool.query(
+            `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, created_at
+             FROM publicaciones
+             WHERE id_post = ?
+             LIMIT 1`,
+            [postId]
+        );
+
+        if (postRows.length === 0) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        const post = postRows[0];
+
+        if (Number(post.id_usuario) !== userId) {
+            return res.status(403).json({ message: 'No tienes permisos para eliminar esta publicación' });
+        }
+
+        const [deleteResult] = await pool.query(
+            `DELETE FROM publicaciones
+             WHERE id_post = ? AND id_usuario = ?
+             LIMIT 1`,
+            [postId, userId]
+        );
+
+        if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'No se pudo eliminar la publicación' });
+        }
+
+        return res.json({
+            message: 'Publicación eliminada correctamente'
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al eliminar publicación' });
+    }
+});
 app.post('/api/publicaciones-principales', async (req, res) => {
     try {
         const {
@@ -1209,6 +1259,9 @@ app.get('/api/moderacion/comentarios', async (req, res) => {
 
             whereClauses.push('c.estado = ?');
             queryParams.push(normalizedEstado);
+        } else {
+            whereClauses.push('c.estado != ?');
+            queryParams.push('eliminado');
         }
 
         if (normalizedContentType) {
@@ -1383,6 +1436,9 @@ app.get('/api/moderacion/posts-personales', async (req, res) => {
 
             whereClauses.push('p.estado = ?');
             queryParams.push(normalizedEstado);
+        } else {
+            whereClauses.push('p.estado != ?');
+            queryParams.push('eliminado');
         }
 
         if (authorId) {

@@ -491,6 +491,54 @@
                     }
                 }
 
+                // Agregar contenedor de acciones con botón de eliminar
+                const actionsContainer = document.createElement('div');
+                actionsContainer.className = 'post-actions';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.className = 'delete-post-btn';
+                deleteBtn.textContent = 'Eliminar';
+                deleteBtn.setAttribute('title', 'Eliminar esta publicación');
+
+                deleteBtn.addEventListener('click', async (event) => {
+                    event.stopPropagation();
+
+                    if (!confirm('¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.')) {
+                        return;
+                    }
+
+                    try {
+                        deleteBtn.disabled = true;
+                        deleteBtn.textContent = 'Eliminando...';
+
+                        const postId = post.sql_post_id || post.id;
+                        const response = await fetch(`${API_BASE}/api/posts/${postId}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id_usuario: currentSessionUser.id_usuario })
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (!response.ok) {
+                            alert(data.message || 'No se pudo eliminar la publicación');
+                            deleteBtn.disabled = false;
+                            deleteBtn.textContent = 'Eliminar';
+                            return;
+                        }
+
+                        // Recargar posts después de eliminar
+                        await renderMergedPosts();
+                    } catch (error) {
+                        alert('Error al eliminar la publicación: ' + (error.message || 'Error desconocido'));
+                        deleteBtn.disabled = false;
+                        deleteBtn.textContent = 'Eliminar';
+                    }
+                });
+
+                actionsContainer.appendChild(deleteBtn);
+                article.appendChild(actionsContainer);
                 return article;
             };
 

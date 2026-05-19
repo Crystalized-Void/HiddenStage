@@ -756,6 +756,47 @@ body[data-theme="dark"] .post-card {
     border-color: rgba(124, 105, 168, 0.5);
 }
 
+.post-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(124, 105, 168, 0.2);
+}
+
+.delete-post-btn {
+    padding: 6px 14px;
+    background: #ff4757;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.22s ease, opacity 0.22s ease;
+}
+
+.delete-post-btn:hover:not(:disabled) {
+    background: #ff3333;
+}
+
+.delete-post-btn:active:not(:disabled) {
+    opacity: 0.8;
+}
+
+.delete-post-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+body[data-theme="dark"] .delete-post-btn {
+    background: #ff6b7a;
+}
+
+body[data-theme="dark"] .delete-post-btn:hover:not(:disabled) {
+    background: #ff5c66;
+}
 @media (max-width: 900px) {
     .profile-tabs-strip {
         margin: 0;

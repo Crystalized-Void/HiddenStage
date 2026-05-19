@@ -1,0 +1,102 @@
+<section class="community-section">
+
+    <h2 >Qué opina la comunidad?</h2>
+    <link rel="stylesheet" href="interact.css">
+
+    <!-- Reacciones -->
+    <div class="reaction-bar">
+        <button class="reaction-btn" id="hypeBtn" onclick="addLike()"> HYPE! 🔥<span id="likeCount">0</span></button>
+    </div>
+
+
+    <!-- Comentarios -->
+    <div class="comments-container">
+        <h3>Comunidad</h3>
+        <div id="commentList">
+            <div class="comment">
+                <div class="avatar">FL</div>
+                <div class="comment-content">
+                    <span class="username">Fercholangas</span>
+                    <p>Cualquier cosa es mejor que vivir en cihuatlán.</p>
+                </div>
+            </div>
+            <div class="comment">
+                <div class="avatar">OS</div>
+                <div class="comment-content">
+                    <span class="username">Oscarin</span>
+                    <p>Confirmo lo que dice el de arriba.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Formulario -->
+    <div class="comment-form">
+        <h3>Escribe un comentario</h3>
+        <p class="logged-user">Comentando como: <strong id="displayUserName"></strong></p> <!--Aquí utilizamos el nombre del usuario ya ingresado para dejar el comentario.-->
+        <textarea id="userComment" placeholder="Escribe tu comentario..." rows="4"></textarea>
+        <button onclick="postComment()">Publicar comentario</button>
+    </div>
+</section>
+
+
+<script>
+let likes = 0;
+
+const sessionData = JSON.parse(localStorage.getItem('hiddenstageUser') || 'null');
+const loggedUsername = sessionData ? sessionData.username : 'Invitado';
+const isGuest = !sessionData || sessionData.isGuest === true;
+
+const displayEl = document.getElementById('displayUserName');
+if (displayEl) displayEl.textContent = loggedUsername;
+
+// Construir clave única de HYPE por página y usuario
+const pageKey = 'hype_' + encodeURIComponent(window.location.pathname) + '_' + encodeURIComponent(loggedUsername);
+
+function initHypeButton() {
+    const btn = document.getElementById('hypeBtn');
+    if (!btn) return;
+    if (isGuest) {
+        btn.disabled = true;
+        btn.title = 'Debes iniciar sesión para dar HYPE';
+    } else if (localStorage.getItem(pageKey) === '1') {
+        btn.disabled = true;
+        btn.title = 'Ya diste HYPE a este contenido';
+    }
+}
+
+function addLike(){
+    if (isGuest) return;
+    if (localStorage.getItem(pageKey) === '1') return;
+    likes++;
+    document.getElementById("likeCount").innerText = likes;
+    localStorage.setItem(pageKey, '1');
+    const btn = document.getElementById('hypeBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.title = 'Ya diste HYPE a este contenido';
+    }
+}
+
+function postComment(){
+    let name = loggedUsername;
+    let comment = document.getElementById("userComment").value;
+    if(name !== "" && comment !== ""){
+        let initials = name.substring(0,2).toUpperCase();
+        let newComment = `
+        <div class="comment">
+            <div class="avatar">${initials}</div>
+            <div class="comment-content">
+                <span class="username">${name}</span>
+                <p>${comment}</p>
+            </div>
+        </div>
+        `;
+        document.getElementById("commentList").innerHTML += newComment;
+        document.getElementById("userComment").value = "";
+    }
+}
+
+initHypeButton();
+</script>
