@@ -29,60 +29,68 @@
             <nav class="settings-menu" aria-label="Menú de configuración">
                 <button type="button" class="settings-item active" data-section-btn="perfil">
                     <i class="fa-regular fa-user"></i>
-                    <span>Perfil</span>
+                    <span data-i18n="config.sidebar.perfil">Perfil</span>
                 </button>
                 <button type="button" class="settings-item" data-section-btn="autor">
                     <i class="fa-solid fa-pen-nib"></i>
-                    <span>Solicitud para Autor</span>
+                    <span data-i18n="config.sidebar.autor">Solicitud para Autor</span>
                 </button>
                 <button type="button" class="settings-item" data-section-btn="privacidad">
                     <i class="fa-solid fa-user-shield"></i>
-                    <span>Privacidad y Seguridad</span>
+                    <span data-i18n="config.sidebar.privacidad_seguridad">Privacidad y Seguridad</span>
                 </button>
             </nav>
 
             <div class="support-block">
-                <p>Soporte</p>
+                <p data-i18n="config.sidebar.centro_asistencia">Soporte</p>
                 <div class="support-divider"></div>
                 <button type="button" class="settings-item" data-section-btn="legal">
                     <i class="fa-solid fa-scale-balanced"></i>
-                    <span>Legal y Términos</span>
+                    <span data-i18n="config.sidebar.legal_terminos">Legal y Términos</span>
                 </button>
                 <button type="button" class="settings-item" data-section-btn="asistencia">
                     <i class="fa-solid fa-headset"></i>
-                    <span>Centro de asistencia</span>
+                    <span data-i18n="config.sidebar.centro_asistencia">Centro de asistencia</span>
                 </button>
+            </div>
+
+            <div class="language-control">
+                <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+                <select id="langSelector" aria-label="Selector de idioma">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                </select>
             </div>
         </aside>
 
         <section class="settings-content" aria-label="Contenido de configuración">
             <div class="settings-panel">
                 <div class="panel-head">
-                    <h1>Perfil</h1>
+                    <h1 data-i18n="config.panel.title">Perfil</h1>
                 </div>
 
                 <div class="settings-section active" data-section="perfil">
                     <div class="profile-grid">
                         <div class="profile-form">
                         <div class="field-block">
-                            <label for="profile-name">Nombre</label>
-                            <input id="profile-name" type="text" placeholder="Tu nombre visible">
-                            <small>Tu nombre puede aparecer en HiddenStage cuando publiques o comentes.</small>
+                            <label for="profile-name" data-i18n="config.profile.nombre">Nombre</label>
+                            <input id="profile-name" type="text" data-i18n="config.profile.nombre_placeholder" placeholder="Tu nombre visible">
+                            <small data-i18n="config.profile.nombre_help">Tu nombre puede aparecer en HiddenStage cuando publiques o comentes.</small>
                         </div>
 
                         <div class="field-block">
-                            <label for="profile-bio">Biografía</label>
-                            <textarea id="profile-bio" rows="5" placeholder="Cuéntanos algo sobre ti."></textarea>
-                            <small>Cuéntanos algo sobre ti.</small>
+                            <label for="profile-bio" data-i18n="config.profile.biografia">Biografía</label>
+                            <textarea id="profile-bio" rows="5" data-i18n="config.profile.biografia_placeholder" placeholder="Cuéntanos algo sobre ti."></textarea>
+                            <small data-i18n="config.profile.biografia_help">Cuéntanos algo sobre ti.</small>
                         </div>
 
                         <div class="field-block">
-                            <label for="profile-pronouns">Pronombres</label>
+                            <label for="profile-pronouns" data-i18n="config.profile.pronombres">Pronombres</label>
                             <input id="profile-pronouns" type="text" placeholder="Ella / Él / Elle">
                         </div>
 
                         <div class="field-block social-block">
-                            <label>Redes Sociales</label>
+                            <label data-i18n="config.profile.redes_sociales">Redes Sociales</label>
                             <div class="social-inputs">
                                 <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-1" type="url" placeholder="Link de red social 1"></div>
                                 <div class="social-row"><i class="fa-solid fa-link"></i><input id="social-link-2" type="url" placeholder="Link de red social 2"></div>
@@ -93,7 +101,7 @@
                         </div>
 
                         <div class="field-block banner-block">
-                            <label>Imagen de banner</label>
+                            <label data-i18n="config.profile.banner">Imagen de banner</label>
                             <div class="banner-upload" id="profile-banner-preview">
                                 <i class="fa-regular fa-image"></i>
                                 <button type="button" class="edit-chip" aria-label="Editar banner">
@@ -104,21 +112,21 @@
                         </div>
 
                         <div class="danger-zone">
-                            <h2>Desactivar Cuenta</h2>
-                            <p>Si desactivas esta cuenta podrás recuperarla en cualquier momento, pero si la eliminas no.</p>
+                            <h2 data-i18n="config.profile.desactivar_titulo">Desactivar Cuenta</h2>
+                            <p data-i18n="config.profile.desactivar_desc">Si desactivas esta cuenta podrás recuperarla en cualquier momento, pero si la eliminas no.</p>
                             <div class="danger-actions">
-                                <button type="button" class="btn btn-soft">Desactivar cuenta</button>
-                                <button type="button" class="btn btn-danger">Eliminar cuenta</button>
+                                <button type="button" class="btn btn-soft" data-i18n="config.profile.desactivar_cuenta">Desactivar cuenta</button>
+                                <button type="button" class="btn btn-danger" data-i18n="config.profile.eliminar_cuenta">Eliminar cuenta</button>
                             </div>
                         </div>
 
                         <div class="profile-actions profile-actions-bottom">
-                            <button type="button" class="btn btn-primary" id="save-profile-btn">Guardar cambios</button>
+                            <button type="button" class="btn btn-primary" id="save-profile-btn" data-i18n="config.profile.guardar_cambios">Guardar cambios</button>
                         </div>
                         </div>
 
                         <aside class="profile-photo">
-                            <p>Foto de perfil</p>
+                            <p data-i18n="config.profile.foto">Foto de perfil</p>
                             <div class="photo-circle" id="profile-photo-preview">
                                 <i class="fa-regular fa-circle-user"></i>
                                 <button type="button" class="edit-chip" aria-label="Editar foto de perfil">
@@ -134,61 +142,62 @@
                     <div class="author-section-wrap">
                         <div class="author-request" id="author-request-form">
                             <div class="author-request-head">
-                                <h2>Solicitud para ser Autor</h2>
+                                <h2 data-i18n="config.author.title">Solicitud para ser Autor</h2>
                                 <p>
+                                    
                                     Completa esta solicitud para habilitar la creación de publicaciones (guías,
                                     trucos, noticias, reseñas y más).
                                 </p>
                             </div>
 
                             <div class="field-block">
-                                <label for="author-fullname">Nombre completo</label>
+                                <label for="author-fullname" data-i18n="config.author.nombre_completo">Nombre completo</label>
                                 <input id="author-fullname" type="text" placeholder="Tu nombre y apellidos">
                             </div>
 
                             <div class="field-block">
-                                <label for="author-contact">Correo de contacto</label>
+                                <label for="author-contact" data-i18n="config.author.correo_contacto">Correo de contacto</label>
                                 <input id="author-contact" type="email" placeholder="correo@ejemplo.com">
                             </div>
 
                             <div class="field-block">
-                                <label for="author-content-type">Tipo de contenido que quieres publicar</label>
+                                <label for="author-content-type" data-i18n="config.author.tipo_contenido">Tipo de contenido que quieres publicar</label>
                                 <select id="author-content-type">
-                                    <option value="">Selecciona una opción</option>
-                                    <option value="guia">Guías</option>
-                                    <option value="truco">Trucos</option>
-                                    <option value="noticia">Noticias</option>
-                                    <option value="resena">Reseñas</option>
-                                    <option value="mixto">Mixto (varios tipos)</option>
+                                    <option value="" data-i18n="config.author.select">Selecciona una opción</option>
+                                    <option value="guia" data-i18n="config.author.guias">Guías</option>
+                                    <option value="truco" data-i18n="config.author.trucos">Trucos</option>
+                                    <option value="noticia" data-i18n="config.author.noticias">Noticias</option>
+                                    <option value="resena" data-i18n="config.author.resenas">Reseñas</option>
+                                    <option value="mixto" data-i18n="config.author.mixto">Mixto (varios tipos)</option>
                                 </select>
                             </div>
 
                             <div class="field-block">
-                                <label for="author-experience">Experiencia o enfoque</label>
+                                <label for="author-experience" data-i18n="config.author.experiencia">Experiencia o enfoque</label>
                                 <textarea id="author-experience" rows="4" placeholder="Cuéntanos en qué juegos o temas tienes experiencia."></textarea>
                             </div>
 
                             <div class="field-block">
-                                <label for="author-motivation">¿Por qué quieres ser Autor?</label>
+                                <label for="author-motivation" data-i18n="config.author.por_que">¿Por qué quieres ser Autor?</label>
                                 <textarea id="author-motivation" rows="4" placeholder="Explica cómo aportarías valor a la comunidad."></textarea>
                             </div>
 
                             <div class="field-block">
-                                <label for="author-reference-link">Enlace de referencia (opcional)</label>
+                                <label for="author-reference-link" data-i18n="config.author.enlace_ref">Enlace de referencia (opcional)</label>
                                 <input id="author-reference-link" type="url" placeholder="https://...">
-                                <small>Puede ser una red social, portafolio o contenido previo.</small>
+                                <small data-i18n="config.author.enlace_help">Puede ser una red social, portafolio o contenido previo.</small>
                             </div>
 
                             <label class="author-terms">
                                 <input id="author-terms" type="checkbox">
-                                <span>Acepto que mi solicitud sea revisada por el equipo de HiddenStage.</span>
+                                <span data-i18n="config.author.terms">Acepto que mi solicitud sea revisada por el equipo de HiddenStage.</span>
                             </label>
 
                             <div class="author-request-actions">
-                                <button type="button" class="btn btn-primary" id="submit-author-request-btn">Enviar solicitud</button>
+                                <button type="button" class="btn btn-primary" id="submit-author-request-btn" data-i18n="config.author.submit">Enviar solicitud</button>
                             </div>
 
-                            <p class="author-wait-note">
+                            <p class="author-wait-note" data-i18n="config.author.wait_note">
                                 Importante: después de enviar tu solicitud, espera hasta 2 días hábiles para validar tu acceso como Autor.
                             </p>
                         </div>
@@ -198,14 +207,14 @@
                 <div class="settings-section" data-section="privacidad">
                     <div class="privacy-security-wrap">
                         <article class="privacy-security-card">
-                            <h2>Privacidad de la Cuenta</h2>
+                            <h2 data-i18n="config.privacy.title">Privacidad de la Cuenta</h2>
 
                             <div class="privacy-security-divider"></div>
 
                             <div class="privacy-setting-row">
                                 <div class="privacy-setting-copy">
-                                    <h3>Visibilidad del perfil</h3>
-                                    <p>Controla si tu perfil se muestra como público o privado.</p>
+                                    <h3 data-i18n="config.privacy.visibility">Visibilidad del perfil</h3>
+                                    <p data-i18n="config.privacy.visibility_desc">Controla si tu perfil se muestra como público o privado.</p>
                                 </div>
                                 <label class="switch-control" for="profile-visibility-toggle">
                                     <span class="switch-state-text" id="profile-visibility-label">Público</span>
@@ -216,8 +225,8 @@
 
                             <div class="privacy-setting-row">
                                 <div class="privacy-setting-copy">
-                                    <h3>Estado de conexión</h3>
-                                    <p>Permite mostrar en tu perfil si estás en línea.</p>
+                                    <h3 data-i18n="config.privacy.online">Estado de conexión</h3>
+                                    <p data-i18n="config.privacy.online_desc">Permite mostrar en tu perfil si estás en línea.</p>
                                 </div>
                                 <label class="switch-control" for="online-status-toggle">
                                     <span class="switch-state-text" id="online-status-label">En línea</span>
@@ -228,7 +237,7 @@
                         </article>
 
                         <article class="privacy-security-card">
-                            <h2>Seguridad</h2>
+                            <h2 data-i18n="config.security.title">Seguridad</h2>
 
                             <div class="privacy-security-divider"></div>
 
@@ -236,28 +245,28 @@
                                 <div class="security-item">
                                     <i class="fa-solid fa-shield-halved"></i>
                                     <div>
-                                        <h3>Verificación de dos pasos (2FA)</h3>
-                                        <p>La verificación de dos pasos está desactivada.</p>
+                                        <h3 data-i18n="config.security.2fa_title">Verificación de dos pasos (2FA)</h3>
+                                        <p data-i18n="config.security.2fa_desc">La verificación de dos pasos está desactivada.</p>
                                     </div>
                                 </div>
                                 <div class="security-item">
                                     <i class="fa-solid fa-key"></i>
                                     <div>
-                                        <h3>Contraseña</h3>
-                                        <p>Última modificación: 15 ago 2025</p>
+                                        <h3 data-i18n="config.security.password_title">Contraseña</h3>
+                                        <p data-i18n="config.security.password_desc">Última modificación: 15 ago 2025</p>
                                     </div>
                                 </div>
                                 <div class="security-item">
                                     <i class="fa-solid fa-mobile-screen-button"></i>
                                     <div>
-                                        <h3>Teléfono de recuperación</h3>
+                                        <h3 data-i18n="config.security.phone_title">Teléfono de recuperación</h3>
                                         <p>+52 000 000 0000</p>
                                     </div>
                                 </div>
                                 <div class="security-item">
                                     <i class="fa-regular fa-envelope"></i>
                                     <div>
-                                        <h3>Correo de recuperación</h3>
+                                        <h3 data-i18n="config.security.email_title">Correo de recuperación</h3>
                                         <p>example02@gmail.com</p>
                                     </div>
                                 </div>
@@ -269,7 +278,7 @@
                 <div class="settings-section" data-section="legal">
                     <div class="privacy-wrap">
                         <article class="privacy-card">
-                            <h2>Política de Privacidad</h2>
+                            <h2 data-i18n="config.legal.privacy_title">Política de Privacidad</h2>
 
                             <h3>¿Qué datos recolectamos y por qué?</h3>
                             <p>
@@ -294,7 +303,7 @@
                         </article>
 
                         <article class="privacy-card">
-                            <h2>Términos de Servicio y Uso</h2>
+                            <h2 data-i18n="config.legal.terms_title">Términos de Servicio y Uso</h2>
 
                             <h3>Propiedad de los contenidos</h3>
                             <p>
@@ -312,7 +321,7 @@
                         </article>
 
                         <article class="privacy-card">
-                            <h2>Reglas de la Comunidad</h2>
+                            <h2 data-i18n="config.legal.community_title">Reglas de la Comunidad</h2>
                             <p>
                                 HiddenStage busca ser una comunidad activa y respetuosa donde las personas puedan
                                 compartir ideas, discutir juegos y aportar contenido útil. Para mantener un ambiente
@@ -328,7 +337,7 @@
                         </article>
 
                         <article class="privacy-card">
-                            <h2>Descargo de Responsabilidad</h2>
+                            <h2 data-i18n="config.legal.disclaimer_title">Descargo de Responsabilidad</h2>
                             <p>
                                 Aunque cuidamos la calidad del contenido, parte de la información publicada depende de
                                 actualizaciones de terceros, cambios de versiones de videojuegos y condiciones técnicas
@@ -342,7 +351,7 @@
                         </article>
 
                         <article class="privacy-card">
-                            <h2>Modificaciones y Contacto</h2>
+                            <h2 data-i18n="config.legal.contact_title">Modificaciones y Contacto</h2>
                             <p>
                                 Estos términos y lineamientos pueden actualizarse cuando el proyecto evolucione,
                                 cambien procesos internos o se requieran ajustes legales. Cuando esto ocurra,
@@ -362,6 +371,7 @@
                                 <input
                                     id="help-search-input"
                                     type="search"
+                                    data-i18n="config.help.search_placeholder"
                                     placeholder="¿En qué podemos ayudarte?"
                                     aria-label="Buscar en centro de asistencia"
                                 >
@@ -370,25 +380,25 @@
                             <div class="help-shortcuts">
                                 <button type="button" class="help-shortcut" data-help-topic="cuenta">
                                     <i class="fa-regular fa-user"></i>
-                                    <span>Mi cuenta</span>
+                                    <span data-i18n="config.help.cuenta">Mi cuenta</span>
                                 </button>
                                 <button type="button" class="help-shortcut" data-help-topic="guias">
                                     <i class="fa-solid fa-pen-to-square"></i>
-                                    <span>Publicar Contenido</span>
+                                    <span data-i18n="config.help.publicar">Publicar Contenido</span>
                                 </button>
                                 <a class="help-shortcut help-shortcut-link" href="soporte.html" aria-label="Ir a contacto y soporte">
                                     <i class="fa-regular fa-envelope"></i>
-                                    <span>Contacto y Soporte</span>
+                                    <span data-i18n="config.help.contacto">Contacto y Soporte</span>
                                 </a>
                             </div>
 
-                            <p class="help-topic-caption">
+                            <p class="help-topic-caption" data-i18n="config.help.caption">
                                 Selecciona una categoría para ver una guía rápida.
                             </p>
 
                             <div class="help-topic-panels">
                                 <article class="help-topic-panel" data-help-panel="cuenta">
-                                    <h4>Mi cuenta: guía rápida</h4>
+                                    <h4 data-i18n="config.help.account_title">Mi cuenta: guía rápida</h4>
                                     <ul>
                                         <li>Edita tu nombre, bio y pronombres en el apartado Perfil.</li>
                                         <li>Sube foto o banner con tamaño máximo de 1MB por imagen.</li>
@@ -398,7 +408,7 @@
                                 </article>
 
                                 <article class="help-topic-panel" data-help-panel="guias">
-                                    <h4>Publicar contenido: recomendaciones</h4>
+                                    <h4 data-i18n="config.help.publish_title">Publicar contenido: recomendaciones</h4>
                                     <ul>
                                         <li>Usa títulos claros: juego + objetivo de la guía.</li>
                                         <li>Divide el contenido en pasos cortos y fáciles de seguir.</li>
@@ -408,7 +418,7 @@
                                 </article>
 
                                 <article class="help-topic-panel" data-help-panel="soporte">
-                                    <h4>Contacto y soporte</h4>
+                                    <h4 data-i18n="config.help.contact_title">Contacto y soporte</h4>
                                     <ul>
                                         <li>Correo oficial: <strong>soporte@hiddenstage.io</strong>.</li>
                                         <li>Incluye tu usuario y una descripción breve del problema.</li>
@@ -543,6 +553,8 @@
         </section>
     </main>
 
+    <script src="../js/lang.js"></script>
+
     <script>
         (() => {
             const THEME_KEY = 'hiddenstageTheme';
@@ -609,11 +621,11 @@
             let activeHelpTopic = '';
 
             const sectionTitleMap = {
-                perfil: 'Perfil',
-                autor: 'Solicitud para Autor',
-                privacidad: 'Privacidad y Seguridad',
-                legal: 'Legal y Términos',
-                asistencia: 'Centro de Asistencia'
+                perfil: 'config.sidebar.perfil',
+                autor: 'config.sidebar.autor',
+                privacidad: 'config.sidebar.privacidad_seguridad',
+                legal: 'config.sidebar.legal_terminos',
+                asistencia: 'config.sidebar.centro_asistencia'
             };
 
             const normalizeText = (value) => String(value || '')
@@ -824,7 +836,7 @@
                 });
 
                 if (panelTitle) {
-                    panelTitle.textContent = sectionTitleMap[sectionName] || 'Configuración';
+                    panelTitle.textContent = window.hiddenstageGetTranslation?.(sectionTitleMap[sectionName], 'Configuración') || 'Configuración';
                 }
             };
 

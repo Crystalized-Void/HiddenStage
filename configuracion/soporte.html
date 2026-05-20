@@ -16,65 +16,72 @@
             <header class="support-head">
                 <a class="back-link" href="configuracion.html">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <span>Volver a configuración</span>
+                    <span data-i18n="support.back_config">Volver a configuración</span>
                 </a>
-                <h1>Contacto y Soporte</h1>
-                <p>Cuéntanos qué problema tienes y te generamos un folio de seguimiento.</p>
+                <h1 data-i18n="support.title">Contacto y Soporte</h1>
+                <p data-i18n="support.subtitle">Cuéntanos qué problema tienes y te generamos un folio de seguimiento.</p>
+                <div class="language-control">
+                    <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+                    <select id="langSelector" aria-label="Selector de idioma">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
             </header>
 
             <section class="support-grid">
                 <article class="support-card">
-                    <h2>Abrir ticket</h2>
+                    <h2 data-i18n="support.open_ticket">Abrir ticket</h2>
                     <form id="support-form" class="support-form" novalidate>
                         <div class="field-row">
-                            <label for="support-username">Usuario</label>
-                            <input id="support-username" type="text" placeholder="Tu usuario en HiddenStage">
+                            <label for="support-username" data-i18n="support.user">Usuario</label>
+                            <input id="support-username" type="text" data-i18n="support.account_hint" placeholder="Tu usuario en HiddenStage">
                         </div>
 
                         <div class="field-row">
-                            <label for="support-email">Correo de contacto</label>
-                            <input id="support-email" type="email" placeholder="tu_correo@ejemplo.com" required>
+                            <label for="support-email" data-i18n="support.contact_email">Correo de contacto</label>
+                            <input id="support-email" type="email" data-i18n="support.email_hint" placeholder="tu_correo@ejemplo.com" required>
                         </div>
 
                         <div class="field-row two-col">
                             <div>
-                                <label for="support-category">Tipo de problema</label>
+                                <label for="support-category" data-i18n="support.problem_type">Tipo de problema</label>
                                 <select id="support-category" required>
-                                    <option value="">Selecciona</option>
-                                    <option value="acceso">Acceso / Cuenta</option>
-                                    <option value="perfil">Perfil y configuración</option>
-                                    <option value="publicaciones">Publicaciones y contenido</option>
-                                    <option value="error-tecnico">Error técnico</option>
-                                    <option value="otro">Otro</option>
+                                    <option value="" data-i18n="support.select">Selecciona</option>
+                                    <option value="acceso" data-i18n="support.access_account">Acceso / Cuenta</option>
+                                    <option value="perfil" data-i18n="support.profile_settings">Perfil y configuración</option>
+                                    <option value="publicaciones" data-i18n="support.posts_content">Publicaciones y contenido</option>
+                                    <option value="error-tecnico" data-i18n="support.technical_error">Error técnico</option>
+                                    <option value="otro" data-i18n="support.other">Otro</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label for="support-priority">Prioridad</label>
+                                <label for="support-priority" data-i18n="support.priority">Prioridad</label>
                                 <select id="support-priority" required>
-                                    <option value="">Selecciona</option>
-                                    <option value="baja">Baja</option>
-                                    <option value="media">Media</option>
-                                    <option value="alta">Alta</option>
+                                    <option value="" data-i18n="support.select">Selecciona</option>
+                                    <option value="baja" data-i18n="support.low">Baja</option>
+                                    <option value="media" data-i18n="support.medium">Media</option>
+                                    <option value="alta" data-i18n="support.high">Alta</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="field-row">
-                            <label for="support-subject">Asunto</label>
-                            <input id="support-subject" type="text" placeholder="Ejemplo: No puedo guardar mi perfil" required>
+                            <label for="support-subject" data-i18n="support.subject">Asunto</label>
+                            <input id="support-subject" type="text" data-i18n="support.subject_hint" placeholder="Ejemplo: No puedo guardar mi perfil" required>
                         </div>
 
                         <div class="field-row">
-                            <label for="support-description">Descripción del problema</label>
-                            <textarea id="support-description" rows="6" placeholder="Explícanos qué pasó, en qué pantalla y qué intentaste hacer." required></textarea>
-                            <small>Tip: entre más detalle compartas, más rápido podemos ayudarte.</small>
+                            <label for="support-description" data-i18n="support.description">Descripción del problema</label>
+                            <textarea id="support-description" rows="6" data-i18n="support.description_hint" placeholder="Explícanos qué pasó, en qué pantalla y qué intentaste hacer." required></textarea>
+                            <small data-i18n="support.tip">Tip: entre más detalle compartas, más rápido podemos ayudarte.</small>
                         </div>
 
                         <div class="field-row">
-                            <label for="support-attachment">Captura del problema (opcional)</label>
+                            <label for="support-attachment" data-i18n="support.attachment">Captura del problema (opcional)</label>
                             <input id="support-attachment" type="file" accept="image/*">
-                            <small>Puedes subir una imagen PNG, JPG o WEBP de máximo 2MB.</small>
+                            <small data-i18n="support.attachment_hint">Puedes subir una imagen PNG, JPG o WEBP de máximo 2MB.</small>
 
                             <div id="support-attachment-preview" class="attachment-preview" hidden>
                                 <img id="support-attachment-image" alt="Vista previa de captura">
@@ -87,7 +94,7 @@
                         <div class="field-actions">
                             <button id="support-submit-btn" type="submit" class="btn-primary">
                                 <i class="fa-regular fa-paper-plane"></i>
-                                <span>Enviar ticket</span>
+                                <span data-i18n="support.send_ticket">Enviar ticket</span>
                             </button>
                         </div>
                     </form>
@@ -96,22 +103,24 @@
                 </article>
 
                 <aside class="support-card support-info">
-                    <h2>Antes de enviar</h2>
+                    <h2 data-i18n="support.before_send">Antes de enviar</h2>
                     <ul>
-                        <li>Verifica que puedas acceder correctamente a tu cuenta desde hiddenstage.io.</li>
-                        <li>Incluye una captura y explica qué hiciste antes del error (por ejemplo: entré a mi perfil, di clic en Guardar y apareció un mensaje).</li>
-                        <li>Si olvidaste contraseña, escribe desde tu correo registrado.</li>
+                        <li data-i18n="support.before_send_item1">Verifica que puedas acceder correctamente a tu cuenta desde hiddenstage.io.</li>
+                        <li data-i18n="support.before_send_item2">Incluye una captura y explica qué hiciste antes del error (por ejemplo: entré a mi perfil, di clic en Guardar y apareció un mensaje).</li>
+                        <li data-i18n="support.before_send_item3">Si olvidaste contraseña, escribe desde tu correo registrado.</li>
                     </ul>
 
                     <div class="support-contact-box">
-                        <h3>Correo directo</h3>
+                        <h3 data-i18n="support.direct_email">Correo directo</h3>
                         <a href="mailto:soporte@hiddenstage.io">soporte@hiddenstage.io</a>
-                        <p>Tiempo estimado de respuesta: 24 a 72 horas hábiles.</p>
+                        <p data-i18n="support.contact_time">Tiempo estimado de respuesta: 24 a 72 horas hábiles.</p>
                     </div>
                 </aside>
             </section>
         </section>
     </main>
+
+    <script src="../js/lang.js"></script>
 
     <script>
         (() => {
