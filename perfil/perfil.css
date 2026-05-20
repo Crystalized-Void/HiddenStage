@@ -191,6 +191,39 @@ body {
     border: 1px solid rgba(124, 105, 168, 0.35);
     border-right: none;
     padding: 20px 14px;
+.language-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    margin: 2px 0;
+    border: 1px solid rgba(124, 105, 168, 0.22);
+    border-radius: 10px;
+    background: var(--panel-soft);
+}
+.language-control label {
+    margin: 0;
+    color: #7c69a8;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+.language-control select {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(124, 105, 168, 0.28);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    padding: 9px 10px;
+    outline: none;
+}
+.language-control select:focus {
+    border-color: rgba(124, 105, 168, 0.52);
+    box-shadow: 0 0 0 2px rgba(124, 105, 168, 0.18);
+}
     transition: 0.4s;
     display: flex;
     flex-direction: column;

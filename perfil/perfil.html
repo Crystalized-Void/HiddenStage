@@ -34,10 +34,10 @@
                         <span data-user-fullname>NOMBRE USUARIO</span>
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <a href="#" data-open-profile-menu>PERFIL</a>
-                    <a href="../configuracion/configuracion.html">EDITAR PERFIL</a>
-                    <a href="../configuracion/configuracion.html">CONFIGURACIÓN</a>
-                    <a href="../inicio_de_sesion/index.html" data-logout-link>CERRAR SESIÓN</a>
+                    <a href="#" data-open-profile-menu data-i18n="menu.perfil">PERFIL</a>
+                    <a href="../configuracion/configuracion.html" data-i18n="menu.editar_perfil">EDITAR PERFIL</a>
+                    <a href="../configuracion/configuracion.html" data-i18n="menu.configuracion">CONFIGURACIÓN</a>
+                    <a href="../inicio_de_sesion/index.html" data-logout-link data-i18n="menu.cerrar_sesion">CERRAR SESIÓN</a>
                 </div>
             </div>
         </div>
@@ -56,17 +56,24 @@
                 <span data-side-handle>@hiddenstage</span>
             </div>
         </div>
-        <span class="menu-section-title">Cuenta</span>
-        <a href="perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-        <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+        <span class="menu-section-title" data-i18n="menu.cuenta">Cuenta</span>
+        <a href="perfil.html" data-i18n="menu.tu_perfil"><i class="fas fa-user"></i> Tu perfil</a>
+        <a href="../configuracion/configuracion.html" data-i18n="menu.configuracion"><i class="fas fa-cog"></i> Ajustes</a>
         <button type="button" class="theme-toggle-link" data-theme-toggle>
             <i class="fas fa-moon" data-theme-icon></i>
-            <span data-theme-label>Tema oscuro</span>
+            <span data-theme-label data-i18n="menu.tema_oscuro">Tema oscuro</span>
         </button>
-        <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-        <span class="menu-section-title">Sesión</span>
-        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-        <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+        <div class="language-control">
+            <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+            <select id="langSelector" aria-label="Selector de idioma">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <a href="../inicio_de_sesion/index.html" class="side-link-muted" data-i18n="menu.cambiar_cuenta"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+        <span class="menu-section-title" data-i18n="menu.sesion">Sesión</span>
+        <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link data-i18n="menu.cerrar_sesion"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+        <a href="#" onclick="AjustesPerfil()" data-i18n="menu.regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
     </div>
 
     <main class="profile-page">
@@ -78,9 +85,9 @@
 
         <section class="profile-tabs-strip">
             <nav class="tabs">
-                <button type="button" class="tab active" data-tab="posts">POST</button>
-                <button type="button" class="tab" data-tab="coleccion">COLECCION</button>
-                <button type="button" class="tab" data-tab="guardados">GUARDADOS</button>
+                <button type="button" class="tab active" data-tab="posts" data-i18n="profile.tabs.posts">POST</button>
+                <button type="button" class="tab" data-tab="coleccion" data-i18n="profile.tabs.collection">COLECCION</button>
+                <button type="button" class="tab" data-tab="guardados" data-i18n="profile.tabs.saved">GUARDADOS</button>
             </nav>
         </section>
 
@@ -94,9 +101,9 @@
                 <h1 data-profile-name>Nombre de Usuario/Autor</h1>
                 <p class="handle" data-profile-handle>@example</p>
                 <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
-                <p class="joined">Se unió el 13 de febrero del 2026</p>
+                <p class="joined"><span data-i18n="profile.joined">Se unió el</span> 13 de febrero del 2026</p>
 
-                <h2>Socials</h2>
+                <h2 data-i18n="profile.socials">Socials</h2>
                 <div class="social-grid">
                     <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
                     <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
@@ -107,8 +114,8 @@
 
                 <div class="following-box">
                     <div class="following-head">
-                        <h3>Seguidos:</h3>
-                        <a href="#">ver más</a>
+                        <h3 data-i18n="profile.following">Seguidos:</h3>
+                        <a href="#" data-i18n="profile.following_more">ver más</a>
                     </div>
                     <div class="following-list">
                         <div class="follow-item"><span></span>Usuario</div>
@@ -123,7 +130,7 @@
                     <div class="posts-toolbar">
                         <a class="create-post-btn" href="crear-post.html">
                             <i class="fa-solid fa-pen"></i>
-                            <span>Crear post en nueva página</span>
+                            <span data-i18n="profile.create_post_text">Crear post en nueva página</span>
                         </a>
                     </div>
 
@@ -132,7 +139,7 @@
 
                 <div class="tab-panel hidden" data-panel="coleccion">
                     <section class="collection-panel">
-                        <h3>COLECCION DE VIDEOJUEGOS</h3>
+                        <h3 data-i18n="profile.collection.title">COLECCION DE VIDEOJUEGOS</h3>
                         <div class="collection-grid">
                             <article class="collection-card"></article>
                             <article class="collection-card"></article>
@@ -165,6 +172,8 @@
             </section>
         </section>
     </main>
+
+    <script src="../js/lang.js"></script>
 
     <script>
         function AjustesPerfil() {
