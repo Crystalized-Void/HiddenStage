@@ -30,6 +30,19 @@
 			<p>Cargando publicaciones pendientes...</p>
 		</section>
 
+		<section id="existingSection" class="existing-section hidden">
+			<div class="section-header">
+				<div>
+					<span class="eyebrow section-eyebrow">Publicaciones principales existentes</span>
+					<h2>Publicaciones principales existentes</h2>
+				</div>
+			</div>
+			<div id="existingEmptyState" class="state-card existing-empty hidden">
+				<h2>No hay publicaciones principales existentes.</h2>
+			</div>
+			<div id="existingCardsState" class="cards-grid existing-cards-grid"></div>
+		</section>
+
 		<section id="deniedState" class="state-card hidden">
 			<h2>Acceso denegado</h2>
 			<p>Solo moderadores de contenido y administradores pueden acceder a esta sección.</p>
@@ -87,6 +100,38 @@
 		</article>
 	</template>
 
+	<template id="existingCardTemplate">
+		<article class="review-card existing-review-card">
+			<div class="cover-wrap">
+				<img class="cover-image" alt="Imagen principal de la publicación">
+			</div>
+
+			<div class="card-content">
+				<div class="meta-row">
+					<span class="pill category-pill"></span>
+					<span class="pill status-pill"></span>
+				</div>
+
+				<h2 class="post-title"></h2>
+				<p class="post-heading"></p>
+
+				<div class="author-row">
+					<span class="author-name"></span>
+					<span class="separator">•</span>
+					<span class="post-date"></span>
+				</div>
+
+				<div class="post-content"></div>
+
+				<div class="actions-row">
+					<button type="button" class="action-btn delete-btn">Eliminar</button>
+				</div>
+
+				<p class="feedback" aria-live="polite"></p>
+			</div>
+		</article>
+	</template>
+
 	<script>
 		const SESSION_KEY = 'hiddenstageUser';
 		const LOCAL_API_ORIGIN = 'http://localhost:3000';
@@ -105,7 +150,11 @@
 		const errorState = document.getElementById('errorState');
 		const errorMessage = document.getElementById('errorMessage');
 		const cardsState = document.getElementById('cardsState');
+		const existingSection = document.getElementById('existingSection');
+		const existingEmptyState = document.getElementById('existingEmptyState');
+		const existingCardsState = document.getElementById('existingCardsState');
 		const cardTemplate = document.getElementById('cardTemplate');
+		const existingCardTemplate = document.getElementById('existingCardTemplate');
 
 		const getSessionUser = () => {
 			try {
@@ -179,15 +228,31 @@
 		};
 
 		const showState = (name) => {
-			[loadingState, deniedState, emptyState, errorState, cardsState].forEach((node) => {
+			[loadingState, deniedState, emptyState, errorState, cardsState, existingSection].forEach((node) => {
 				node.classList.add('hidden');
 			});
+
+			if (existingEmptyState) {
+				existingEmptyState.classList.add('hidden');
+			}
 
 			if (name === 'loading') loadingState.classList.remove('hidden');
 			if (name === 'denied') deniedState.classList.remove('hidden');
 			if (name === 'empty') emptyState.classList.remove('hidden');
 			if (name === 'error') errorState.classList.remove('hidden');
 			if (name === 'cards') cardsState.classList.remove('hidden');
+			if (name === 'cards') existingSection.classList.remove('hidden');
+		};
+
+		const readPublicaciones = async (url) => {
+			const response = await fetch(url);
+			const data = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				throw new Error(data.message || 'No se pudo cargar la información');
+			}
+
+			return Array.isArray(data?.publicaciones) ? data.publicaciones : Array.isArray(data) ? data : [];
 		};
 
 		const sendModerationAction = async (idPublicacion, idModerador, estado, motivoRechazo) => {
@@ -313,9 +378,72 @@
 			});
 		};
 
-		const loadPendingPublications = async () => {
-			const user = getSessionUser();
+		const renderExistingCards = (publicaciones, moderatorUser) => {
+			if (!existingCardsState || !existingCardTemplate) {
+				return;
+			}
 
+			existingCardsState.innerHTML = '';
+
+			if (existingEmptyState) {
+				existingEmptyState.classList.toggle('hidden', publicaciones.length > 0);
+			}
+
+			if (publicaciones.length === 0) {
+				return;
+			}
+
+			publicaciones.forEach((publication) => {
+				const card = existingCardTemplate.content.firstElementChild.cloneNode(true);
+				const coverWrap = card.querySelector('.cover-wrap');
+				const coverImage = card.querySelector('.cover-image');
+				const categoryPill = card.querySelector('.category-pill');
+				const statusPill = card.querySelector('.status-pill');
+				const titleEl = card.querySelector('.post-title');
+				const headingEl = card.querySelector('.post-heading');
+				const authorEl = card.querySelector('.author-name');
+				const dateEl = card.querySelector('.post-date');
+				const contentEl = card.querySelector('.post-content');
+				const deleteBtn = card.querySelector('.delete-btn');
+				const feedbackEl = card.querySelector('.feedback');
+
+				if (publication.imagen_principal) {
+					coverImage.src = publication.imagen_principal;
+				} else {
+					coverWrap.classList.add('hidden');
+				}
+
+				categoryPill.textContent = publication.categoria || 'Sin categoría';
+				statusPill.textContent = publication.estado || 'Sin estado';
+				titleEl.textContent = publication.titulo || 'Sin título';
+				headingEl.textContent = publication.encabezado || '';
+				authorEl.textContent = `Autor: ${publication.username || 'Usuario'}`;
+				dateEl.textContent = formatDate(publication.created_at);
+				contentEl.innerHTML = escapeHtml(publication.encabezado || publication.contenido || '').replace(/\n/g, '<br>');
+
+				deleteBtn.addEventListener('click', async () => {
+					if (!confirm('¿Seguro que deseas eliminar esta publicación principal? Esta acción no se puede deshacer.')) {
+						return;
+					}
+
+					deleteBtn.disabled = true;
+					feedbackEl.textContent = 'Eliminando publicación principal...';
+
+					try {
+						const result = await deletePublication(publication.id_publicacion);
+						feedbackEl.textContent = result.message || 'Publicación principal eliminada correctamente';
+						await loadAllPublications(moderatorUser);
+					} catch (error) {
+						feedbackEl.textContent = error.message || 'No se pudo eliminar la publicación principal';
+						deleteBtn.disabled = false;
+					}
+				});
+
+				existingCardsState.appendChild(card);
+			});
+		};
+
+		const loadAllPublications = async (user) => {
 			if (!user) {
 				window.location.href = '../inicio_de_sesion/index.html';
 				return;
@@ -329,33 +457,33 @@
 			showState('loading');
 
 			try {
-				const response = await fetch(`${API_BASE}/api/moderacion/publicaciones-pendientes?id_usuario=${encodeURIComponent(user.id_usuario)}`);
-				const data = await response.json().catch(() => ({}));
+				const [pendingPublicaciones, existingPublicaciones] = await Promise.all([
+					readPublicaciones(`${API_BASE}/api/moderacion/publicaciones-pendientes?id_usuario=${encodeURIComponent(user.id_usuario)}`),
+					readPublicaciones(`${API_BASE}/api/moderacion/publicaciones-principales?id_usuario=${encodeURIComponent(user.id_usuario)}`)
+				]);
 
-				if (!response.ok) {
-					if (response.status === 403) {
-						showState('denied');
-						return;
-					}
-
-					errorMessage.textContent = data.message || 'No fue posible cargar las publicaciones pendientes.';
-					showState('error');
-					return;
-				}
-
-				const publicaciones = Array.isArray(data.publicaciones) ? data.publicaciones : [];
-
-				if (publicaciones.length === 0) {
+				if (pendingPublicaciones.length === 0) {
+					cardsState.innerHTML = '';
 					showState('empty');
-					return;
+				} else {
+					renderCards(pendingPublicaciones, user);
 				}
 
-				renderCards(publicaciones, user);
-				showState('cards');
+				existingSection.classList.remove('hidden');
+				renderExistingCards(existingPublicaciones, user);
+
+				if (pendingPublicaciones.length > 0) {
+					showState('cards');
+				}
 			} catch (error) {
-				errorMessage.textContent = 'No se pudo conectar con el servidor.';
+				errorMessage.textContent = error.message || 'No se pudo conectar con el servidor.';
 				showState('error');
 			}
+		};
+
+		const loadPendingPublications = async () => {
+			const user = getSessionUser();
+			await loadAllPublications(user);
 		};
 
 		loadPendingPublications();

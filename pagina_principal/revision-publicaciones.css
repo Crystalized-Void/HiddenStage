@@ -107,6 +107,36 @@ a {
 	margin: 26px auto;
 }
 
+.existing-section {
+	display: grid;
+	gap: 18px;
+	margin: 0 0 24px;
+}
+
+.section-header h2 {
+	margin: 6px 0 0;
+	font-size: clamp(1.1rem, 2vw, 1.55rem);
+}
+
+.section-eyebrow {
+	display: inline-block;
+	margin-bottom: 6px;
+}
+
+.existing-empty {
+	text-align: center;
+}
+
+.existing-cards-grid {
+	gap: 16px;
+}
+
+.existing-review-card .status-pill {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.14);
+}
+
 .state-card {
 	border: 1px solid var(--border);
 	border-radius: 22px;
