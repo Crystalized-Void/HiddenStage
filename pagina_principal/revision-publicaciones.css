@@ -107,10 +107,15 @@ a {
 	margin: 26px auto;
 }
 
+.panel-section {
+	display: grid;
+	gap: 18px;
+	margin-bottom: 24px;
+}
+
 .existing-section {
 	display: grid;
 	gap: 18px;
-	margin: 0 0 24px;
 }
 
 .section-header h2 {

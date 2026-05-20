@@ -26,11 +26,32 @@
 	</header>
 
 	<main class="moderation-page">
-		<section id="loadingState" class="state-card">
-			<p>Cargando publicaciones pendientes...</p>
+		<section id="pendingSection" class="panel-section">
+			<section id="loadingState" class="state-card">
+				<p>Cargando publicaciones pendientes...</p>
+			</section>
+
+			<section id="deniedState" class="state-card hidden">
+				<h2>Acceso denegado</h2>
+				<p>Solo moderadores de contenido y administradores pueden acceder a esta sección.</p>
+				<a class="primary-link" href="pagina_principal.html">Regresar a pagina_principal.html</a>
+			</section>
+
+			<section id="pendingEmptyState" class="state-card hidden">
+				<h2>No hay publicaciones pendientes por revisar.</h2>
+			</section>
+
+			<section id="pendingErrorState" class="state-card hidden">
+				<h2>No se pudo cargar la moderación</h2>
+				<p id="errorMessage">Inténtalo nuevamente en unos momentos.</p>
+			</section>
+
+			<section id="pendingCardsSection" class="cards-grid hidden">
+				<div id="pendingCardsState" class="cards-grid"></div>
+			</section>
 		</section>
 
-		<section id="existingSection" class="existing-section hidden">
+		<section id="existingSection" class="panel-section existing-section hidden">
 			<div class="section-header">
 				<div>
 					<span class="eyebrow section-eyebrow">Publicaciones principales existentes</span>
@@ -42,23 +63,6 @@
 			</div>
 			<div id="existingCardsState" class="cards-grid existing-cards-grid"></div>
 		</section>
-
-		<section id="deniedState" class="state-card hidden">
-			<h2>Acceso denegado</h2>
-			<p>Solo moderadores de contenido y administradores pueden acceder a esta sección.</p>
-			<a class="primary-link" href="pagina_principal.html">Regresar a pagina_principal.html</a>
-		</section>
-
-		<section id="emptyState" class="state-card hidden">
-			<h2>No hay publicaciones pendientes por revisar.</h2>
-		</section>
-
-		<section id="errorState" class="state-card hidden">
-			<h2>No se pudo cargar la moderación</h2>
-			<p id="errorMessage">Inténtalo nuevamente en unos momentos.</p>
-		</section>
-
-		<section id="cardsState" class="cards-grid hidden"></section>
 	</main>
 
 	<template id="cardTemplate">
@@ -146,10 +150,12 @@
 
 		const loadingState = document.getElementById('loadingState');
 		const deniedState = document.getElementById('deniedState');
-		const emptyState = document.getElementById('emptyState');
-		const errorState = document.getElementById('errorState');
+		const pendingEmptyState = document.getElementById('pendingEmptyState');
+		const pendingErrorState = document.getElementById('pendingErrorState');
 		const errorMessage = document.getElementById('errorMessage');
-		const cardsState = document.getElementById('cardsState');
+		const pendingSection = document.getElementById('pendingSection');
+		const pendingCardsSection = document.getElementById('pendingCardsSection');
+		const pendingCardsState = document.getElementById('pendingCardsState');
 		const existingSection = document.getElementById('existingSection');
 		const existingEmptyState = document.getElementById('existingEmptyState');
 		const existingCardsState = document.getElementById('existingCardsState');
@@ -228,7 +234,7 @@
 		};
 
 		const showState = (name) => {
-			[loadingState, deniedState, emptyState, errorState, cardsState, existingSection].forEach((node) => {
+			[loadingState, deniedState, pendingEmptyState, pendingErrorState, pendingCardsSection, existingSection].forEach((node) => {
 				node.classList.add('hidden');
 			});
 
@@ -238,9 +244,9 @@
 
 			if (name === 'loading') loadingState.classList.remove('hidden');
 			if (name === 'denied') deniedState.classList.remove('hidden');
-			if (name === 'empty') emptyState.classList.remove('hidden');
-			if (name === 'error') errorState.classList.remove('hidden');
-			if (name === 'cards') cardsState.classList.remove('hidden');
+			if (name === 'empty') pendingEmptyState.classList.remove('hidden');
+			if (name === 'error') pendingErrorState.classList.remove('hidden');
+			if (name === 'cards') pendingCardsSection.classList.remove('hidden');
 			if (name === 'cards') existingSection.classList.remove('hidden');
 		};
 
@@ -278,7 +284,11 @@
 		};
 
 		const renderCards = (publicaciones, moderatorUser) => {
-			cardsState.innerHTML = '';
+			if (!pendingCardsState) {
+				return;
+			}
+
+			pendingCardsState.innerHTML = '';
 
 			publicaciones.forEach((publication) => {
 				const card = cardTemplate.content.firstElementChild.cloneNode(true);
@@ -374,7 +384,7 @@
 					}
 				});
 
-				cardsState.appendChild(card);
+				pendingCardsState.appendChild(card);
 			});
 		};
 
@@ -463,7 +473,6 @@
 				]);
 
 				if (pendingPublicaciones.length === 0) {
-					cardsState.innerHTML = '';
 					showState('empty');
 				} else {
 					renderCards(pendingPublicaciones, user);
