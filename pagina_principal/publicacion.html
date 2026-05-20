@@ -91,6 +91,10 @@
                         <span data-i18n="publicacion.like"></span>
                         <span id="likeCount">0</span>
                     </button>
+                    <button class="reaction-btn save-btn" id="saveBtn" onclick="toggleSavePublication()">
+                        <i class="fas fa-bookmark"></i>
+                        <span id="saveBtnLabel" data-i18n="publicacion.save">Guardar</span>
+                    </button>
                     <button class="reaction-btn comment-btn" onclick="scrollToComments()">
                         <i class="fas fa-comment"></i>
                         <span id="commentCount">0</span>
@@ -211,6 +215,42 @@
             user_hype: false
         };
 
+        const saveState = {
+            saved: false,
+            canSave: true
+        };
+
+        const getLocalizedText = (key, fallback) => window.hiddenstageGetTranslation?.(key, fallback) || fallback;
+
+        const updateSaveButtonUI = () => {
+            const saveBtn = document.getElementById('saveBtn');
+            const saveBtnLabel = document.getElementById('saveBtnLabel');
+
+            if (!saveBtn || !saveBtnLabel) {
+                return;
+            }
+
+            const isSaved = Boolean(saveState.saved);
+            const canSave = Boolean(saveState.canSave);
+
+            saveBtn.classList.toggle('saved', isSaved);
+            saveBtn.disabled = !canSave;
+            saveBtn.setAttribute('aria-pressed', String(isSaved));
+
+            if (!canSave) {
+                saveBtn.removeAttribute('title');
+                saveBtnLabel.textContent = getLocalizedText('publicacion.save', 'Guardar');
+                return;
+            }
+
+            saveBtn.title = isSaved
+                ? getLocalizedText('publicacion.saved', 'Guardado')
+                : getLocalizedText('publicacion.save', 'Guardar');
+            saveBtnLabel.textContent = isSaved
+                ? getLocalizedText('publicacion.saved', 'Guardado')
+                : getLocalizedText('publicacion.save', 'Guardar');
+        };
+
         const setReactionButtonState = (buttonId, active) => {
             const button = document.getElementById(buttonId);
             if (!button) {
@@ -242,6 +282,82 @@
                 likeBtn.classList.toggle('active', Boolean(reactionState.user_like));
             }
         };
+
+        const loadSavedState = async () => {
+            const postId = getPostId();
+            const userData = getSessionUser();
+
+            saveState.saved = false;
+            saveState.canSave = Boolean(window.currentPost?.estado === 'aprobada');
+
+            if (!postId || !saveState.canSave) {
+                updateSaveButtonUI();
+                return;
+            }
+
+            if (!userData?.id_usuario) {
+                updateSaveButtonUI();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/publicaciones-principales/${postId}/guardado?id_usuario=${encodeURIComponent(userData.id_usuario)}`);
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    saveState.saved = Boolean(data?.guardado);
+                }
+            } catch (error) {
+                saveState.saved = false;
+            }
+
+            updateSaveButtonUI();
+        };
+
+        const toggleSavePublication = async () => {
+            const postId = getPostId();
+            const userData = getSessionUser();
+
+            if (!postId) {
+                alert('Publicación no encontrada');
+                return;
+            }
+
+            if (!saveState.canSave) {
+                return;
+            }
+
+            if (!userData?.id_usuario) {
+                alert(getLocalizedText('publicacion.login_save', 'Debes iniciar sesión para guardar publicaciones.'));
+                return;
+            }
+
+            const method = saveState.saved ? 'DELETE' : 'POST';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/publicaciones-principales/${postId}/guardar`, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_usuario: userData.id_usuario })
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    alert(data.message || 'No se pudo actualizar el guardado.');
+                    return;
+                }
+
+                saveState.saved = method === 'POST';
+                updateSaveButtonUI();
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
+            }
+        };
+
+        window.toggleSavePublication = toggleSavePublication;
 
         const configureCommentForm = () => {
             const userData = getSessionUser();
@@ -421,6 +537,10 @@
                 document.getElementById('postDate').textContent = createdAt ? formatDate(createdAt) : 'Hace poco';
                 document.getElementById('commentCount').textContent = '0';
 
+                window.currentPost = post;
+                saveState.canSave = post.estado === 'aprobada';
+                await loadSavedState();
+
                 // Avatar del autor
                 const authorAvatar = document.getElementById('authorAvatar');
                 if (authorPhoto) {
@@ -501,9 +621,9 @@
                     linksSection.style.display = 'none';
                 }
 
-                window.currentPost = post;
                 configureCommentForm();
                 configureReactionButtons();
+                updateSaveButtonUI();
             } catch (error) {
                 renderNotFound();
             }
@@ -678,7 +798,12 @@
             await loadReactions();
             configureCommentForm();
             configureReactionButtons();
+            updateSaveButtonUI();
         })();
+
+        document.getElementById('langSelector')?.addEventListener('change', () => {
+            updateSaveButtonUI();
+        });
     </script>
 </body>
 </html>

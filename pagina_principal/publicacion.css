@@ -394,6 +394,12 @@ body {
     color: #db2777;
 }
 
+.save-btn.saved {
+    background: rgba(124, 105, 168, 0.22);
+    border-color: rgba(124, 105, 168, 0.55);
+    color: #9f8ad1;
+}
+
 /* Comentarios */
 .comments-container {
     margin: 32px 0;
