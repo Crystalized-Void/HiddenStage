@@ -104,38 +104,8 @@
 </div>
     
 <main id="relevancia" class="container">
-    <section class="featured">
-        <div class="featured-image">
-            <img src="../img/Imagendeprueba.png" alt="Post Destacado">
-        </div>
-        <div class="featured-text">
-            <h2><i class="fas fa-star"></i> Team Cherry nos la hace otra vez</h2>
-            <p>Team Cherry confirma que el nuevo DLC de silksong sera un juego nuevo</p>
-        </div>
-    </section>
-    <aside class="sidebar">
-        <div class="sidepost">
-            <img src="" alt="Publicación 1">
-            <div class="post-info">
-                <h4>Publicación 1</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 2">
-            <div class="post-info">
-                <h4>Publicación 2</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-        <div class="sidepost">
-            <img src="" alt="Publicación 3">
-            <div class="post-info">
-                <h4>Publicación 3</h4>
-                <p>Contenido breve</p>
-            </div>
-        </div>
-    </aside>
+    <section class="featured" data-top-hype-featured></section>
+    <aside class="sidebar" data-top-hype-sidebar></aside>
 </main>
 
 <section class="Populares">
@@ -605,6 +575,7 @@
             const posts = Array.isArray(data.publicaciones) ? data.publicaciones : [];
 
             approvedPostsCache = posts;
+            renderTopHypePosts(posts);
             window.runPostSearch?.();
 
             if (!response.ok) {
@@ -663,6 +634,7 @@
                 });
             });
         } catch (error) {
+            renderTopHypePosts([]);
             setEmptyMessage('Aún no hay publicaciones aprobadas.');
         }
     }
@@ -679,6 +651,124 @@
         if (days < 30) return `${Math.floor(days / 7)}sem`;
         return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
     }
+
+    const normalizeHypeCount = (post) => Number(post?.hype_count || 0);
+
+    const buildPostUrl = (postId) => `publicacion.html?id=${encodeURIComponent(postId)}`;
+
+    const bindPostNavigation = (element, postId) => {
+        if (!element || !postId) {
+            return;
+        }
+
+        const navigateToPost = () => {
+            window.location.href = buildPostUrl(postId);
+        };
+
+        element.addEventListener('click', navigateToPost);
+        element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                navigateToPost();
+            }
+        });
+    };
+
+    const renderTopHypePosts = (posts) => {
+        const featuredContainer = document.querySelector('[data-top-hype-featured]');
+        const sidebarContainer = document.querySelector('[data-top-hype-sidebar]');
+
+        if (!featuredContainer || !sidebarContainer) {
+            return;
+        }
+
+        const sortedPosts = [...(Array.isArray(posts) ? posts : [])]
+            .filter((post) => post && Number(post.id_publicacion))
+            .sort((leftPost, rightPost) => {
+                const hypeDifference = normalizeHypeCount(rightPost) - normalizeHypeCount(leftPost);
+
+                if (hypeDifference !== 0) {
+                    return hypeDifference;
+                }
+
+                const dateDifference = new Date(rightPost.created_at || 0) - new Date(leftPost.created_at || 0);
+                if (!Number.isNaN(dateDifference) && dateDifference !== 0) {
+                    return dateDifference;
+                }
+
+                return Number(rightPost.id_publicacion || 0) - Number(leftPost.id_publicacion || 0);
+            })
+            .slice(0, 4);
+
+        if (sortedPosts.length === 0) {
+            featuredContainer.innerHTML = '<div class="featured-empty">Aún no hay publicaciones destacadas.</div>';
+            sidebarContainer.innerHTML = '';
+            return;
+        }
+
+        const [featuredPost, ...sidePosts] = sortedPosts;
+        const featuredImage = featuredPost.imagen_principal
+            ? `<div class="featured-image"><img src="${escapeHtml(featuredPost.imagen_principal)}" alt="${escapeHtml(featuredPost.titulo || 'Publicación destacada')}"></div>`
+            : '<div class="featured-image featured-image-placeholder"><span>Sin imagen</span></div>';
+        const featuredAuthor = escapeHtml(featuredPost.username || 'Autor');
+        const featuredCategory = escapeHtml(featuredPost.categoria || '');
+        const featuredHype = normalizeHypeCount(featuredPost);
+
+        featuredContainer.innerHTML = `
+            <div class="featured-post" data-post-id="${escapeHtml(featuredPost.id_publicacion)}" role="link" tabindex="0">
+                ${featuredImage}
+                <div class="featured-text">
+                    <div class="featured-meta">
+                        <span>${featuredAuthor}</span>
+                        <span>•</span>
+                        <span>${featuredCategory}</span>
+                        <span class="hype-pill"><i class="fas fa-bolt"></i> ${featuredHype} HYPE</span>
+                    </div>
+                    <h2><i class="fas fa-star"></i> ${escapeHtml(featuredPost.titulo || 'Sin título')}</h2>
+                    <p>${escapeHtml(featuredPost.encabezado || '')}</p>
+                </div>
+            </div>
+        `;
+
+        bindPostNavigation(featuredContainer.querySelector('[data-post-id]'), featuredPost.id_publicacion);
+
+        const sideSlots = Array.from({ length: 3 }, (_, index) => sidePosts[index] || null);
+
+        sidebarContainer.innerHTML = sideSlots.map((post) => {
+            if (!post) {
+                return `
+                    <div class="sidepost sidepost-empty" aria-hidden="true">
+                        <div class="post-info">
+                            <h4>Aún no hay más publicaciones destacadas.</h4>
+                            <p>Vuelve pronto para ver nuevas publicaciones con más HYPE.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const imageMarkup = post.imagen_principal
+                ? `<img src="${escapeHtml(post.imagen_principal)}" alt="${escapeHtml(post.titulo || 'Publicación destacada')}">`
+                : '<div class="sidepost-image-placeholder"><span>Sin imagen</span></div>';
+
+            return `
+                <div class="sidepost" data-post-id="${escapeHtml(post.id_publicacion)}" role="link" tabindex="0">
+                    ${imageMarkup}
+                    <div class="post-info">
+                        <h4>${escapeHtml(post.titulo || 'Sin título')}</h4>
+                        <p>${escapeHtml(post.encabezado || '')}</p>
+                        <div class="sidepost-meta">
+                            <span>${escapeHtml(post.username || 'Autor')}</span>
+                            <span class="hype-pill"><i class="fas fa-bolt"></i> ${normalizeHypeCount(post)} HYPE</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        sidebarContainer.querySelectorAll('[data-post-id]').forEach((element) => {
+            bindPostNavigation(element, element.getAttribute('data-post-id'));
+        });
+    };
 
     (() => {
         const userPanel = document.querySelector('.user-panel');
