@@ -951,6 +951,51 @@ app.get('/api/moderacion/publicaciones-pendientes', async (req, res) => {
     }
 });
 
+app.get('/api/moderacion/publicaciones-principales', async (req, res) => {
+    try {
+        const reviewerUserId = Number(req.query.id_usuario);
+        const normalizedState = typeof req.query.estado === 'string' ? req.query.estado.trim() : '';
+
+        if (!reviewerUserId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const reviewerUser = await getUserWithRoleById(reviewerUserId);
+
+        if (!reviewerUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if (!hasRole(reviewerUser, [4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para revisar publicaciones principales' });
+        }
+
+        const queryParams = [];
+        let whereClause = '';
+
+        if (normalizedState) {
+            whereClause = 'WHERE p.estado = ?';
+            queryParams.push(normalizedState);
+        }
+
+        const [rows] = await pool.query(
+            `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                    p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                    p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones_principales p
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             ${whereClause}
+             ORDER BY p.created_at DESC`,
+            queryParams
+        );
+
+        return res.json({ publicaciones: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones principales' });
+    }
+});
+
 app.patch('/api/moderacion/publicaciones-principales/:id/estado', async (req, res) => {
     try {
         const publicationId = Number(req.params.id);
