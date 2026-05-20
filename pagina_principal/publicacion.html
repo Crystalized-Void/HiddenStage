@@ -17,6 +17,13 @@
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
             <div class="spacer"></div>
+            <div class="language-control">
+                <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+                <select id="langSelector" aria-label="Selector de idioma">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
             <button type="button" class="back-btn" onclick="window.history.back()" title="Volver">
                 <i class="fas fa-arrow-left"></i>
             </button>
@@ -34,11 +41,11 @@
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="author-details">
-                            <strong id="authorName">Usuario</strong>
-                            <span id="postDate">Hace poco</span>
+                            <strong id="authorName" data-i18n="publicacion.author">Usuario</strong>
+                            <span id="postDate" data-i18n="publicacion.published">Hace poco</span>
                         </div>
                     </div>
-                    <a id="categoryTag" href="#" class="category-tag">Categoría</a>
+                    <a id="categoryTag" href="#" class="category-tag" data-i18n="publicacion.category">Categoría</a>
                 </div>
 
                 <!-- Título y Encabezado -->
@@ -70,17 +77,18 @@
 
             <!-- Sección de Interacciones -->
             <section class="community-section">
-                <h2>¿Qué opina la comunidad?</h2>
+                <h2 data-i18n="publicacion.community">¿Qué opina la comunidad?</h2>
 
                 <!-- Botones de Reacción -->
                 <div class="reaction-bar">
                     <button class="reaction-btn hype-btn" id="hypeBtn" onclick="toggleHype()">
                         <i class="fas fa-fire"></i>
-                        <span>HYPE!</span>
+                        <span data-i18n="publicacion.hype">HYPE!</span>
                         <span id="hypeCount">0</span>
                     </button>
                     <button class="reaction-btn like-btn" id="likeBtn" onclick="toggleLike()">
                         <i class="fas fa-heart"></i>
+                        <span data-i18n="publicacion.like"></span>
                         <span id="likeCount">0</span>
                     </button>
                     <button class="reaction-btn comment-btn" onclick="scrollToComments()">
@@ -91,7 +99,7 @@
 
                 <!-- Comentarios -->
                 <div class="comments-container">
-                    <h3>Comunidad</h3>
+                    <h3 data-i18n="publicacion.community_title">Comunidad</h3>
                     <div id="commentList" class="comment-list">
                         <!-- Los comentarios se cargarán aquí -->
                     </div>
@@ -99,8 +107,8 @@
 
                 <!-- Formulario de Comentario -->
                 <div class="comment-form">
-                    <h3>Escribe un comentario</h3>
-                    <p class="logged-user">Comentando como: <strong id="displayUserName">Invitado</strong></p>
+                    <h3 data-i18n="publicacion.write_comment">Escribe un comentario</h3>
+                    <p class="logged-user"><span data-i18n="publicacion.commenting_as">Comentando como:</span> <strong id="displayUserName">Invitado</strong></p>
                     <textarea 
                         id="userComment" 
                         placeholder="Escribe tu comentario aquí..." 
@@ -115,6 +123,8 @@
             </section>
         </div>
     </main>
+
+    <script src="../js/lang.js"></script>
 
     <script>
         const SESSION_KEY = 'hiddenstageUser';

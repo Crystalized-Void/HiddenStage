@@ -80,6 +80,48 @@ body {
     flex: 1;
 }
 
+.language-control {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid rgba(124, 105, 168, 0.35);
+    border-radius: 12px;
+    background: var(--panel-soft);
+}
+
+.language-control label {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.language-control select,
+#langSelector {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid rgba(124, 105, 168, 0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--panel) 84%, #ece5f7 16%);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.language-control select:focus,
+#langSelector:focus {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 3px rgba(142, 116, 196, 0.18);
+}
+
 .create-post-page {
     max-width: 900px;
     margin: 40px auto;

@@ -16,20 +16,27 @@
 				<img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
 			</a>
 			<div class="header-copy">
-				<span class="eyebrow">Administración</span>
-				<h1>Panel de administrador</h1>
+				<span class="eyebrow" data-i18n="admin.title">Administración</span>
+				<h1 data-i18n="admin.title">Panel de administrador</h1>
+				<div class="language-control">
+					<label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+					<select id="langSelector" aria-label="Selector de idioma">
+						<option value="es">Español</option>
+						<option value="en">English</option>
+					</select>
+				</div>
 			</div>
-			<a class="back-link" href="pagina_principal.html">Volver a pagina_principal.html</a>
+			<a class="back-link" href="pagina_principal.html" data-i18n="admin.back_home">Volver al inicio</a>
 		</div>
 	</header>
 
 	<main class="admin-page">
 		<section id="loadingState" class="state-card">
-			<p>Cargando panel de administrador...</p>
+			<p data-i18n="admin.loading">Cargando panel de administrador...</p>
 		</section>
 
 		<section id="deniedState" class="state-card hidden">
-			<h2>Acceso denegado</h2>
+			<h2 data-i18n="admin.denied">Acceso denegado</h2>
 			<p>Solo el rol Administrador puede usar este panel.</p>
 		</section>
 
@@ -41,20 +48,20 @@
 		<section id="contentState" class="content-shell hidden">
 			<div class="toolbar">
 				<div class="toolbar-item search-wrap">
-					<label for="searchInput">Buscar por nombre o correo</label>
+					<label for="searchInput" data-i18n="admin.search_user">Buscar por nombre o correo</label>
 					<input id="searchInput" type="text" placeholder="Ej: oscar o correo@dominio.com">
 				</div>
 
 				<div class="toolbar-item role-wrap">
-					<label for="roleFilter">Filtrar por rol</label>
+					<label for="roleFilter" data-i18n="admin.filter_role">Filtrar por rol</label>
 					<select id="roleFilter">
-						<option value="">Todos los roles</option>
+						<option value="" data-i18n="admin.all_roles">Todos los roles</option>
 					</select>
 				</div>
 
 				<div class="toolbar-actions">
-					<button id="searchButton" class="action-btn" type="button">Buscar</button>
-					<button id="clearButton" class="ghost-btn" type="button">Limpiar</button>
+					<button id="searchButton" class="action-btn" type="button" data-i18n="admin.search">Buscar</button>
+					<button id="clearButton" class="ghost-btn" type="button" data-i18n="admin.clear">Limpiar</button>
 				</div>
 			</div>
 
@@ -65,7 +72,7 @@
 			<p id="feedbackMessage" class="feedback hidden" aria-live="polite"></p>
 
 			<div id="usersEmpty" class="state-card inner-state hidden">
-				<p>No hay usuarios para mostrar.</p>
+				<p data-i18n="admin.no_users">No hay usuarios para mostrar.</p>
 			</div>
 
 			<div id="usersList" class="users-grid"></div>
@@ -85,21 +92,23 @@
 
 			<dl class="meta-grid">
 				<div><dt>ID Usuario</dt><dd class="id-usuario"></dd></div>
-				<div><dt>Rol actual</dt><dd class="rol-actual"></dd></div>
-				<div><dt>Creado</dt><dd class="created-at"></dd></div>
+				<div><dt data-i18n="admin.current_role">Rol actual</dt><dd class="rol-actual"></dd></div>
+				<div><dt data-i18n="admin.created_at">Creado</dt><dd class="created-at"></dd></div>
 			</dl>
 
 			<div class="role-editor">
 				<label class="inline-label">
-					Nuevo rol
+					<span data-i18n="admin.new_role">Nuevo rol</span>
 					<select class="role-select"></select>
 				</label>
-				<button type="button" class="save-btn">Guardar rol</button>
+				<button type="button" class="save-btn" data-i18n="admin.save_role">Guardar rol</button>
 			</div>
 
 			<p class="card-message" aria-live="polite"></p>
 		</article>
 	</template>
+
+	<script src="../js/lang.js"></script>
 
 	<script>
 		const SESSION_KEY = 'hiddenstageUser';

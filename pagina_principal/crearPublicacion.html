@@ -16,7 +16,14 @@
             <a class="brand" href="pagina_principal.html" aria-label="HiddenStage Inicio">
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
-            <h1 class="page-title">Crear Publicación</h1>
+            <h1 class="page-title" data-i18n="createMain.title">Crear Publicación</h1>
+            <div class="language-control">
+                <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+                <select id="langSelector" aria-label="Selector de idioma">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
             <div class="spacer"></div>
         </div>
     </header>
@@ -26,7 +33,7 @@
             <form id="postForm" class="post-form">
                 <!-- Título -->
                 <div class="form-group">
-                    <label for="titulo">Título de la publicación *</label>
+                    <label for="titulo" data-i18n="createMain.post_title">Título de la publicación *</label>
                     <input 
                         type="text" 
                         id="titulo" 
@@ -40,7 +47,7 @@
 
                 <!-- Encabezado/Resumen -->
                 <div class="form-group">
-                    <label for="encabezado">Encabezado o resumen *</label>
+                    <label for="encabezado" data-i18n="createMain.heading">Encabezado o resumen *</label>
                     <input 
                         type="text" 
                         id="encabezado" 
@@ -54,23 +61,23 @@
 
                 <!-- Categoría -->
                 <div class="form-group">
-                    <label for="categoria">Categoría *</label>
+                    <label for="categoria" data-i18n="createMain.category">Categoría *</label>
                     <select id="categoria" name="categoria" required>
-                        <option value="">-- Selecciona una categoría --</option>
-                        <option value="guias">Guías</option>
-                        <option value="trucos">Trucos</option>
-                        <option value="carreras">Carreras</option>
-                        <option value="plataformas">Plataformas</option>
-                        <option value="romance">Romance</option>
-                        <option value="porturnos">Por Turnos</option>
-                        <option value="accion">Acción</option>
-                        <option value="aventuras">Aventuras</option>
+                        <option value="" data-i18n="config.author.select">-- Selecciona una categoría --</option>
+                        <option value="guias" data-i18n="genres.guides">Guías</option>
+                        <option value="trucos" data-i18n="genres.tips">Trucos</option>
+                        <option value="carreras" data-i18n="genres.races">Carreras</option>
+                        <option value="plataformas" data-i18n="genres.platforms">Plataformas</option>
+                        <option value="romance" data-i18n="genres.romance">Romance</option>
+                        <option value="porturnos" data-i18n="genres.turn_based">Por Turnos</option>
+                        <option value="accion" data-i18n="genres.action">Acción</option>
+                        <option value="aventuras" data-i18n="genres.adventures">Aventuras</option>
                     </select>
                 </div>
 
                 <!-- Imagen Principal -->
                 <div class="form-group">
-                    <label for="imagenPrincipal">Imagen principal (portada)</label>
+                    <label for="imagenPrincipal" data-i18n="createMain.main_image">Imagen principal (portada)</label>
                     <div class="image-upload">
                         <input 
                             type="file" 
@@ -80,7 +87,7 @@
                         >
                         <label for="imagenPrincipal" class="upload-label">
                             <i class="fas fa-image"></i>
-                            <span>Haz clic para subir imagen</span>
+                            <span data-i18n="createPost.cover_upload">Haz clic para subir imagen</span>
                         </label>
                     </div>
                     <div id="imagenPreview" class="image-preview"></div>
@@ -88,7 +95,7 @@
 
                 <!-- Galería de Imágenes -->
                 <div class="form-group">
-                    <label for="imagenGaleria">Galería de imágenes (múltiples)</label>
+                    <label for="imagenGaleria" data-i18n="createMain.gallery">Galería de imágenes (múltiples)</label>
                     <div class="image-upload multiple">
                         <input 
                             type="file" 
@@ -99,7 +106,7 @@
                         >
                         <label for="imagenGaleria" class="upload-label">
                             <i class="fas fa-images"></i>
-                            <span>Haz clic para subir múltiples imágenes</span>
+                            <span data-i18n="createPost.gallery_upload">Haz clic para subir múltiples imágenes</span>
                         </label>
                     </div>
                     <div id="galeriaPreview" class="gallery-preview"></div>
@@ -107,7 +114,7 @@
 
                 <!-- Enlaces -->
                 <div class="form-group">
-                    <label>Enlaces útiles</label>
+                    <label data-i18n="createMain.links">Enlaces útiles</label>
                     <div id="linksContainer">
                         <div class="link-input-group">
                             <input 
@@ -133,7 +140,7 @@
 
                 <!-- Contenido de la Publicación -->
                 <div class="form-group">
-                    <label for="contenido">Desarrollo textual de la publicación *</label>
+                    <label for="contenido" data-i18n="createMain.content">Desarrollo textual de la publicación *</label>
                     <textarea 
                         id="contenido" 
                         name="contenido" 
@@ -157,6 +164,8 @@
             </form>
         </div>
     </main>
+
+    <script src="../js/lang.js"></script>
 
     <script>
         const SESSION_KEY = 'hiddenstageUser';

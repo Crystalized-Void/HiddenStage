@@ -17,28 +17,35 @@
 			</a>
 
 			<div class="header-copy">
-				<span class="eyebrow">Panel de moderación</span>
-				<h1>Revisión de publicaciones</h1>
+				<span class="eyebrow" data-i18n="review.title">Panel de moderación</span>
+				<h1 data-i18n="review.title">Revisión de publicaciones</h1>
+				<div class="language-control">
+					<label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+					<select id="langSelector" aria-label="Selector de idioma">
+						<option value="es">Español</option>
+						<option value="en">English</option>
+					</select>
+				</div>
 			</div>
 
-			<a class="back-link" href="pagina_principal.html">Volver a inicio</a>
+			<a class="back-link" href="pagina_principal.html" data-i18n="review.back_home">Volver a inicio</a>
 		</div>
 	</header>
 
 	<main class="moderation-page">
 		<section id="pendingSection" class="panel-section">
 			<section id="loadingState" class="state-card">
-				<p>Cargando publicaciones pendientes...</p>
+				<p data-i18n="review.loading">Cargando publicaciones pendientes...</p>
 			</section>
 
 			<section id="deniedState" class="state-card hidden">
-				<h2>Acceso denegado</h2>
+				<h2 data-i18n="review.denied">Acceso denegado</h2>
 				<p>Solo moderadores de contenido y administradores pueden acceder a esta sección.</p>
-				<a class="primary-link" href="pagina_principal.html">Regresar a pagina_principal.html</a>
+				<a class="primary-link" href="pagina_principal.html" data-i18n="review.back_home">Volver al inicio</a>
 			</section>
 
 			<section id="pendingEmptyState" class="state-card hidden">
-				<h2>No hay publicaciones pendientes por revisar.</h2>
+				<h2 data-i18n="review.no_pending">No hay publicaciones pendientes por revisar.</h2>
 			</section>
 
 			<section id="pendingErrorState" class="state-card hidden">
@@ -54,12 +61,12 @@
 		<section id="existingSection" class="panel-section existing-section hidden">
 			<div class="section-header">
 				<div>
-					<span class="eyebrow section-eyebrow">Publicaciones principales existentes</span>
-					<h2>Publicaciones principales existentes</h2>
+					<span class="eyebrow section-eyebrow" data-i18n="review.existing_label">Publicaciones principales existentes</span>
+					<h2 data-i18n="review.existing">Publicaciones principales existentes</h2>
 				</div>
 			</div>
 			<div id="existingEmptyState" class="state-card existing-empty hidden">
-				<h2>No hay publicaciones principales existentes.</h2>
+				<h2 data-i18n="review.no_existing">No hay publicaciones principales existentes.</h2>
 			</div>
 			<div id="existingCardsState" class="cards-grid existing-cards-grid"></div>
 		</section>
@@ -89,14 +96,14 @@
 				<div class="post-content"></div>
 
 				<label class="reason-label">
-					Motivo de rechazo (opcional)
+					<span data-i18n="review.reject_reason">Motivo de rechazo (opcional)</span>
 					<textarea class="reject-reason" rows="3" maxlength="500" placeholder="Puedes explicar por qué se rechaza esta publicación"></textarea>
 				</label>
 
 				<div class="actions-row">
-					<button type="button" class="action-btn approve-btn">Aprobar</button>
-					<button type="button" class="action-btn reject-btn">Rechazar</button>
-					<button type="button" class="action-btn delete-btn">Eliminar</button>
+					<button type="button" class="action-btn approve-btn" data-i18n="review.approve">Aprobar</button>
+					<button type="button" class="action-btn reject-btn" data-i18n="review.reject">Rechazar</button>
+					<button type="button" class="action-btn delete-btn" data-i18n="review.delete">Eliminar</button>
 				</div>
 
 				<p class="feedback" aria-live="polite"></p>
@@ -128,13 +135,15 @@
 				<div class="post-content"></div>
 
 				<div class="actions-row">
-					<button type="button" class="action-btn delete-btn">Eliminar</button>
+					<button type="button" class="action-btn delete-btn" data-i18n="review.delete">Eliminar</button>
 				</div>
 
 				<p class="feedback" aria-live="polite"></p>
 			</div>
 		</article>
 	</template>
+
+	<script src="../js/lang.js"></script>
 
 	<script>
 		const SESSION_KEY = 'hiddenstageUser';
