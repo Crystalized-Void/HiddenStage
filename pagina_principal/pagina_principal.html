@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -18,10 +18,11 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <input type="search" id="postSearchInput" placeholder="Buscar..." aria-label="Buscar contenido">
+                <div id="postSearchResults" class="post-search-results" aria-live="polite"></div>
             </div>
 
-            <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
+            <button type="button" class="create-post-btn" data-i18n-title="modal.create_post" data-i18n-aria="modal.create_post" onclick="toggleCreateModal()">
                 <i class="fas fa-plus"></i>
             </button>
 
@@ -48,26 +49,26 @@
     </header>
 <div class="page-shell">
 <nav class="nav-bar">
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Nuevo</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#inicio" data-i18n="nav.inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia" data-i18n="nav.relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente" data-i18n="nav.nuevo"><i class="fas fa-clock"></i> Nuevo</a>
+    <a href="#guias" data-i18n="nav.guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos" data-i18n="nav.trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#" data-i18n="nav.foro"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html" data-i18n="nav.generos"><i class="fas fa-gamepad"></i> Géneros</a>
 </nav>
 <div id="sideMenu" class="side-menu">
     <div class="menu-header">
         <img src="../img/LogoHS.png" onclick="Menu()">
         <i class="fas fa-times close-icon" onclick="Menu()"></i>
     </div>
-    <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-    <a href="#relevancia"><i class="fas fa-star"></i> Relevancia</a>
-    <a href="#reciente"><i class="fas fa-clock"></i> Reciente</a>
-    <a href="#guias"><i class="fas fa-book"></i> Guías</a>
-    <a href="#trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
-    <a href="#"><i class="fas fa-comments"></i> Foro</a>
-    <a href="generos.html"><i class="fas fa-gamepad"></i> Géneros</a>
+    <a href="#inicio" data-i18n="nav.inicio"><i class="fas fa-home"></i> Inicio</a>
+    <a href="#relevancia" data-i18n="nav.relevancia"><i class="fas fa-star"></i> Relevancia</a>
+    <a href="#reciente" data-i18n="nav.nuevo"><i class="fas fa-clock"></i> Reciente</a>
+    <a href="#guias" data-i18n="nav.guias"><i class="fas fa-book"></i> Guías</a>
+    <a href="#trucos" data-i18n="nav.trucos"><i class="fas fa-lightbulb"></i> Trucos</a>
+    <a href="#" data-i18n="nav.foro"><i class="fas fa-comments"></i> Foro</a>
+    <a href="generos.html" data-i18n="nav.generos"><i class="fas fa-gamepad"></i> Géneros</a>
 </div>
 <div id="sideProfile" class="side-profile">
     <div class="menu-header">
@@ -82,17 +83,30 @@
             <span data-side-handle>@hiddenstage</span>
         </div>
     </div>
-    <span class="menu-section-title">Cuenta</span>
-    <a href="../perfil/perfil.html"><i class="fas fa-user"></i> Tu perfil</a>
-    <a href="../configuracion/configuracion.html"><i class="fas fa-cog"></i> Ajustes</a>
+    <span class="menu-section-title" data-i18n="menu.cuenta">Cuenta</span>
+    <a href="../perfil/perfil.html" data-i18n="menu.tu_perfil"><i class="fas fa-user"></i> Tu perfil</a>
+    <a href="../configuracion/configuracion.html" data-i18n="menu.ajustes"><i class="fas fa-cog"></i> Ajustes</a>
     <button type="button" class="theme-toggle-link" data-theme-toggle>
         <i class="fas fa-moon" data-theme-icon></i>
-        <span data-theme-label>Tema oscuro</span>
+        <span data-theme-label data-i18n="menu.tema">Tema oscuro</span>
     </button>
-    <a href="../inicio_de_sesion/index.html" class="side-link-muted"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
-    <span class="menu-section-title">Sesión</span>
-    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
-    <a href="#" onclick="AjustesPerfil()"><i class="fas fa-arrow-left"></i> Regresar</a>
+    <a href="../inicio_de_sesion/index.html" class="side-link-muted" data-i18n="menu.cambiar_cuenta"><i class="fas fa-exchange-alt"></i> Cambiar de cuenta</a>
+
+    <span class="menu-section-title" data-i18n="menu.idioma">Idioma</span>
+    <div class="language-selector">
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="es" onclick="setLanguage('es')">
+            <i class="fas fa-globe"></i>
+            <span>Español</span>
+        </button>
+        <button type="button" class="theme-toggle-link lang-btn" data-lang="en" onclick="setLanguage('en')">
+            <i class="fas fa-globe"></i>
+            <span>English</span>
+        </button>
+    </div>
+
+    <span class="menu-section-title" data-i18n="menu.sesion">Sesión</span>
+    <a href="../inicio_de_sesion/index.html" class="logout-link" data-logout-link data-i18n="menu.cerrar_sesion"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="#" onclick="AjustesPerfil()" data-i18n="menu.regresar"><i class="fas fa-arrow-left"></i> Regresar</a>
 </div>
     
 <main id="relevancia" class="container">
@@ -131,7 +145,7 @@
 </main>
 
 <section class="Populares">
-    <h2><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
+    <h2 data-i18n="section.populars"><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
         <div class="cards">
 
         <div class="card">
@@ -149,7 +163,7 @@
 </section>
 
 <section id="reciente" class="Recientes">
-    <h2><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+    <h2 data-i18n="section.new"><i class="fas fa-newspaper"></i> NOVEDADES </h2>
         <div class="cards">
 
         <div class="card">
@@ -167,7 +181,7 @@
 </section>
 
 <section id="guias" class="Guias">
-    <h2><i class="fas fa-book"></i> GUIAS </h2>
+    <h2 data-i18n="section.guides"><i class="fas fa-book"></i> GUIAS </h2>
         <div class="cards">
 
         <div class="card">
@@ -185,7 +199,7 @@
 </section>
 
 <section id="trucos" class="Trucos">
-    <h2><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
+    <h2 data-i18n="section.tips"><i class="fas fa-lightbulb"></i> TRUCOS </h2> 
     <div class="cards">
 
         <div class="card">
@@ -203,7 +217,7 @@
 </section>
 
 <section id="carreras" class="Carreras">
-    <h2><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
+    <h2 data-i18n="genre.carreras"><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -221,7 +235,7 @@
 </section>
 
 <section id="plataformas" class="Plataformas">
-    <h2><i class="fas fa-server"></i> PLATAFORMAS </h2>
+    <h2 data-i18n="genre.plataformas"><i class="fas fa-server"></i> PLATAFORMAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -239,7 +253,7 @@
 </section>
 
 <section id="romance" class="Romance">
-    <h2><i class="fas fa-heart"></i> ROMANCE </h2>
+    <h2 data-i18n="genre.romance"><i class="fas fa-heart"></i> ROMANCE </h2>
     <div class="cards">
 
         <div class="card">
@@ -256,8 +270,8 @@
     </div>
 </section>
 
-<section id="porturnos" class="Porturnos">
-    <h2><i class="fas fa-mask"></i> POR TURNOS </h2>
+<section id="porturnos" class="PorTurnos">
+    <h2 data-i18n="genre.porturnos"><i class="fas fa-mask"></i> POR TURNOS </h2>
     <div class="cards">
 
         <div class="card">
@@ -275,7 +289,7 @@
 </section>
 
 <section id="accion" class="Accion">
-    <h2><i class="fas fa-explosion"></i> ACCIÓN </h2>
+    <h2 data-i18n="genre.accion"><i class="fas fa-explosion"></i> ACCIÓN </h2>
     <div class="cards">
 
         <div class="card">
@@ -293,7 +307,7 @@
 </section>
 
 <section id="aventuras" class="Aventuras">
-    <h2><i class="fas fa-map"></i> AVENTURAS </h2>
+    <h2 data-i18n="genre.aventuras"><i class="fas fa-map"></i> AVENTURAS </h2>
     <div class="cards">
 
         <div class="card">
@@ -311,32 +325,19 @@
 </section>
 </div>
 
-<!-- Modal: Crear Publicación -->
 <div id="createModal" class="modal-create-post">
     <div class="modal-overlay" onclick="toggleCreateModal()"></div>
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Crear publicación</h2>
-            <button class="modal-close" onclick="toggleCreateModal()">
+            <h2 data-i18n="modal.create_post">Crear publicación</h2>
+            <button class="modal-close" data-i18n-title="modal.create_post" onclick="toggleCreateModal()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <button class="create-option" onclick="redirectToCreatePost()">
                 <i class="fas fa-pen"></i>
-                <span>Crear nota</span>
-            </button>
-            <button id="admin-panel-option" class="create-option" onclick="redirectToAdminPanel()" style="display: none;">
-                <i class="fas fa-user-shield"></i>
-                <span>Panel administrador</span>
-            </button>
-            <button id="review-posts-option" class="create-option" onclick="redirectToReviewPosts()" style="display: none;">
-                <i class="fas fa-clipboard-check"></i>
-                <span>Revisar publicaciones</span>
-            </button>
-            <button id="community-moderation-option" class="create-option" onclick="redirectToCommunityModeration()" style="display: none;">
-                <i class="fas fa-shield-alt"></i>
-                <span>Moderar comunidad</span>
+                <span data-i18n="modal.create_note">Crear nota</span>
             </button>
         </div>
     </div>
@@ -345,28 +346,6 @@
 <script>
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
-    const LOCAL_API_ORIGIN = 'http://localhost:3000';
-    const isLocalFrontend =
-        window.location.protocol === 'file:' ||
-        ['localhost', '127.0.0.1'].includes(window.location.hostname);
-    const isBackendOrigin = window.location.origin === LOCAL_API_ORIGIN;
-
-    const API_BASE = isLocalFrontend && !isBackendOrigin
-        ? LOCAL_API_ORIGIN
-        : '';
-
-    const MAIN_PAGE_URL = 'pagina_principal.html';
-
-    const getStoredUser = () => {
-        try {
-            const raw = localStorage.getItem(SESSION_KEY);
-            return raw ? JSON.parse(raw) : null;
-        } catch (error) {
-            return null;
-        }
-    };
-
-    const getUserRoleId = (user) => Number(user?.id_rol);
 
     function Menu() {
         document.getElementById('sideMenu').classList.toggle('active');
@@ -392,164 +371,65 @@
     }
 
     function redirectToCreatePost() {
-        const storedUser = getStoredUser();
-
+        const storedUser = localStorage.getItem('hiddenstageUser');
         if (!storedUser) {
             alert('Debes iniciar sesión para crear una publicación');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
-
-        if (![2, 5].includes(getUserRoleId(storedUser))) {
-            alert('Solo los autores verificados pueden crear publicaciones principales.');
-            return;
-        }
-
         window.location.href = 'crearPublicacion.html';
     }
 
-    function redirectToReviewPosts() {
-        const storedUser = getStoredUser();
-
-        if (!storedUser) {
-            alert('Debes iniciar sesión para acceder a revisión.');
-            window.location.href = '../inicio_de_sesion/index.html';
-            return;
-        }
-
-        if (![4, 5].includes(getUserRoleId(storedUser))) {
-            alert('No tienes permisos para revisar publicaciones.');
-            return;
-        }
-
-        window.location.href = 'revision-publicaciones.html';
-    }
-
-    function redirectToCommunityModeration() {
-        const storedUser = getStoredUser();
-
-        if (!storedUser) {
-            alert('Debes iniciar sesión para acceder a moderación.');
-            window.location.href = '../inicio_de_sesion/index.html';
-            return;
-        }
-
-        if (![3, 5].includes(getUserRoleId(storedUser))) {
-            alert('No tienes permisos para moderar comunidad.');
-            return;
-        }
-
-        window.location.href = 'moderacion-comunidad.html';
-    }
-
-    function redirectToAdminPanel() {
-        const storedUser = getStoredUser();
-
-        if (!storedUser) {
-            alert('Debes iniciar sesión para acceder al panel administrador.');
-            window.location.href = '../inicio_de_sesion/index.html';
-            return;
-        }
-
-        if (getUserRoleId(storedUser) !== 5) {
-            alert('No tienes permisos para acceder al panel administrador.');
-            return;
-        }
-
-        window.location.href = 'admin-panel.html';
-    }
-
-    const escapeHtml = (value) => String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-
-    // Cargar publicaciones aprobadas desde backend
-    async function loadPublications() {
+    // Cargar publicaciones desde localStorage
+    function loadPublications() {
+        const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
         const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
-        const categoryLabels = {
-            guias: 'Guías',
-            trucos: 'Trucos',
-            carreras: 'Carreras',
-            plataformas: 'Plataformas',
-            romance: 'Romance',
-            porturnos: 'Por Turnos',
-            accion: 'Acción',
-            aventuras: 'Aventuras'
-        };
 
-        const setEmptyMessage = (message) => {
-            const firstSection = document.querySelector('section.Populares .cards');
-            if (firstSection) {
-                firstSection.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
-            }
-        };
+        categories.forEach(category => {
+            const section = document.getElementById(category);
+            if (!section) return;
 
-        try {
-            const response = await fetch(`${API_BASE}/api/publicaciones-principales`);
-            const data = await response.json();
-            const posts = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+            const cards = section.querySelector('.cards');
+            if (!cards) return;
 
-            if (!response.ok) {
-                setEmptyMessage(data.message || 'Aún no hay publicaciones aprobadas.');
-                return;
-            }
-
-            if (posts.length === 0) {
-                setEmptyMessage('Aún no hay publicaciones aprobadas.');
-                return;
-            }
-
-            categories.forEach((category) => {
-                const section = document.getElementById(category);
-                if (!section) return;
-
-                const cards = section.querySelector('.cards');
-                if (!cards) return;
-
+            // Limpiar tarjetas existentes
                 cards.innerHTML = '';
 
-                const categoryPosts = posts.filter((post) => post.categoria === category);
+            // Filtrar publicaciones por categoría
+            const categoryPosts = posts.filter(p => p.categoria === category);
 
-                if (categoryPosts.length === 0) {
-                    cards.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones aprobadas en esta categoría aún.</p>';
-                    return;
-                }
+            if (categoryPosts.length === 0) {
+                cards.innerHTML = '<p data-i18n="no.posts.category" style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No hay publicaciones en esta categoría aún.</p>';
+                return;
+            }
 
-                categoryPosts.forEach((post) => {
-                    const card = document.createElement('div');
-                    card.className = 'post-card';
-                    card.onclick = () => window.location.href = `publicacion.html?id=${post.id_publicacion}`;
-
-                    const authorName = post.username || 'Autor';
-                    const avatarInitials = authorName.substring(0, 2).toUpperCase();
-                    const avatarStyle = post.foto_perfil ? `background-image: url('${post.foto_perfil}')` : '';
-                    const postDate = post.created_at ? formatPostDate(post.created_at) : '';
-                    const categoryLabel = categoryLabels[post.categoria] || post.categoria || '';
-
-                    card.innerHTML = `
-                        ${post.imagen_principal ? `<img src="${post.imagen_principal}" alt="${escapeHtml(post.titulo)}" class="post-card-image">` : '<div class="post-card-image"></div>'}
-                        <div class="post-card-content">
-                            <div class="post-card-title">${escapeHtml(post.titulo)}</div>
-                            <div class="post-card-heading">${escapeHtml(post.encabezado)}</div>
-                            <div class="post-card-meta">
-                                <div class="post-card-avatar" style="${avatarStyle}">${!post.foto_perfil ? avatarInitials : ''}</div>
-                                <span>${escapeHtml(authorName)}</span>
-                                <span>•</span>
-                                <span>${escapeHtml(categoryLabel)}</span>
-                                <span>•</span>
-                                <span>${escapeHtml(postDate)}</span>
-                            </div>
+            // Crear tarjetas de publicación
+            categoryPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.onclick = () => window.location.href = `publicacion.html?id=${post.id}`;
+                
+                const avatarInitials = post.username.substring(0, 2).toUpperCase();
+                const avatarStyle = post.userAvatar ? `background-image: url('${post.userAvatar}')` : '';
+                
+                card.innerHTML = `
+                    ${post.imagenPrincipal ? `<img src="${post.imagenPrincipal}" alt="" class="post-card-image">` : '<div class="post-card-image"></div>'}
+                    <div class="post-card-content">
+                        <div class="post-card-title">${post.titulo}</div>
+                        <div class="post-card-heading">${post.encabezado}</div>
+                        <div class="post-card-meta">
+                            <div class="post-card-avatar" style="${avatarStyle}">${!post.userAvatar ? avatarInitials : ''}</div>
+                            <span>${post.username}</span>
+                            <span>•</span>
+                            <span>${formatPostDate(post.fecha)}</span>
                         </div>
-                    `;
-                    cards.appendChild(card);
-                });
+                    </div>
+                `;
+
+                // NOTE: delete controls removed from main listing by user request
+                cards.appendChild(card);
             });
-        } catch (error) {
-            setEmptyMessage('Aún no hay publicaciones aprobadas.');
-        }
+        });
     }
 
     function formatPostDate(isoDate) {
@@ -565,10 +445,221 @@
         return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
     }
 
+    function setupPostSearch() {
+        const searchInput = document.getElementById('postSearchInput');
+        const searchResults = document.getElementById('postSearchResults');
+
+        if (!searchInput || !searchResults) {
+            return;
+        }
+
+        const normalizeText = (text) => {
+            if (typeof text !== 'string') {
+                return '';
+            }
+
+            return text
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        };
+
+        const escapeHtml = (text) => String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        const getPostExcerpt = (post) => {
+            const source = (typeof post.encabezado === 'string' && post.encabezado.trim())
+                ? post.encabezado
+                : (typeof post.contenido === 'string' ? post.contenido : '');
+
+            const compactText = source.replace(/\s+/g, ' ').trim();
+            if (!compactText) {
+                return 'Sin descripcion';
+            }
+
+            return compactText.length > 85 ? `${compactText.slice(0, 85)}...` : compactText;
+        };
+
+
+        // --- Gestión de guardados (localStorage key: hiddenstageSaved) ---
+        const SAVED_KEY = 'hiddenstageSaved';
+
+        const getSavedIds = () => {
+            try {
+                return JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        };
+
+        const isSaved = (postId) => getSavedIds().includes(String(postId));
+
+        const setSavedIds = (ids) => {
+            localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+            // Notificar cambios dentro de esta página y a otras pestañas
+            try {
+                window.dispatchEvent(new CustomEvent('hiddenstageSavedChanged', { detail: ids }));
+            } catch (e) {
+                // ignore
+            }
+        };
+
+        const toggleSavePost = (postId) => {
+            const storedUser = localStorage.getItem(SESSION_KEY);
+            if (!storedUser) {
+                alert('Debes iniciar sesión para guardar publicaciones');
+                window.location.href = '../inicio_de_sesion/index.html';
+                return false;
+            }
+
+            const idStr = String(postId);
+            const ids = getSavedIds();
+            const idx = ids.indexOf(idStr);
+            if (idx === -1) {
+                ids.push(idStr);
+            } else {
+                ids.splice(idx, 1);
+            }
+            setSavedIds(ids);
+            return ids.includes(idStr);
+        };
+
+        const hideResults = () => {
+            searchResults.classList.remove('active');
+            searchResults.innerHTML = '';
+        };
+
+        const renderResults = (matches) => {
+            if (matches.length === 0) {
+                searchResults.innerHTML = '<div class="search-empty">No se encontraron publicaciones</div>';
+                searchResults.classList.add('active');
+                return;
+            }
+
+            const savedIds = getSavedIds();
+
+            searchResults.innerHTML = matches
+                .slice(0, 6)
+                .map((post) => {
+                    const title = typeof post.titulo === 'string' ? post.titulo : 'Sin titulo';
+                    const excerpt = getPostExcerpt(post);
+                    const safeTitle = escapeHtml(title);
+                    const safeExcerpt = escapeHtml(excerpt);
+                    const imageMarkup = post.imagenPrincipal
+                        ? `<img src="${post.imagenPrincipal}" alt="${safeTitle}" class="search-result-thumb">`
+                        : '<div class="search-result-thumb search-result-thumb-placeholder"><i class="fas fa-image" aria-hidden="true"></i></div>';
+
+                    const savedClass = savedIds.includes(String(post.id)) ? ' saved' : '';
+
+                    return `
+                        <div class="search-result-item" data-post-id="${post.id}" role="button" tabindex="0">
+                            ${imageMarkup}
+                            <div class="search-result-text">
+                                <div class="search-result-title">${safeTitle}</div>
+                                <div class="search-result-excerpt">${safeExcerpt}</div>
+                            </div>
+                            <div class="search-result-actions">
+                                <button type="button" class="bookmark-btn${savedClass}" data-post-id="${post.id}" aria-label="Guardar publicación" title="Guardar">
+                                    <i class="${savedClass ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join('');
+
+            searchResults.classList.add('active');
+        };
+
+        const runSearch = () => {
+            const query = normalizeText(searchInput.value);
+
+            if (!query) {
+                hideResults();
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem('hiddenstagePosts')) || [];
+            const matches = posts.filter((post) => normalizeText(post.titulo).includes(query));
+            renderResults(matches);
+        };
+
+        searchInput.addEventListener('input', () => {
+            runSearch();
+        });
+
+        searchInput.addEventListener('focus', () => {
+            runSearch();
+        });
+
+        searchResults.addEventListener('click', (event) => {
+            const bookmark = event.target.closest('.bookmark-btn');
+            if (bookmark) {
+                event.stopPropagation();
+                const postId = bookmark.dataset.postId;
+                if (!postId) return;
+                const nowSaved = toggleSavePost(postId);
+                // actualizar apariencia del botón
+                if (nowSaved) {
+                    bookmark.classList.add('saved');
+                    bookmark.querySelector('i')?.classList.remove('fa-regular');
+                    bookmark.querySelector('i')?.classList.add('fa-solid');
+                } else {
+                    bookmark.classList.remove('saved');
+                    bookmark.querySelector('i')?.classList.remove('fa-solid');
+                    bookmark.querySelector('i')?.classList.add('fa-regular');
+                }
+                return;
+            }
+
+            const selected = event.target.closest('.search-result-item');
+            if (!selected) {
+                return;
+            }
+
+            const postId = selected.dataset.postId;
+            if (!postId) {
+                return;
+            }
+
+            window.location.href = `publicacion.html?id=${postId}`;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!searchResults.contains(event.target) && event.target !== searchInput) {
+                hideResults();
+            }
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                hideResults();
+            }
+        });
+
+        // Soporte de teclado para resultados (Enter / Space abre la publicación)
+        searchResults.addEventListener('keydown', (event) => {
+            const focused = document.activeElement?.closest?.('.search-result-item') || document.activeElement;
+            if (!focused) return;
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                const postId = focused.dataset?.postId;
+                if (postId) window.location.href = `publicacion.html?id=${postId}`;
+            }
+            if (event.key === 'Escape') {
+                hideResults();
+            }
+        });
+    }
+
     (() => {
         const userPanel = document.querySelector('.user-panel');
         const userTrigger = document.querySelector('.user-trigger');
-        const createPostButton = document.querySelector('.create-post-btn');
         const userNameText = document.querySelector('[data-user-name]');
         const userFullNameText = document.querySelector('[data-user-fullname]');
         const userTopAvatar = document.querySelector('[data-user-avatar]');
@@ -581,9 +672,6 @@
         const themeToggleButton = document.querySelector('[data-theme-toggle]');
         const themeLabel = document.querySelector('[data-theme-label]');
         const themeIcon = document.querySelector('[data-theme-icon]');
-        const adminPanelOption = document.getElementById('admin-panel-option');
-        const reviewPostsOption = document.getElementById('review-posts-option');
-        const communityModerationOption = document.getElementById('community-moderation-option');
 
         const normalizeUsername = (username) => {
             if (typeof username !== 'string') {
@@ -610,7 +698,14 @@
             }
         };
 
-        const readStoredUser = getStoredUser;
+        const readStoredUser = () => {
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (error) {
+                return null;
+            }
+        };
 
         const renderSessionUser = () => {
             const storedUser = readStoredUser();
@@ -635,36 +730,6 @@
 
             applyAvatar(userTopAvatar, photo);
             applyAvatar(sideAvatar, photo);
-        };
-
-        const updateReviewPostsVisibility = () => {
-            if (!reviewPostsOption) {
-                return;
-            }
-
-            const storedUser = readStoredUser();
-            const canReview = [4, 5].includes(getUserRoleId(storedUser));
-            reviewPostsOption.style.display = canReview ? '' : 'none';
-        };
-
-        const updateAdminPanelVisibility = () => {
-            if (!adminPanelOption) {
-                return;
-            }
-
-            const storedUser = readStoredUser();
-            const isAdmin = getUserRoleId(storedUser) === 5;
-            adminPanelOption.style.display = isAdmin ? '' : 'none';
-        };
-
-        const updateCommunityModerationVisibility = () => {
-            if (!communityModerationOption) {
-                return;
-            }
-
-            const storedUser = readStoredUser();
-            const canModerateCommunity = [3, 5].includes(getUserRoleId(storedUser));
-            communityModerationOption.style.display = canModerateCommunity ? '' : 'none';
         };
 
         const applyTheme = (themeName) => {
@@ -701,34 +766,15 @@
         };
 
         renderSessionUser();
-        updateAdminPanelVisibility();
-        updateReviewPostsVisibility();
-        updateCommunityModerationVisibility();
         applyTheme(readStoredTheme());
-
-        if (createPostButton) {
-            createPostButton.addEventListener('click', () => {
-                updateAdminPanelVisibility();
-                updateReviewPostsVisibility();
-                updateCommunityModerationVisibility();
-            });
-        }
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
                 renderSessionUser();
-                updateAdminPanelVisibility();
-                updateReviewPostsVisibility();
-                updateCommunityModerationVisibility();
             }
         });
 
-        window.addEventListener('focus', () => {
-            renderSessionUser();
-            updateAdminPanelVisibility();
-            updateReviewPostsVisibility();
-            updateCommunityModerationVisibility();
-        });
+        window.addEventListener('focus', renderSessionUser);
 
         if (openProfileMenuLink) {
             openProfileMenuLink.addEventListener('click', (event) => {
@@ -785,9 +831,18 @@
             }
         });
 
-        // Cargar publicaciones aprobadas al iniciar
+        // Cargar publicaciones al iniciar
         loadPublications();
+        setupPostSearch();
+
+        // Escuchar cambios en storage para actualizar publicaciones
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'hiddenstagePosts') {
+                loadPublications();
+            }
+        });
     })();
 </script>
+<script src="../js/lang.js"></script>
 </body>
 </html>
