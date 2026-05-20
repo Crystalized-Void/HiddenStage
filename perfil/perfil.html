@@ -337,36 +337,6 @@
                 avatarBadge.setAttribute('title', isOnline ? 'En línea' : 'No disponible');
             };
 
-            const getPostsStorageKey = () => {
-                if (!currentSessionUser || typeof currentSessionUser !== 'object') {
-                    return '';
-                }
-
-                const uniqueId = currentSessionUser.id_usuario || currentSessionUser.email || currentSessionUser.username;
-                return uniqueId ? `hiddenstagePosts_${String(uniqueId)}` : '';
-            };
-
-            const readStoredPosts = () => {
-                const storageKey = getPostsStorageKey();
-
-                if (!storageKey) {
-                    return [];
-                }
-
-                try {
-                    const storedPostsRaw = localStorage.getItem(storageKey);
-
-                    if (!storedPostsRaw) {
-                        return [];
-                    }
-
-                    const parsedPosts = JSON.parse(storedPostsRaw);
-                    return Array.isArray(parsedPosts) ? parsedPosts : [];
-                } catch (error) {
-                    return [];
-                }
-            };
-
             const readSqlPosts = async () => {
                 if (!currentSessionUser?.id_usuario) {
                     return [];
@@ -394,16 +364,6 @@
                 } catch (error) {
                     return [];
                 }
-            };
-
-            const writeStoredPosts = (posts) => {
-                const storageKey = getPostsStorageKey();
-
-                if (!storageKey) {
-                    return;
-                }
-
-                localStorage.setItem(storageKey, JSON.stringify(posts));
             };
 
             const buildPostCard = (post) => {
@@ -542,23 +502,6 @@
                 return article;
             };
 
-            const renderCustomPosts = () => {
-                if (!postsList) {
-                    return;
-                }
-
-                const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
-                oldCustomPosts.forEach((card) => card.remove());
-
-                const posts = readStoredPosts();
-                posts
-                    .slice()
-                    .reverse()
-                    .forEach((post) => {
-                        postsList.prepend(buildPostCard(post));
-                    });
-            };
-
             const renderMergedPosts = async () => {
                 if (!postsList) {
                     return;
@@ -567,29 +510,9 @@
                 const oldCustomPosts = postsList.querySelectorAll('.post-card-custom');
                 oldCustomPosts.forEach((card) => card.remove());
 
-                const localPosts = readStoredPosts();
                 const sqlPosts = await readSqlPosts();
 
-                const mergedMap = new Map();
-
-                sqlPosts.forEach((post) => {
-                    mergedMap.set(`sql-${post.id}`, post);
-                });
-
-                localPosts.forEach((post) => {
-                    const sqlId = Number(post?.sql_post_id || 0);
-                    if (sqlId) {
-                        mergedMap.set(`sql-${sqlId}`, {
-                            ...post,
-                            id: sqlId
-                        });
-                        return;
-                    }
-
-                    mergedMap.set(`local-${post.id}`, post);
-                });
-
-                Array.from(mergedMap.values())
+                sqlPosts
                     .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
                     .forEach((post) => {
                         postsList.prepend(buildPostCard(post));

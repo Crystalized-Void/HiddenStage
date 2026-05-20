@@ -114,29 +114,33 @@
                 return;
             }
 
-            const getPostsStorageKey = () => {
-                const uniqueId = currentUser?.id_usuario || currentUser?.email || currentUser?.username;
-                return uniqueId ? `hiddenstagePosts_${String(uniqueId)}` : '';
-            };
-
-            const readPosts = () => {
-                const key = getPostsStorageKey();
-                if (!key) return [];
+            const readSqlPosts = async () => {
+                if (!currentUser?.id_usuario) {
+                    return [];
+                }
 
                 try {
-                    const raw = localStorage.getItem(key);
-                    if (!raw) return [];
-                    const parsed = JSON.parse(raw);
-                    return Array.isArray(parsed) ? parsed : [];
+                    const response = await fetch(`${API_BASE}/api/posts/${Number(currentUser.id_usuario)}`);
+                    const data = await response.json();
+
+                    if (!response.ok || !Array.isArray(data?.posts)) {
+                        return [];
+                    }
+
+                    return data.posts.map((post) => ({
+                        id: Number(post.id_post),
+                        sql_post_id: Number(post.id_post),
+                        title: post.titulo || '',
+                        content: post.contenido || '',
+                        coverImage: post.portada_url || '',
+                        coverUrl: post.portada_url || '',
+                        youtube_url: post.youtube_url || '',
+                        media: [],
+                        createdAt: post.created_at || new Date().toISOString()
+                    }));
                 } catch (error) {
                     return [];
                 }
-            };
-
-            const savePosts = (posts) => {
-                const key = getPostsStorageKey();
-                if (!key) return;
-                localStorage.setItem(key, JSON.stringify(posts));
             };
 
             const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
@@ -286,12 +290,12 @@
                 });
             });
 
-            const renderPosts = () => {
-                const posts = readPosts();
-
+            const renderPosts = async () => {
                 if (!myPostsList) {
                     return;
                 }
+
+                const posts = await readSqlPosts();
 
                 if (!posts.length) {
                     myPostsList.innerHTML = '<p class="empty-state">Aún no has publicado posts.</p>';
@@ -312,7 +316,11 @@
                     .join('');
             };
 
-            renderPosts();
+            renderPosts().catch(() => {
+                if (myPostsList) {
+                    myPostsList.innerHTML = '<p class="empty-state">No se pudieron cargar tus posts.</p>';
+                }
+            });
 
             form?.addEventListener('submit', async (event) => {
                 event.preventDefault();
@@ -436,24 +444,11 @@
                     }
                 }
 
-                const posts = readPosts();
-                posts.push({
-                    id: Date.now(),
-                    sql_post_id: sqlPostId,
-                    title,
-                    content,
-                    coverImage,
-                    coverUrl: coverUrlFromText,
-                    media,
-                    createdAt: new Date().toISOString()
-                });
-
-                savePosts(posts);
                 form.reset();
                 if (coverPreview) coverPreview.innerHTML = '';
                 if (imagesPreview) imagesPreview.innerHTML = '';
                 if (videoPreview) videoPreview.innerHTML = '';
-                renderPosts();
+                await renderPosts();
                 alert('Post publicado correctamente.');
             });
         })();
