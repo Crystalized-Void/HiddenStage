@@ -1885,6 +1885,58 @@ app.post('/api/support-ticket', async (req, res) => {
     }
 });
 
+app.delete('/api/posts/:id_post', async (req, res) => {
+    try {
+        const postId = Number(req.params.id_post);
+        const { id_usuario } = req.body;
+
+        if (!postId) {
+            return res.status(400).json({ message: 'id_post inválido' });
+        }
+
+        if (!id_usuario) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const requesterUser = await getUserWithRoleById(id_usuario);
+
+        if (!requesterUser) {
+            return res.status(404).json({ message: 'Usuario solicitante no encontrado' });
+        }
+
+        const [posts] = await pool.query(
+            `SELECT id_post, id_usuario FROM publicaciones WHERE id_post = ? LIMIT 1`,
+            [postId]
+        );
+
+        if (posts.length === 0) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        const post = posts[0];
+        const isOwner = Number(post.id_usuario) === Number(requesterUser.id_usuario);
+        const isAdmin = hasRole(requesterUser, [5]);
+        const isModerator = hasRole(requesterUser, [4]);
+
+        if (!isOwner && !isAdmin && !isModerator) {
+            return res.status(403).json({ message: 'No tienes permisos para eliminar esta publicación' });
+        }
+
+        const [deleteResult] = await pool.query(
+            `DELETE FROM publicaciones WHERE id_post = ? LIMIT 1`,
+            [postId]
+        );
+
+        if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'No se pudo eliminar la publicación' });
+        }
+
+        return res.json({ message: 'Publicación eliminada correctamente' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al eliminar la publicación' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor activo en http://localhost:${PORT}`);
 });
