@@ -1580,61 +1580,52 @@ app.patch('/api/moderacion/posts-personales/:id/estado', async (req, res) => {
             return res.status(404).json({ message: 'Publicación personal no encontrada' });
         }
 
-        const connection = await pool.getConnection();
+        await pool.query(
+            `UPDATE publicaciones
+             SET estado = ?
+             WHERE id_post = ?
+             LIMIT 1`,
+            [normalizedEstado, postId]
+        );
+
+        const tipoAccion = normalizedEstado === 'oculto'
+            ? 'ocultar_post_personal'
+            : normalizedEstado === 'eliminado'
+                ? 'eliminar_post_personal'
+                : 'restaurar_post_personal';
+
+        const detalleFinal = normalizedDetalle || `Publicación personal ${normalizedEstado}`;
 
         try {
-            await connection.beginTransaction();
-
-            await connection.query(
-                `UPDATE publicaciones
-                 SET estado = ?
-                 WHERE id_post = ?
-                 LIMIT 1`,
-                [normalizedEstado, postId]
-            );
-
-            const tipoAccion = normalizedEstado === 'oculto'
-                ? 'ocultar_post_personal'
-                : normalizedEstado === 'eliminado'
-                    ? 'eliminar_post_personal'
-                    : 'restaurar_post_personal';
-
-            const detalleFinal = normalizedDetalle || `Publicación personal ${normalizedEstado}`;
-
-            await connection.query(
+            await pool.query(
                 `INSERT INTO moderacion_historial (
                     id_moderador,
                     tipo_accion,
                     tipo_contenido,
                     id_contenido,
                     detalle
-                ) VALUES (?, ?, 'post_personal', ?, ?)`,
+                ) VALUES (?, ?, 'post_perfil', ?, ?)`,
                 [moderatorId, tipoAccion, postId, detalleFinal]
             );
-
-            const [updatedRows] = await connection.query(
-                `SELECT p.id_post, p.id_usuario, p.titulo, p.contenido, p.portada_url,
-                        p.youtube_url, p.resumen_media_json, p.estado, p.created_at, p.updated_at,
-                        u.username, u.foto_perfil
-                 FROM publicaciones p
-                 INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
-                 WHERE p.id_post = ?
-                 LIMIT 1`,
-                [postId]
-            );
-
-            await connection.commit();
-
-            return res.json({
-                message: 'Publicación personal moderada correctamente',
-                publicacion: updatedRows[0]
-            });
-        } catch (error) {
-            await connection.rollback();
-            throw error;
-        } finally {
-            connection.release();
+        } catch (historyError) {
+            // El historial no debe impedir la actualización del estado.
         }
+
+        const [updatedRows] = await pool.query(
+            `SELECT p.id_post, p.id_usuario, p.titulo, p.contenido, p.portada_url,
+                    p.youtube_url, p.resumen_media_json, p.estado, p.created_at, p.updated_at,
+                    u.username, u.foto_perfil
+             FROM publicaciones p
+             INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+             WHERE p.id_post = ?
+             LIMIT 1`,
+            [postId]
+        );
+
+        return res.json({
+            message: 'Publicación personal moderada correctamente',
+            publicacion: updatedRows[0]
+        });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al moderar publicación personal' });
     }
