@@ -47,9 +47,9 @@
     <a href="#noticias" data-i18n="genres.noticias"><i class="fas fa-newspaper"></i> Noticias</a>
     <a href="#accion" data-i18n="genres.accion"><i class="fas fa-bolt"></i> Accion</a>
     <a href="#aventuras" data-i18n="genres.aventuras"><i class="fas fa-compass"></i> Aventuras</a>
-    <a href="#carrera" data-i18n="genres.carreras"><i class="fas fa-flag-checkered"></i> Carreras</a>
+    <a href="#carreras" data-i18n="genres.carreras"><i class="fas fa-flag-checkered"></i> Carreras</a>
     <a href="#plataformas" data-i18n="genres.plataformas"><i class="fas fa-layer-group"></i> Plataformas</a>
-    <a href="#romances" data-i18n="genres.romance"><i class="fas fa-heart"></i> Romance</a>
+    <a href="#romance" data-i18n="genres.romance"><i class="fas fa-heart"></i> Romance</a>
     <a href="#porturnos" data-i18n="genres.porturnos"><i class="fas fa-chess-board"></i> Por turnos</a>
 </nav>
 <div id="sideMenu" class="side-menu">
@@ -150,22 +150,9 @@
     </div>
 </section>
 
-<section id="carrera" class="Carreras">
+<section id="carreras" class="Carreras">
     <h2 data-i18n="genres.carreras"><i class="fas fa-flag-checkered"></i> CARRERAS </h2>
-        <div class="cards">
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-    </div>
+        <div class="cards"></div>
 </section>
 
 <section id="plataformas" class="Plataformas">
@@ -186,22 +173,9 @@
     </div>
 </section>
 
-<section id="romances" class="Romance">
+<section id="romance" class="Romance">
     <h2 data-i18n="genres.romance"><i class="fas fa-heart"></i> ROMANCE </h2>
-        <div class="cards">
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-    </div>
+        <div class="cards"></div>
 </section>
 
 <section id="porturnos" class="PorTurnos">
@@ -227,6 +201,114 @@
 <script>
     const SESSION_KEY = 'hiddenstageUser';
     const THEME_KEY = 'hiddenstageTheme';
+    const PUBLICATIONS_API = `${window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'http://localhost:3000'}/api/publicaciones-principales`;
+
+    const categoryLabels = {
+        noticias: 'Noticias',
+        accion: 'Acción',
+        aventuras: 'Aventuras',
+        carreras: 'Carreras',
+        plataformas: 'Plataformas',
+        romance: 'Romance',
+        porturnos: 'Por turnos',
+        guias: 'Guías',
+        trucos: 'Tips'
+    };
+
+    const sectionOrder = ['noticias', 'accion', 'aventuras', 'carreras', 'plataformas', 'romance', 'porturnos'];
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatPostDate(createdAt) {
+        const date = new Date(createdAt);
+        if (Number.isNaN(date.getTime())) {
+            return '';
+        }
+
+        return new Intl.DateTimeFormat('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).format(date);
+    }
+
+    function renderEmptyMessage(cards, message) {
+        if (!cards) return;
+        cards.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
+    }
+
+    function renderGenrePost(cardContainer, post) {
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.onclick = () => window.location.href = `publicacion.html?id=${post.id_publicacion}`;
+
+        const authorName = post.username || 'Autor';
+        const avatarInitials = authorName.substring(0, 2).toUpperCase();
+        const avatarStyle = post.foto_perfil ? `background-image: url('${post.foto_perfil}')` : '';
+        const categoryLabel = categoryLabels[post.categoria] || post.categoria || '';
+        const hypeCount = Number(post.hype_count);
+        const postDate = post.created_at ? formatPostDate(post.created_at) : '';
+
+        card.innerHTML = `
+            ${post.imagen_principal ? `<img src="${post.imagen_principal}" alt="${escapeHtml(post.titulo)}" class="post-card-image">` : '<div class="post-card-image"></div>'}
+            <div class="post-card-content">
+                <div class="post-card-title">${escapeHtml(post.titulo)}</div>
+                <div class="post-card-heading">${escapeHtml(post.encabezado)}</div>
+                <div class="post-card-meta">
+                    <div class="post-card-avatar" style="${avatarStyle}">${!post.foto_perfil ? avatarInitials : ''}</div>
+                    <span>${escapeHtml(authorName)}</span>
+                    <span>•</span>
+                    <span>${escapeHtml(categoryLabel)}</span>
+                    ${Number.isFinite(hypeCount) ? `<span>•</span><span>HYPE ${hypeCount}</span>` : ''}
+                    ${postDate ? `<span>•</span><span>${escapeHtml(postDate)}</span>` : ''}
+                </div>
+            </div>
+        `;
+
+        cardContainer.appendChild(card);
+    }
+
+    async function loadPublications() {
+        const sections = sectionOrder
+            .map((category) => ({
+                category,
+                section: document.getElementById(category),
+                cards: document.getElementById(category)?.querySelector('.cards')
+            }))
+            .filter((entry) => entry.section && entry.cards);
+
+        try {
+            const response = await fetch(PUBLICATIONS_API);
+            const data = await response.json();
+            const publications = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+
+            if (!response.ok) {
+                sections.forEach(({ cards }) => renderEmptyMessage(cards, data.message || 'No hay publicaciones aprobadas en esta categoría aún.'));
+                return;
+            }
+
+            sections.forEach(({ category, cards }) => {
+                cards.innerHTML = '';
+                const categoryPosts = publications.filter((post) => post.categoria === category);
+
+                if (categoryPosts.length === 0) {
+                    renderEmptyMessage(cards, 'No hay publicaciones aprobadas en esta categoría aún.');
+                    return;
+                }
+
+                categoryPosts.forEach((post) => renderGenrePost(cards, post));
+            });
+        } catch (error) {
+            sections.forEach(({ cards }) => renderEmptyMessage(cards, 'No hay publicaciones aprobadas en esta categoría aún.'));
+        }
+    }
 
     function Menu() {
         document.getElementById('sideMenu').classList.toggle('active');
@@ -417,5 +499,7 @@
                 sideProfile?.classList.remove('active');
             }
         });
+
+        loadPublications();
     })();
 </script>
