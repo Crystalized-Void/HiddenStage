@@ -108,26 +108,8 @@
     <aside class="sidebar" data-top-hype-sidebar></aside>
 </main>
 
-<section class="Populares">
-    <h2 data-i18n="home.section.populares"><i class="fas fa-fire"></i> MAS RELEVANTES </h2>
-        <div class="cards">
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-
-        <div class="card">
-            <img src="">
-        </div>
-    </div>
-</section>
-
 <section id="reciente" class="Recientes">
-    <h2 data-i18n="home.section.novedades"><i class="fas fa-newspaper"></i> NOVEDADES </h2>
+    <h2 data-i18n="home.section.novedades"><i class="fas fa-newspaper"></i> NOTICIAS </h2>
         <div class="cards">
 
         <div class="card">
@@ -234,7 +216,7 @@
     </div>
 </section>
 
-<section id="porturnos" class="Porturnos">
+<section id="porturnos" class="PorTurnos">
     <h2 data-i18n="home.section.porturnos"><i class="fas fa-mask"></i> POR TURNOS </h2>
     <div class="cards">
 
@@ -563,9 +545,12 @@
         };
 
         const setEmptyMessage = (message) => {
-            const firstSection = document.querySelector('section.Populares .cards');
-            if (firstSection) {
-                firstSection.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
+            const fallbackCards = categories
+                .map((category) => document.getElementById(category)?.querySelector('.cards'))
+                .find(Boolean);
+
+            if (fallbackCards) {
+                fallbackCards.innerHTML = `<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">${message}</p>`;
             }
         };
 
