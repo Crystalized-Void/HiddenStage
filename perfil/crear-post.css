@@ -66,6 +66,61 @@ body[data-theme="dark"] .back-link {
     background: #2b2140;
 }
 
+.language-control {
+    width: min(240px, 100%);
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+body[data-theme="dark"] .language-control {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #2b2140;
+}
+
+.language-control label {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.language-control select,
+#langSelector {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f7f7f7;
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+body[data-theme="dark"] .language-control select,
+body[data-theme="dark"] #langSelector {
+    border-color: rgba(124, 105, 168, 0.45);
+    background: #221936;
+    color: #ffffff;
+}
+
+.language-control select:focus,
+#langSelector:focus {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 3px rgba(142, 116, 196, 0.18);
+}
+
 .card {
     background: var(--panel);
     border: 1px solid #d9d9d9;

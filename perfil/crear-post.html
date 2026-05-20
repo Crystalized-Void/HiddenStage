@@ -15,53 +15,63 @@
         <header class="top-actions">
             <a href="perfil.html" class="back-link">
                 <i class="fa-solid fa-arrow-left"></i>
-                <span>Volver al perfil</span>
+                <span data-i18n="createPost.back_profile">Volver al perfil</span>
             </a>
-            <h1>Crear post</h1>
+            <h1 data-i18n="createPost.title">Crear post</h1>
         </header>
 
+        <div class="language-control">
+            <label for="langSelector" data-i18n="menu.idioma">Idioma</label>
+            <select id="langSelector" aria-label="Selector de idioma">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
         <section class="card">
-            <p class="help-text">Completa el título y el contenido. También puedes agregar una portada, imágenes dentro de la publicación y video (YouTube o archivo).</p>
+            <p class="help-text" data-i18n="createPost.help">Completa el título y el contenido. También puedes agregar una portada, imágenes dentro de la publicación y video (YouTube o archivo).</p>
 
             <form id="create-post-form" class="post-form">
-                <label for="post-title">Título</label>
+                <label for="post-title" data-i18n="createPost.post_title">Título</label>
                 <input id="post-title" type="text" maxlength="90" placeholder="Ej: Guía rápida para subir de rango" required>
 
-                <label for="post-content">Contenido</label>
+                <label for="post-content" data-i18n="createPost.post_content">Contenido</label>
                 <textarea id="post-content" rows="7" maxlength="1200" placeholder="Escribe tu post aquí..." required></textarea>
 
-                <label for="post-cover-image">Imagen de portada (opcional)</label>
+                <label for="post-cover-image" data-i18n="createPost.cover_image">Imagen de portada (opcional)</label>
                 <input id="post-cover-image" type="file" accept="image/*">
                 <div id="cover-preview" class="single-media-preview"></div>
 
-                <label for="post-cover-url">O enlace de portada (opcional)</label>
+                <label for="post-cover-url" data-i18n="createPost.cover_url">O enlace de portada (opcional)</label>
                 <input id="post-cover-url" type="url" placeholder="https://...">
 
-                <label for="post-images">Imágenes para el desarrollo (opcional, varias)</label>
+                <label for="post-images" data-i18n="createPost.images">Imágenes para el desarrollo (opcional, varias)</label>
                 <input id="post-images" type="file" accept="image/*" multiple>
                 <div id="images-preview" class="media-preview-grid"></div>
 
-                <label for="post-youtube-link">Video de YouTube (opcional)</label>
+                <label for="post-youtube-link" data-i18n="createPost.youtube">Video de YouTube (opcional)</label>
                 <input id="post-youtube-link" type="url" placeholder="https://www.youtube.com/watch?v=...">
 
-                <label for="post-video-file">Video desde tu equipo (opcional)</label>
+                <label for="post-video-file" data-i18n="createPost.video_file">Video desde tu equipo (opcional)</label>
                 <input id="post-video-file" type="file" accept="video/*">
                 <small class="help-small">Tip: para videos pesados usa enlace de YouTube. Los archivos locales se guardan en el navegador y tienen límite.</small>
                 <div id="video-preview" class="single-media-preview"></div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Publicar post</button>
+                    <button type="submit" class="btn-primary" data-i18n="createPost.publish">Publicar post</button>
                 </div>
             </form>
         </section>
 
         <section class="card recent-posts">
-            <h2>Tus últimos posts</h2>
+            <h2 data-i18n="createPost.latest">Tus últimos posts</h2>
             <div id="my-posts-list" class="my-posts-list">
-                <p class="empty-state">Aún no has publicado posts.</p>
+                <p class="empty-state" data-i18n="createPost.empty">Aún no has publicado posts.</p>
             </div>
         </section>
     </main>
+
+    <script src="../js/lang.js"></script>
 
     <script>
         (() => {
