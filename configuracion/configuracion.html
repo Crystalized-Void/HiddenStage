@@ -11,15 +11,18 @@
     <link rel="stylesheet" href="configuracion.css">
 </head>
 <body>
+    <div class="config-notice-stack" id="config-notice-stack" aria-live="polite" aria-atomic="true"></div>
     <header class="topbar">
         <div class="topbar-main">
             <a class="brand" href="../pagina_principal/pagina_principal.html" aria-label="HiddenStage Inicio">
                 <img src="../img/LogoHS.png" alt="HiddenStage" class="brand-logo">
             </a>
 
-            <div class="topbar-right">
+            <div class="topbar-right user-panel">
                 <span data-user-name>Usuario</span>
-                <i class="fa-solid fa-circle-user"></i>
+                <span class="user-top-avatar" aria-hidden="true">
+                    <i class="fa-solid fa-user"></i>
+                </span>
             </div>
         </div>
     </header>
@@ -134,14 +137,12 @@
                     <div class="author-section-wrap">
                         <div class="author-request" id="author-request-form">
                             <div class="author-request-head">
-                                <h2></h2>
+                                <h2>Solicitud para ser Autor</h2>
                                 <p>
                                     Completa esta solicitud para habilitar la creación de publicaciones (guías,
                                     trucos, noticias, reseñas y más).
                                 </p>
                             </div>
-
-                            <div id="author-request-fields">
 
                             <div class="field-block">
                                 <label for="author-fullname">Nombre completo</label>
@@ -193,17 +194,6 @@
                             <p class="author-wait-note">
                                 Importante: después de enviar tu solicitud, espera hasta 2 días hábiles para validar tu acceso como Autor.
                             </p>
-                            </div>
-
-                            <div class="author-request-status" id="author-request-status" hidden>
-                                <p class="author-request-status-title">Solicitud enviada</p>
-                                <p class="author-request-status-text">Espera a que el equipo valide tu solicitud.</p>
-                                <p class="author-request-status-pill" id="author-request-status-pill">Estado: Pendiente de revisión</p>
-                                <div class="author-request-status-actions">
-                                    <button type="button" class="btn btn-soft" id="cancel-author-request-btn">Cancelar solicitud</button>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -246,12 +236,16 @@
                             <div class="privacy-security-divider"></div>
 
                             <div class="security-item-list">
-                                <div class="security-item">
+                                <div class="security-item security-item-verification">
                                     <i class="fa-solid fa-shield-halved"></i>
-                                    <div>
-                                        <h3>Verificación de dos pasos (2FA)</h3>
-                                        <p>La verificación de dos pasos está desactivada.</p>
+                                    <div class="security-item-copy">
+                                        <h3>Verificación de correo</h3>
+                                        <p data-verification-status-text>tu correo aun no esta verificado.</p>
                                     </div>
+                                    <button type="button" class="verification-btn" data-verification-trigger>
+                                        <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                                        <span>Verificar</span>
+                                    </button>
                                 </div>
                                 <div class="security-item">
                                     <i class="fa-solid fa-key"></i>
@@ -556,6 +550,43 @@
         </section>
     </main>
 
+    <div class="verification-modal" id="email-verification-modal" hidden aria-hidden="true">
+        <div class="verification-modal-backdrop" data-verification-close></div>
+        <section class="verification-modal-card" role="dialog" aria-modal="true" aria-labelledby="verification-modal-title">
+            <button type="button" class="verification-modal-close" data-verification-close aria-label="Cerrar ventana de verificación">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <p class="verification-modal-eyebrow">Soporte · soporte@hiddenstage.io</p>
+            <h2 id="verification-modal-title">Verificación de correo</h2>
+            <p class="verification-modal-copy">
+                Introduce tu correo para solicitar el código. Después podrás escribir el código que recibas por correo.
+            </p>
+
+            <div class="verification-step is-active" data-verification-step="email">
+                <label for="verification-email-input">Correo electrónico</label>
+                <input id="verification-email-input" type="email" placeholder="tu@correo.com" autocomplete="email">
+                <button type="button" class="verification-modal-action" data-send-verification-email>
+                    <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+                    <span>Enviar</span>
+                </button>
+            </div>
+
+            <div class="verification-step" data-verification-step="code" hidden>
+                <label for="verification-code-input">Código de verificación</label>
+                <input id="verification-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+                <button type="button" class="verification-modal-action" data-submit-verification-code>
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span>Confirmar código</span>
+                </button>
+                <button type="button" class="verification-modal-link" data-back-to-email-step>
+                    Cambiar correo
+                </button>
+            </div>
+
+            <p class="verification-modal-feedback" data-verification-feedback></p>
+        </section>
+    </div>
+
     <script>
         (() => {
             const THEME_KEY = 'hiddenstageTheme';
@@ -597,14 +628,11 @@
             const authorReferenceLinkInput = document.getElementById('author-reference-link');
             const authorTermsInput = document.getElementById('author-terms');
             const submitAuthorRequestBtn = document.getElementById('submit-author-request-btn');
-            const authorRequestFields = document.getElementById('author-request-fields');
-            const authorRequestStatus = document.getElementById('author-request-status');
-            const authorRequestStatusPill = document.getElementById('author-request-status-pill');
-            const cancelAuthorRequestBtn = document.getElementById('cancel-author-request-btn');
             const profileVisibilityToggle = document.getElementById('profile-visibility-toggle');
             const profileVisibilityLabel = document.getElementById('profile-visibility-label');
             const onlineStatusToggle = document.getElementById('online-status-toggle');
             const onlineStatusLabel = document.getElementById('online-status-label');
+            const configNoticeStack = document.getElementById('config-notice-stack');
             const helpSearchInput = document.getElementById('help-search-input');
             const helpShortcutButtons = document.querySelectorAll('.help-shortcut[data-help-topic]');
             const helpFaqItems = document.querySelectorAll('.help-faq-item');
@@ -612,7 +640,6 @@
             const helpFaqEmpty = document.getElementById('help-faq-empty');
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
             const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
-            const AUTHOR_REQUEST_STATUS_KEY = 'hiddenstageAuthorRequestStatus';
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -639,70 +666,44 @@
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase();
 
-            const renderAuthorRequestStatus = (requestStatus = null) => {
-                if (!authorRequestStatus || !submitAuthorRequestBtn) {
+            const hideConfigNotice = (noticeElement) => {
+                if (!noticeElement || noticeElement.dataset.dismissed === 'true') {
                     return;
                 }
 
-                const isPending = requestStatus?.status === 'pendiente';
-
-                if (authorRequestFields) {
-                    authorRequestFields.hidden = isPending;
-                }
-
-                authorRequestStatus.hidden = !isPending;
-
-                if (isPending && authorRequestStatusPill) {
-                    const submittedAt = requestStatus?.submittedAt
-                        ? new Date(requestStatus.submittedAt)
-                        : null;
-
-                    const dateLabel = submittedAt && !Number.isNaN(submittedAt.getTime())
-                        ? submittedAt.toLocaleString('es-MX', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })
-                        : null;
-
-                    authorRequestStatusPill.textContent = dateLabel
-                        ? `Estado: Pendiente de revisión · Enviada: ${dateLabel}`
-                        : 'Estado: Pendiente de revisión';
-                }
-
-                submitAuthorRequestBtn.disabled = isPending;
-                submitAuthorRequestBtn.textContent = isPending
-                    ? 'Solicitud enviada'
-                    : 'Enviar solicitud';
+                noticeElement.dataset.dismissed = 'true';
+                noticeElement.classList.add('config-notice--exit');
+                window.setTimeout(() => noticeElement.remove(), 220);
             };
 
-            const readAuthorRequestStatus = () => {
-                try {
-                    const raw = localStorage.getItem(AUTHOR_REQUEST_STATUS_KEY);
-                    if (!raw) {
-                        return null;
-                    }
-
-                    const parsed = JSON.parse(raw);
-                    if (parsed?.status !== 'pendiente') {
-                        return null;
-                    }
-
-                    return parsed;
-                } catch (error) {
-                    return null;
+            const showConfigNotice = (message, type = 'info', title) => {
+                if (!configNoticeStack || !message) {
+                    return;
                 }
-            };
 
-            if (cancelAuthorRequestBtn) {
-                cancelAuthorRequestBtn.addEventListener('click', () => {
-                    localStorage.removeItem(AUTHOR_REQUEST_STATUS_KEY);
-                    renderAuthorRequestStatus(null);
-                    alert('La solicitud pendiente fue cancelada. Ahora puedes enviar una nueva solicitud.');
-                });
-            }
+                const notice = document.createElement('article');
+                notice.className = `config-notice config-notice--${type}`;
+
+                const labels = {
+                    info: { icon: 'i', title: title || 'Aviso' },
+                    success: { icon: '✓', title: title || 'Listo' },
+                    error: { icon: '!', title: title || 'Error' }
+                };
+
+                const label = labels[type] || labels.info;
+                notice.innerHTML = `
+                    <div class="config-notice__icon config-notice__icon--${type}">${label.icon}</div>
+                    <div class="config-notice__content">
+                        <strong class="config-notice__title">${label.title}</strong>
+                        <span class="config-notice__text">${message}</span>
+                    </div>
+                    <button type="button" class="config-notice__close" aria-label="Cerrar aviso">×</button>
+                `;
+
+                notice.querySelector('.config-notice__close')?.addEventListener('click', () => hideConfigNotice(notice));
+                configNoticeStack.appendChild(notice);
+                window.setTimeout(() => hideConfigNotice(notice), type === 'error' ? 4200 : 3200);
+            };
 
             const filterHelpFaq = (query, topic = '') => {
                 if (!helpFaqItems.length) {
@@ -793,7 +794,6 @@
             }
 
             renderHelpTopicPanels('');
-            renderAuthorRequestStatus(readAuthorRequestStatus());
 
             const readPrivacySettings = () => {
                 try {
@@ -1177,18 +1177,18 @@
                         : '';
 
                     if (!fullName || !contactEmail || !contentType || !experience || !motivation) {
-                        alert('Completa todos los campos obligatorios de la solicitud para Autor.');
+                        showConfigNotice('Completa todos los campos obligatorios de la solicitud para Autor.', 'error');
                         return;
                     }
 
                     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail);
                     if (!validEmail) {
-                        alert('Ingresa un correo de contacto válido.');
+                        showConfigNotice('Ingresa un correo de contacto válido.', 'error');
                         return;
                     }
 
                     if (!authorTermsInput.checked) {
-                        alert('Debes aceptar la revisión de tu solicitud para continuar.');
+                        showConfigNotice('Debes aceptar la revisión de tu solicitud para continuar.', 'error');
                         return;
                     }
 
@@ -1205,10 +1205,6 @@
                         status: 'pendiente'
                     };
 
-                    const previousLabel = submitAuthorRequestBtn.textContent;
-                    submitAuthorRequestBtn.disabled = true;
-                    submitAuthorRequestBtn.textContent = 'Enviando...';
-
                     fetch(`${API_BASE}/api/author-request`, {
                         method: 'POST',
                         headers: {
@@ -1223,16 +1219,9 @@
                                 throw new Error(data.message || 'No se pudo enviar la solicitud para Autor.');
                             }
 
-                            const savedStatus = {
-                                status: 'pendiente',
-                                submittedAt: new Date().toISOString(),
-                                requestId: data.requestId || ''
-                            };
+                            localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
 
-                            localStorage.setItem(AUTHOR_REQUEST_STATUS_KEY, JSON.stringify(savedStatus));
-                            renderAuthorRequestStatus(savedStatus);
-
-                            alert('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.');
+                            showConfigNotice('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.', 'success', 'Solicitud enviada');
 
                             authorFullNameInput.value = '';
                             authorContactInput.value = '';
@@ -1245,18 +1234,12 @@
                             authorTermsInput.checked = false;
                         })
                         .catch((error) => {
-                            alert(error.message || 'No se pudo enviar la solicitud para Autor.');
-                        })
-                        .finally(() => {
-                            const currentStatus = readAuthorRequestStatus();
-                            if (!currentStatus) {
-                                submitAuthorRequestBtn.disabled = false;
-                                submitAuthorRequestBtn.textContent = previousLabel;
-                            }
+                            showConfigNotice(error.message || 'No se pudo enviar la solicitud para Autor.', 'error');
                         });
                 });
             }
         })();
     </script>
+    <script src="verificacion-correo.js"></script>
 </body>
 </html>
