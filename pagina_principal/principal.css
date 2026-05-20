@@ -869,8 +869,9 @@ body {
     box-sizing: border-box;
     padding: 16px 0;
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     align-items: stretch;
+    justify-items: stretch;
     gap: 10px;
 }
 .nav-bar a {
@@ -959,6 +960,24 @@ body {
 }
 
 .Recientes h2 {
+    font-size: 28px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+}
+
+.Noticias {
+    background: var(--panel);
+    border: 1px solid rgba(124, 105, 168, 0.35);
+    border-radius: 14px;
+    padding: 40px;
+    margin: 20px auto;
+    max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Noticias h2 {
     font-size: 28px;
     border-bottom: 2px solid var(--accent);
     padding-bottom: 10px;
@@ -1213,6 +1232,7 @@ body[data-theme="dark"] .topbar-search input::placeholder {
     }
 
     .container,
+    .Noticias,
     .Recientes,
     .Guias,
     .Trucos,
