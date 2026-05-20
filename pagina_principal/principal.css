@@ -36,6 +36,9 @@ body {
 }
 
 .topbar {
+    position: relative;
+    z-index: 1000;
+    overflow: visible;
     max-width: 1200px;
     margin: 0 auto;
     padding: 8px 12px;
@@ -74,6 +77,7 @@ body {
 .topbar-search {
     flex: 0.9;
     position: relative;
+    z-index: 1100;
     min-width: 0;
 }
 
@@ -96,7 +100,7 @@ body {
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    z-index: 1200;
+    z-index: 2000;
     display: none;
     max-height: 420px;
     overflow-y: auto;
@@ -762,6 +766,8 @@ body {
     right: 0;
 }
 .nav-bar {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
