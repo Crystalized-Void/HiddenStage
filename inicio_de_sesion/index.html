@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="notice-stack" id="notice-stack" aria-live="polite" aria-atomic="true"></div>
     <main class="auth-shell">
         <section class="auth-panel">
             <header class="panel-top">
@@ -74,7 +75,20 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="primary-button">Crear cuenta</button>
+                        <button type="submit" class="primary-button" id="register-submit-btn">Crear cuenta</button>
+                    </div>
+
+                    <div class="verification-step" id="register-verification-step" hidden>
+                        <div class="verification-step-head">
+                            <span class="verification-step-kicker">Verificación de correo</span>
+                            <strong>Te enviamos un código a tu email</strong>
+                            <p>Ingresa el código que recibiste para terminar tu registro.</p>
+                        </div>
+
+                        <div class="input">
+                            <label for="register-code">Código de verificación</label>
+                            <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" id="register-code" placeholder="000000">
+                        </div>
                     </div>
 
                     <p class="account">¿Ya tienes cuenta? <a href="#" id="sign-in">Inicia sesión</a></p>
