@@ -151,23 +151,10 @@
                 </div>
 
                 <div class="tab-panel hidden" data-panel="guardados">
-                    <div class="post-list">
-                        <article class="post-card">
-                            <div class="post-text">
-                                <h3>GUARDADO: GUÍA DE RANKED</h3>
-                                <p>Consejos rápidos para mejorar toma de decisiones en rondas decisivas y subir de rango más estable.</p>
-                            </div>
-                            <div class="post-thumb"></div>
-                        </article>
-
-                        <article class="post-card">
-                            <div class="post-text">
-                                <h3>GUARDADO: CONFIGURACIÓN PRO</h3>
-                                <p>Ajustes recomendados de sensibilidad, crosshair y comunicación para obtener mejor consistencia.</p>
-                            </div>
-                            <div class="post-thumb"></div>
-                        </article>
-                    </div>
+                    <section class="saved-panel">
+                        <h3 data-i18n="profile.saved.title">Guardados</h3>
+                        <div class="post-list" data-saved-list></div>
+                    </section>
                 </div>
             </section>
         </section>
@@ -214,9 +201,12 @@
             const logoutLinks = document.querySelectorAll('[data-logout-link]');
             const socialSlots = document.querySelectorAll('[data-social-slot]');
             const postsList = document.querySelector('[data-post-list]');
+            const savedList = document.querySelector('[data-saved-list]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
             const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
             let currentSessionUser = null;
+
+            const getLocalizedText = (key, fallback) => window.hiddenstageGetTranslation?.(key, fallback) || fallback;
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -528,6 +518,86 @@
                     });
             };
 
+            const buildSavedCard = (savedPost) => {
+                const article = document.createElement('article');
+                article.className = 'post-card post-card-saved';
+                article.addEventListener('click', () => {
+                    window.location.href = `../pagina_principal/publicacion.html?id=${savedPost.id_publicacion}`;
+                });
+
+                const textWrapper = document.createElement('div');
+                textWrapper.className = 'post-text';
+
+                const titleNode = document.createElement('h3');
+                titleNode.textContent = savedPost.titulo || '';
+
+                const headingNode = document.createElement('p');
+                headingNode.textContent = savedPost.encabezado || '';
+
+                const metaNode = document.createElement('p');
+                metaNode.className = 'saved-meta';
+                const categoryText = savedPost.categoria || '';
+                const authorText = savedPost.username || 'Autor';
+                const savedDate = savedPost.fecha_guardado
+                    ? new Date(savedPost.fecha_guardado).toLocaleDateString('es-ES')
+                    : '';
+                metaNode.textContent = [categoryText, authorText, savedDate].filter(Boolean).join(' • ');
+
+                textWrapper.appendChild(titleNode);
+                textWrapper.appendChild(headingNode);
+                textWrapper.appendChild(metaNode);
+
+                const thumb = document.createElement('div');
+                thumb.className = 'post-thumb';
+
+                if (savedPost.imagen_principal) {
+                    thumb.style.backgroundImage = `url(${savedPost.imagen_principal})`;
+                    thumb.classList.add('post-cover-image');
+                }
+
+                article.appendChild(textWrapper);
+                article.appendChild(thumb);
+
+                return article;
+            };
+
+            const renderSavedPosts = async () => {
+                if (!savedList) {
+                    return;
+                }
+
+                savedList.innerHTML = '';
+
+                const emptyMessage = () => getLocalizedText('profile.saved.empty', 'No hay publicaciones guardadas todavía.');
+
+                if (!currentSessionUser?.id_usuario) {
+                    savedList.innerHTML = `<p class="saved-empty">${emptyMessage()}</p>`;
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/usuarios/${encodeURIComponent(currentSessionUser.id_usuario)}/guardados`);
+                    const data = await response.json().catch(() => ({}));
+                    const savedPosts = Array.isArray(data?.guardados) ? data.guardados : [];
+
+                    if (!response.ok) {
+                        savedList.innerHTML = `<p class="saved-empty">${emptyMessage()}</p>`;
+                        return;
+                    }
+
+                    if (savedPosts.length === 0) {
+                        savedList.innerHTML = `<p class="saved-empty">${emptyMessage()}</p>`;
+                        return;
+                    }
+
+                    savedPosts.forEach((savedPost) => {
+                        savedList.appendChild(buildSavedCard(savedPost));
+                    });
+                } catch (error) {
+                    savedList.innerHTML = `<p class="saved-empty">${emptyMessage()}</p>`;
+                }
+            };
+
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
             renderPresenceBadge(readPresenceFromSettings());
 
@@ -612,9 +682,12 @@
 
                     renderSocialLinks(storedUser);
                     renderMergedPosts();
+                    renderSavedPosts();
                 } catch (error) {
                     localStorage.removeItem('hiddenstageUser');
                 }
+            } else {
+                renderSavedPosts();
             }
 
             logoutLinks.forEach((logoutLink) => {
@@ -628,6 +701,10 @@
                     toggleTheme();
                 });
             }
+
+            document.getElementById('langSelector')?.addEventListener('change', () => {
+                renderSavedPosts();
+            });
 
             applyTheme();
 

@@ -678,6 +678,38 @@ body {
     border-color: rgba(124, 105, 168, 0.42);
 }
 
+.saved-panel {
+    background: rgba(248, 250, 252, 0.95);
+    border: 1px solid rgba(124, 105, 168, 0.28);
+    border-radius: 14px;
+    padding: 18px;
+    min-height: 420px;
+}
+
+.saved-panel h3 {
+    text-align: center;
+    font-size: 34px;
+    letter-spacing: 0.4px;
+    margin-bottom: 18px;
+}
+
+.saved-meta {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.saved-empty {
+    color: var(--muted);
+    text-align: center;
+    padding: 34px 20px;
+    grid-column: 1 / -1;
+}
+
+.post-card.post-card-saved {
+    cursor: pointer;
+}
+
 .post-text h3 {
     font-size: 20px;
     margin-bottom: 8px;
@@ -779,6 +811,10 @@ body[data-theme="dark"] .collection-panel {
 
 body[data-theme="dark"] .tab {
     color: #111111;
+}
+
+body[data-theme="dark"] .saved-panel {
+    background: rgba(28, 33, 50, 0.86);
 }
 
 body[data-theme="dark"] .tab.active {
