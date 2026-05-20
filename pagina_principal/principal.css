@@ -865,11 +865,11 @@ body {
     z-index: 1;
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 16px auto;
     box-sizing: border-box;
     padding: 16px 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     align-items: stretch;
     justify-items: stretch;
     gap: 10px;
@@ -898,17 +898,16 @@ body {
     font-size: 16px;
 }
 
-.page-shell .nav-bar {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    grid-template-columns: repeat(8, minmax(120px, 1fr));
+.genres-nav {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
 }
 
-.page-shell .nav-bar a {
+.genres-nav a {
     min-height: 52px;
     white-space: nowrap;
+    font-size: 14px;
+    padding: 9px 12px;
+    text-align: center;
 }
 .cards {
     display: flex;
@@ -1212,7 +1211,7 @@ body[data-theme="dark"] .topbar-search input::placeholder {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .page-shell .nav-bar {
+    .genres-nav {
         grid-template-columns: repeat(4, minmax(120px, 1fr));
     }
 
@@ -1237,16 +1236,14 @@ body[data-theme="dark"] .topbar-search input::placeholder {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .page-shell .nav-bar {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+    .genres-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
     }
 
-    .page-shell .nav-bar::-webkit-scrollbar {
-        display: none;
+    .genres-nav a {
+        font-size: 13px;
+        padding: 9px 10px;
     }
 
     .topbar-main {
