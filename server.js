@@ -97,6 +97,23 @@ const hasRole = (user, allowedRoles) => {
     return Boolean(user && Array.isArray(allowedRoles) && allowedRoles.includes(Number(user.id_rol)));
 };
 
+const getApprovedPublicationById = async (publicationId) => {
+    const [rows] = await pool.query(
+        `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
+                p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
+                p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
+                u.username, u.foto_perfil
+         FROM publicaciones_principales p
+         INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+         WHERE p.id_publicacion = ?
+           AND p.estado = 'aprobada'
+         LIMIT 1`,
+        [Number(publicationId)]
+    );
+
+    return rows[0] || null;
+};
+
 const getEnumValuesForColumn = async (tableName, columnName) => {
     const [rows] = await pool.query(
         `SELECT COLUMN_TYPE
@@ -921,6 +938,156 @@ app.get('/api/publicaciones-principales/:id', async (req, res) => {
         return res.json({ publicacion: publication });
     } catch (error) {
         return res.status(500).json({ message: 'Error interno al obtener publicación principal' });
+    }
+});
+
+app.post('/api/publicaciones-principales/:id/guardar', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+        const userId = Number(req.body?.id_usuario);
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id_publicacion inválido' });
+        }
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const user = await getUserWithRoleById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const publication = await getApprovedPublicationById(publicationId);
+        if (!publication) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada o no aprobada' });
+        }
+
+        await pool.query(
+            `INSERT IGNORE INTO publicaciones_guardadas (id_usuario, id_publicacion)
+             VALUES (?, ?)`,
+            [userId, publicationId]
+        );
+
+        return res.json({
+            message: 'Publicación guardada correctamente',
+            guardado: true
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al guardar publicación principal' });
+    }
+});
+
+app.delete('/api/publicaciones-principales/:id/guardar', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+        const userId = Number(req.body?.id_usuario);
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id_publicacion inválido' });
+        }
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const user = await getUserWithRoleById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        await pool.query(
+            `DELETE FROM publicaciones_guardadas
+             WHERE id_usuario = ?
+               AND id_publicacion = ?`,
+            [userId, publicationId]
+        );
+
+        return res.json({
+            message: 'Publicación removida de guardados',
+            guardado: false
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al quitar guardado' });
+    }
+});
+
+app.get('/api/publicaciones-principales/:id/guardado', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+        const userId = Number(req.query.id_usuario);
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id_publicacion inválido' });
+        }
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario es obligatorio' });
+        }
+
+        const user = await getUserWithRoleById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const publication = await getApprovedPublicationById(publicationId);
+        if (!publication) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada o no aprobada' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT id_guardado
+             FROM publicaciones_guardadas
+             WHERE id_usuario = ?
+               AND id_publicacion = ?
+             LIMIT 1`,
+            [userId, publicationId]
+        );
+
+        return res.json({ guardado: rows.length > 0 });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al consultar guardado' });
+    }
+});
+
+app.get('/api/usuarios/:id_usuario/guardados', async (req, res) => {
+    try {
+        const userId = Number(req.params.id_usuario);
+
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario inválido' });
+        }
+
+        const user = await getUserWithRoleById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const [rows] = await pool.query(
+            `SELECT pg.id_guardado,
+                    pg.id_publicacion,
+                    p.titulo,
+                    p.encabezado,
+                    p.contenido,
+                    p.categoria,
+                    p.imagen_principal,
+                    p.created_at,
+                    pg.created_at AS fecha_guardado,
+                    u.username,
+                    u.foto_perfil
+             FROM publicaciones_guardadas pg
+             INNER JOIN publicaciones_principales p ON pg.id_publicacion = p.id_publicacion
+             INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             WHERE pg.id_usuario = ?
+               AND p.estado = 'aprobada'
+             ORDER BY pg.created_at DESC`,
+            [userId]
+        );
+
+        return res.json({ guardados: rows });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener publicaciones guardadas' });
     }
 });
 
