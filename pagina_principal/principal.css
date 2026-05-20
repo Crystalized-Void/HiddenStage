@@ -763,6 +763,9 @@ body {
 }
 .nav-bar {
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
     padding: 16px 0;
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
