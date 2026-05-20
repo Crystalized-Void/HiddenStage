@@ -166,18 +166,15 @@
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
                 document.body.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
-            });
-        }
+            };
+            applyTheme();
 
-        if (profilePhotoEditBtn && profilePhotoInput) {
             let currentUser = null;
             let currentPhotoValue = '';
             let currentBannerValue = '';
-            }
-        }
 
-                }
-
+            const renderProfilePhoto = (photoValue) => {
+                if (!profilePhotoPreview) return;
                 if (photoValue) {
                     profilePhotoPreview.style.backgroundImage = `url(${photoValue})`;
                     profilePhotoPreview.classList.add('has-photo');
@@ -188,10 +185,7 @@
             };
 
             const renderProfileBanner = (bannerValue) => {
-                if (!profileBannerPreview) {
-                    return;
-                }
-
+                if (!profileBannerPreview) return;
                 if (bannerValue) {
                     profileBannerPreview.style.backgroundImage = `url(${bannerValue})`;
                     profileBannerPreview.classList.add('has-banner');
@@ -201,45 +195,33 @@
                 }
             };
 
-            if (!storedUserRaw) {
-                return;
-            }
+            if (storedUserRaw) {
+                try {
+                    const storedUser = JSON.parse(storedUserRaw);
+                    currentUser = storedUser;
 
-            try {
-                const storedUser = JSON.parse(storedUserRaw);
-                currentUser = storedUser;
-
-                if (storedUser?.username) {
-                    if (userNameText) {
-                        userNameText.textContent = storedUser.username;
+                    if (storedUser?.username) {
+                        if (userNameText) userNameText.textContent = storedUser.username;
+                        if (profileNameInput && !profileNameInput.value.trim()) profileNameInput.value = storedUser.username;
                     }
 
-                    if (profileNameInput && !profileNameInput.value.trim()) {
-                        profileNameInput.value = storedUser.username;
-                    }
+                    if (profileBioInput && typeof storedUser?.biografia === 'string') profileBioInput.value = storedUser.biografia;
+                    if (profilePronounsInput && typeof storedUser?.pronombres === 'string') profilePronounsInput.value = storedUser.pronombres;
+
+                    if (socialLink1Input) socialLink1Input.value = storedUser?.red_social_1 || '';
+                    if (socialLink2Input) socialLink2Input.value = storedUser?.red_social_2 || '';
+                    if (socialLink3Input) socialLink3Input.value = storedUser?.red_social_3 || '';
+                    if (socialLink4Input) socialLink4Input.value = storedUser?.red_social_4 || '';
+                    if (socialLink5Input) socialLink5Input.value = storedUser?.red_social_5 || '';
+
+                    currentPhotoValue = storedUser?.foto_perfil || '';
+                    renderProfilePhoto(currentPhotoValue);
+
+                    currentBannerValue = storedUser?.banner_perfil || '';
+                    renderProfileBanner(currentBannerValue);
+                } catch (error) {
+                    localStorage.removeItem('hiddenstageUser');
                 }
-
-                if (profileBioInput && typeof storedUser?.biografia === 'string') {
-                    profileBioInput.value = storedUser.biografia;
-                }
-
-                if (profilePronounsInput && typeof storedUser?.pronombres === 'string') {
-                    profilePronounsInput.value = storedUser.pronombres;
-                }
-
-                if (socialLink1Input) socialLink1Input.value = storedUser?.red_social_1 || '';
-                if (socialLink2Input) socialLink2Input.value = storedUser?.red_social_2 || '';
-                if (socialLink3Input) socialLink3Input.value = storedUser?.red_social_3 || '';
-                if (socialLink4Input) socialLink4Input.value = storedUser?.red_social_4 || '';
-                if (socialLink5Input) socialLink5Input.value = storedUser?.red_social_5 || '';
-
-                currentPhotoValue = storedUser?.foto_perfil || '';
-                renderProfilePhoto(currentPhotoValue);
-
-                currentBannerValue = storedUser?.banner_perfil || '';
-                renderProfileBanner(currentBannerValue);
-            } catch (error) {
-                localStorage.removeItem('hiddenstageUser');
             }
 
             if (profilePhotoEditBtn && profilePhotoInput) {
@@ -250,23 +232,17 @@
 
                 profilePhotoInput.addEventListener('change', () => {
                     const selectedFile = profilePhotoInput.files?.[0];
-
-                    if (!selectedFile) {
-                        return;
-                    }
-
+                    if (!selectedFile) return;
                     if (!selectedFile.type.startsWith('image/')) {
                         alert('Selecciona un archivo de imagen válido.');
                         profilePhotoInput.value = '';
                         return;
                     }
-
                     if (selectedFile.size > MAX_PROFILE_PHOTO_BYTES) {
                         alert('La imagen supera el límite de 1MB. Elige una más ligera.');
                         profilePhotoInput.value = '';
                         return;
                     }
-
                     const reader = new FileReader();
                     reader.onload = () => {
                         currentPhotoValue = String(reader.result || '');
@@ -284,23 +260,17 @@
 
                 profileBannerInput.addEventListener('change', () => {
                     const selectedFile = profileBannerInput.files?.[0];
-
-                    if (!selectedFile) {
-                        return;
-                    }
-
+                    if (!selectedFile) return;
                     if (!selectedFile.type.startsWith('image/')) {
                         alert('Selecciona un archivo de imagen válido.');
                         profileBannerInput.value = '';
                         return;
                     }
-
                     if (selectedFile.size > MAX_PROFILE_PHOTO_BYTES) {
                         alert('La imagen supera el límite de 1MB. Elige una más ligera.');
                         profileBannerInput.value = '';
                         return;
                     }
-
                     const reader = new FileReader();
                     reader.onload = () => {
                         currentBannerValue = String(reader.result || '');
@@ -310,26 +280,16 @@
                 });
             }
 
-            if (
-                saveProfileBtn &&
-                profileNameInput &&
-                profileBioInput &&
-                profilePronounsInput &&
-                socialLink1Input &&
-                socialLink2Input &&
-                socialLink3Input &&
-                socialLink4Input &&
-                socialLink5Input
-            ) {
+            if (saveProfileBtn && profileNameInput && profileBioInput && profilePronounsInput) {
                 saveProfileBtn.addEventListener('click', async () => {
                     const newUsername = profileNameInput.value.trim();
                     const newBio = profileBioInput.value.trim();
                     const newPronouns = profilePronounsInput.value.trim();
-                    const socialLink1 = socialLink1Input.value.trim();
-                    const socialLink2 = socialLink2Input.value.trim();
-                    const socialLink3 = socialLink3Input.value.trim();
-                    const socialLink4 = socialLink4Input.value.trim();
-                    const socialLink5 = socialLink5Input.value.trim();
+                    const socialLink1 = socialLink1Input ? socialLink1Input.value.trim() : '';
+                    const socialLink2 = socialLink2Input ? socialLink2Input.value.trim() : '';
+                    const socialLink3 = socialLink3Input ? socialLink3Input.value.trim() : '';
+                    const socialLink4 = socialLink4Input ? socialLink4Input.value.trim() : '';
+                    const socialLink5 = socialLink5Input ? socialLink5Input.value.trim() : '';
 
                     if (!newUsername) {
                         alert('Ingresa un nombre válido.');
@@ -384,18 +344,15 @@
 
                         localStorage.setItem('hiddenstageUser', JSON.stringify(currentUser));
 
-                        if (userNameText) {
-                            userNameText.textContent = currentUser.username;
-                        }
-
-                        profileNameInput.value = currentUser.username;
-                        profileBioInput.value = currentUser.biografia || '';
-                        profilePronounsInput.value = currentUser.pronombres || '';
-                        socialLink1Input.value = currentUser.red_social_1 || '';
-                        socialLink2Input.value = currentUser.red_social_2 || '';
-                        socialLink3Input.value = currentUser.red_social_3 || '';
-                        socialLink4Input.value = currentUser.red_social_4 || '';
-                        socialLink5Input.value = currentUser.red_social_5 || '';
+                        if (userNameText) userNameText.textContent = currentUser.username;
+                        if (profileNameInput) profileNameInput.value = currentUser.username;
+                        if (profileBioInput) profileBioInput.value = currentUser.biografia || '';
+                        if (profilePronounsInput) profilePronounsInput.value = currentUser.pronombres || '';
+                        if (socialLink1Input) socialLink1Input.value = currentUser.red_social_1 || '';
+                        if (socialLink2Input) socialLink2Input.value = currentUser.red_social_2 || '';
+                        if (socialLink3Input) socialLink3Input.value = currentUser.red_social_3 || '';
+                        if (socialLink4Input) socialLink4Input.value = currentUser.red_social_4 || '';
+                        if (socialLink5Input) socialLink5Input.value = currentUser.red_social_5 || '';
                         currentPhotoValue = currentUser.foto_perfil || '';
                         renderProfilePhoto(currentPhotoValue);
                         currentBannerValue = currentUser.banner_perfil || '';
