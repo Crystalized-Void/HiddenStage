@@ -568,6 +568,7 @@
     (() => {
         const userPanel = document.querySelector('.user-panel');
         const userTrigger = document.querySelector('.user-trigger');
+        const createPostButton = document.querySelector('.create-post-btn');
         const userNameText = document.querySelector('[data-user-name]');
         const userFullNameText = document.querySelector('[data-user-fullname]');
         const userTopAvatar = document.querySelector('[data-user-avatar]');
@@ -704,6 +705,14 @@
         updateReviewPostsVisibility();
         updateCommunityModerationVisibility();
         applyTheme(readStoredTheme());
+
+        if (createPostButton) {
+            createPostButton.addEventListener('click', () => {
+                updateAdminPanelVisibility();
+                updateReviewPostsVisibility();
+                updateCommunityModerationVisibility();
+            });
+        }
 
         window.addEventListener('storage', (event) => {
             if (event.key === SESSION_KEY) {
