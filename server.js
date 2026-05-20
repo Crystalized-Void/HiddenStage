@@ -819,9 +819,17 @@ app.get('/api/publicaciones-principales', async (req, res) => {
             `SELECT p.id_publicacion, p.id_autor, p.titulo, p.encabezado, p.contenido,
                     p.categoria, p.imagen_principal, p.galeria_json, p.enlaces_json,
                     p.estado, p.motivo_rechazo, p.created_at, p.updated_at,
-                    u.username, u.foto_perfil
+                    u.username, u.foto_perfil,
+                    COALESCE(h.hype_count, 0) AS hype_count
              FROM publicaciones_principales p
              INNER JOIN usuarios u ON p.id_autor = u.id_usuario
+             LEFT JOIN (
+                 SELECT id_contenido, COUNT(*) AS hype_count
+                 FROM reacciones
+                 WHERE tipo_contenido = 'publicacion_principal'
+                   AND tipo_reaccion = 'hype'
+                 GROUP BY id_contenido
+             ) h ON h.id_contenido = p.id_publicacion
              WHERE p.estado = 'aprobada'
              ORDER BY p.created_at DESC`
         );
