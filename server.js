@@ -1075,6 +1075,79 @@ app.patch('/api/moderacion/publicaciones-principales/:id/estado', async (req, re
     }
 });
 
+app.delete('/api/moderacion/publicaciones-principales/:id', async (req, res) => {
+    try {
+        const publicationId = Number(req.params.id);
+        const { id_moderador } = req.body || {};
+        const moderatorUserId = Number(id_moderador);
+
+        if (!publicationId) {
+            return res.status(400).json({ message: 'id de publicación inválido' });
+        }
+
+        if (!moderatorUserId) {
+            return res.status(400).json({ message: 'id_moderador es obligatorio' });
+        }
+
+        const moderatorUser = await getUserWithRoleById(moderatorUserId);
+
+        if (!moderatorUser) {
+            return res.status(404).json({ message: 'Usuario moderador no encontrado' });
+        }
+
+        if (!hasRole(moderatorUser, [4, 5])) {
+            return res.status(403).json({ message: 'No tienes permisos para eliminar publicaciones principales' });
+        }
+
+        const [publicationRows] = await pool.query(
+            `SELECT id_publicacion
+             FROM publicaciones_principales
+             WHERE id_publicacion = ?
+             LIMIT 1`,
+            [publicationId]
+        );
+
+        if (publicationRows.length === 0) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada' });
+        }
+
+        const [deleteResult] = await pool.query(
+            `DELETE FROM publicaciones_principales
+             WHERE id_publicacion = ?
+             LIMIT 1`,
+            [publicationId]
+        );
+
+        if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'Publicación principal no encontrada' });
+        }
+
+        try {
+            await pool.query(
+                `INSERT INTO moderacion_historial (
+                    id_moderador,
+                    tipo_accion,
+                    tipo_contenido,
+                    id_contenido,
+                    detalle
+                ) VALUES (?, ?, 'publicacion_principal', ?, ?)`,
+                [
+                    moderatorUserId,
+                    'eliminar_publicacion_principal',
+                    publicationId,
+                    'Publicación principal eliminada por moderación'
+                ]
+            );
+        } catch (historyError) {
+            // El historial no debe impedir el borrado.
+        }
+
+        return res.status(200).json({ message: 'Publicación principal eliminada correctamente' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al eliminar la publicación principal' });
+    }
+});
+
 app.get('/api/comentarios', async (req, res) => {
     try {
         const { tipo_contenido, id_contenido } = req.query || {};
