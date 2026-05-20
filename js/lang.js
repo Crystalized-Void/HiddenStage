@@ -29,7 +29,7 @@
             'modal.moderar_comunidad': 'Moderar comunidad',
             'modal.panel_admin': 'Panel administrador',
             'home.section.populares': 'Más relevantes',
-            'home.section.novedades': 'Novedades',
+            'home.section.novedades': 'Noticias',
             'home.section.guias': 'Guías',
             'home.section.trucos': 'Trucos',
             'home.section.carreras': 'Carreras',
