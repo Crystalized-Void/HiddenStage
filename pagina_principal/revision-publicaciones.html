@@ -79,6 +79,7 @@
 				<div class="actions-row">
 					<button type="button" class="action-btn approve-btn">Aprobar</button>
 					<button type="button" class="action-btn reject-btn">Rechazar</button>
+					<button type="button" class="action-btn delete-btn">Eliminar</button>
 				</div>
 
 				<p class="feedback" aria-live="polite"></p>
@@ -118,6 +119,37 @@
 		const canModerate = (user) => {
 			const roleId = Number(user?.id_rol);
 			return roleId === 4 || roleId === 5;
+		};
+
+		const deletePublication = async (idPublicacion) => {
+			const user = getSessionUser();
+
+			if (!user) {
+				window.location.href = '../inicio_de_sesion/index.html';
+				return { ok: false, message: 'Sesión inválida' };
+			}
+
+			if (!canModerate(user)) {
+				return { ok: false, message: 'No tienes permisos para eliminar publicaciones principales' };
+			}
+
+			const response = await fetch(`${API_BASE}/api/moderacion/publicaciones-principales/${idPublicacion}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					id_moderador: user.id_usuario
+				})
+			});
+
+			const data = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				throw new Error(data.message || 'No se pudo eliminar la publicación principal');
+			}
+
+			return data;
 		};
 
 		const escapeHtml = (value) => String(value || '')
@@ -197,6 +229,7 @@
 				const reasonInput = card.querySelector('.reject-reason');
 				const approveBtn = card.querySelector('.approve-btn');
 				const rejectBtn = card.querySelector('.reject-btn');
+				const deleteBtn = card.querySelector('.delete-btn');
 				const feedbackEl = card.querySelector('.feedback');
 
 				if (publication.imagen_principal) {
@@ -215,6 +248,7 @@
 				const setButtonsDisabled = (disabled) => {
 					approveBtn.disabled = disabled;
 					rejectBtn.disabled = disabled;
+					deleteBtn.disabled = disabled;
 				};
 
 				approveBtn.addEventListener('click', async () => {
@@ -253,6 +287,24 @@
 						await loadPendingPublications();
 					} catch (error) {
 						feedbackEl.textContent = error.message;
+						setButtonsDisabled(false);
+					}
+				});
+
+				deleteBtn.addEventListener('click', async () => {
+					if (!confirm('¿Seguro que deseas eliminar esta publicación principal? Esta acción no se puede deshacer.')) {
+						return;
+					}
+
+					setButtonsDisabled(true);
+					feedbackEl.textContent = 'Eliminando publicación principal...';
+
+					try {
+						const result = await deletePublication(publication.id_publicacion);
+						feedbackEl.textContent = result.message || 'Publicación principal eliminada correctamente';
+						await loadPendingPublications();
+					} catch (error) {
+						feedbackEl.textContent = error.message || 'No se pudo eliminar la publicación principal';
 						setButtonsDisabled(false);
 					}
 				});

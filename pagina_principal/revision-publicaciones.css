@@ -285,6 +285,11 @@ a {
 	color: #2a0712;
 }
 
+.delete-btn {
+	background: linear-gradient(135deg, #ff9a5a, #ff6f95);
+	color: #2b0f10;
+}
+
 .feedback {
 	margin: 2px 0 0;
 	min-height: 1.2em;
