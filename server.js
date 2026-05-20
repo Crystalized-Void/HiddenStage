@@ -615,7 +615,7 @@ app.get('/api/posts/:id_usuario', async (req, res) => {
         const [posts] = await pool.query(
             `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, created_at
              FROM publicaciones
-             WHERE id_usuario = ?
+             WHERE id_usuario = ? AND (estado = 'activo' OR estado IS NULL)
              ORDER BY created_at DESC`,
             [userId]
         );
