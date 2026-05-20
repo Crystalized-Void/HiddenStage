@@ -18,7 +18,8 @@
             </a>
 
             <div class="topbar-search">
-                <input type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <input id="postSearchInput" type="search" placeholder="Buscar..." aria-label="Buscar contenido">
+                <div id="postSearchResults" class="search-results" aria-live="polite"></div>
             </div>
 
             <button type="button" class="create-post-btn" aria-label="Crear publicación" title="Crear publicación" onclick="toggleCreateModal()">
@@ -473,6 +474,110 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 
+    let approvedPostsCache = [];
+
+    const normalizeSearchText = (value) => String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+
+    const setupPostSearch = () => {
+        const searchInput = document.getElementById('postSearchInput');
+        const searchResults = document.getElementById('postSearchResults');
+
+        if (!searchInput || !searchResults) {
+            return;
+        }
+
+        const renderResults = (results) => {
+            if (!results.length) {
+                searchResults.innerHTML = '<div class="search-empty">No se encontraron publicaciones</div>';
+                searchResults.classList.add('active');
+                return;
+            }
+
+            searchResults.innerHTML = results.slice(0, 6).map((post) => {
+                const title = escapeHtml(post.titulo || 'Sin título');
+                const heading = escapeHtml(post.encabezado || '');
+                const category = escapeHtml(post.categoria || '');
+                const author = escapeHtml(post.username || 'Autor');
+                const excerpt = escapeHtml(String(post.contenido || '').trim().slice(0, 120));
+                const image = post.imagen_principal
+                    ? `<img class="search-result-thumb" src="${escapeHtml(post.imagen_principal)}" alt="${title}">`
+                    : '<div class="search-result-thumb placeholder" aria-hidden="true"></div>';
+
+                return `
+                    <button type="button" class="search-result-item" data-post-id="${escapeHtml(post.id_publicacion)}">
+                        ${image}
+                        <div class="search-result-text">
+                            <div class="search-result-title">${title}</div>
+                            <div class="search-result-excerpt">${heading || excerpt || ' '}</div>
+                            <div class="search-result-meta">
+                                <span>${category}</span>
+                                <span>•</span>
+                                <span>${author}</span>
+                            </div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            searchResults.classList.add('active');
+
+            searchResults.querySelectorAll('.search-result-item').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const postId = item.getAttribute('data-post-id');
+                    if (postId) {
+                        window.location.href = `publicacion.html?id=${encodeURIComponent(postId)}`;
+                    }
+                });
+            });
+        };
+
+        const updateSearch = () => {
+            const query = normalizeSearchText(searchInput.value);
+
+            if (!query) {
+                searchResults.innerHTML = '';
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const matches = approvedPostsCache.filter((post) => {
+                const haystack = [
+                    post.titulo,
+                    post.encabezado,
+                    post.contenido,
+                    post.categoria,
+                    post.username
+                ].map(normalizeSearchText).join(' ');
+
+                return haystack.includes(query);
+            });
+
+            renderResults(matches);
+        };
+
+        window.runPostSearch = updateSearch;
+
+        searchInput.addEventListener('input', updateSearch);
+
+        document.addEventListener('click', (event) => {
+            if (!searchResults.contains(event.target) && event.target !== searchInput) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim() && searchResults.innerHTML) {
+                searchResults.classList.add('active');
+            }
+        });
+
+        window.setupPostSearch = setupPostSearch;
+    };
+
     // Cargar publicaciones aprobadas desde backend
     async function loadPublications() {
         const categories = ['guias', 'trucos', 'carreras', 'plataformas', 'romance', 'porturnos', 'accion', 'aventuras'];
@@ -498,6 +603,9 @@
             const response = await fetch(`${API_BASE}/api/publicaciones-principales`);
             const data = await response.json();
             const posts = Array.isArray(data.publicaciones) ? data.publicaciones : [];
+
+            approvedPostsCache = posts;
+            window.runPostSearch?.();
 
             if (!response.ok) {
                 setEmptyMessage(data.message || 'Aún no hay publicaciones aprobadas.');
@@ -712,6 +820,7 @@
         updateReviewPostsVisibility();
         updateCommunityModerationVisibility();
         applyTheme(readStoredTheme());
+        setupPostSearch();
 
         if (createPostButton) {
             createPostButton.addEventListener('click', () => {

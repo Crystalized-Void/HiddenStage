@@ -73,6 +73,8 @@ body {
 
 .topbar-search {
     flex: 0.9;
+    position: relative;
+    min-width: 0;
 }
 
 .topbar-search input {
@@ -87,6 +89,98 @@ body {
 
 .topbar-search input::placeholder {
     color: color-mix(in srgb, var(--muted) 80%, #ffffff 20%);
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    display: none;
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(124, 105, 168, 0.28);
+    background: var(--panel);
+    box-shadow: 0 20px 36px rgba(0, 0, 0, 0.18);
+}
+
+.search-results.active {
+    display: grid;
+    gap: 8px;
+}
+
+.search-result-item {
+    width: 100%;
+    border: 1px solid rgba(124, 105, 168, 0.16);
+    border-radius: 12px;
+    background: var(--panel-soft);
+    color: var(--text);
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.search-result-item:hover {
+    transform: translateY(-1px);
+    border-color: rgba(124, 105, 168, 0.32);
+    background: color-mix(in srgb, var(--panel-soft) 82%, #ffffff 18%);
+}
+
+.search-result-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: rgba(124, 105, 168, 0.14);
+    border: 1px solid rgba(124, 105, 168, 0.16);
+}
+
+.search-result-thumb.placeholder {
+    background: linear-gradient(135deg, rgba(124, 105, 168, 0.16), rgba(149, 130, 193, 0.26));
+}
+
+.search-result-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.search-result-title {
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.search-result-excerpt {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.search-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.search-empty {
+    padding: 14px 12px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
 }
 
 
