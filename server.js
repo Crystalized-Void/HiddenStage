@@ -689,56 +689,6 @@ app.post('/api/posts', async (req, res) => {
     }
 });
 
-app.delete('/api/posts/:id_post', async (req, res) => {
-    try {
-        const postId = Number(req.params.id_post);
-        const { id_usuario } = req.body || {};
-        const userId = Number(id_usuario);
-
-        if (!postId) {
-            return res.status(400).json({ message: 'id_post inválido' });
-        }
-
-        if (!userId) {
-            return res.status(400).json({ message: 'id_usuario es obligatorio' });
-        }
-
-        const [postRows] = await pool.query(
-            `SELECT id_post, id_usuario, titulo, contenido, portada_url, youtube_url, resumen_media_json, created_at
-             FROM publicaciones
-             WHERE id_post = ?
-             LIMIT 1`,
-            [postId]
-        );
-
-        if (postRows.length === 0) {
-            return res.status(404).json({ message: 'Publicación no encontrada' });
-        }
-
-        const post = postRows[0];
-
-        if (Number(post.id_usuario) !== userId) {
-            return res.status(403).json({ message: 'No tienes permisos para eliminar esta publicación' });
-        }
-
-        const [deleteResult] = await pool.query(
-            `DELETE FROM publicaciones
-             WHERE id_post = ? AND id_usuario = ?
-             LIMIT 1`,
-            [postId, userId]
-        );
-
-        if (deleteResult.affectedRows === 0) {
-            return res.status(404).json({ message: 'No se pudo eliminar la publicación' });
-        }
-
-        return res.json({
-            message: 'Publicación eliminada correctamente'
-        });
-    } catch (error) {
-        return res.status(500).json({ message: 'Error interno al eliminar publicación' });
-    }
-});
 app.post('/api/publicaciones-principales', async (req, res) => {
     try {
         const {
@@ -1888,24 +1838,28 @@ app.post('/api/support-ticket', async (req, res) => {
 app.delete('/api/posts/:id_post', async (req, res) => {
     try {
         const postId = Number(req.params.id_post);
-        const { id_usuario } = req.body;
+        const { id_usuario } = req.body || {};
+        const requesterUserId = Number(id_usuario);
 
-        if (!postId) {
-            return res.status(400).json({ message: 'id_post inválido' });
+        if (!postId || Number.isNaN(postId)) {
+            return res.status(400).json({ message: 'id_post es obligatorio' });
         }
 
-        if (!id_usuario) {
+        if (!requesterUserId || Number.isNaN(requesterUserId)) {
             return res.status(400).json({ message: 'id_usuario es obligatorio' });
         }
 
-        const requesterUser = await getUserWithRoleById(id_usuario);
+        const requesterUser = await getUserWithRoleById(requesterUserId);
 
         if (!requesterUser) {
             return res.status(404).json({ message: 'Usuario solicitante no encontrado' });
         }
 
         const [posts] = await pool.query(
-            `SELECT id_post, id_usuario FROM publicaciones WHERE id_post = ? LIMIT 1`,
+            `SELECT id_post, id_usuario
+             FROM publicaciones
+             WHERE id_post = ?
+             LIMIT 1`,
             [postId]
         );
 
@@ -1916,24 +1870,48 @@ app.delete('/api/posts/:id_post', async (req, res) => {
         const post = posts[0];
         const isOwner = Number(post.id_usuario) === Number(requesterUser.id_usuario);
         const isAdmin = hasRole(requesterUser, [5]);
-        const isModerator = hasRole(requesterUser, [4]);
+        const isCommunityModerator = hasRole(requesterUser, [3]);
 
-        if (!isOwner && !isAdmin && !isModerator) {
+        if (!isOwner && !isAdmin && !isCommunityModerator) {
             return res.status(403).json({ message: 'No tienes permisos para eliminar esta publicación' });
         }
 
         const [deleteResult] = await pool.query(
-            `DELETE FROM publicaciones WHERE id_post = ? LIMIT 1`,
+            `DELETE FROM publicaciones
+             WHERE id_post = ?
+             LIMIT 1`,
             [postId]
         );
 
         if (deleteResult.affectedRows === 0) {
-            return res.status(404).json({ message: 'No se pudo eliminar la publicación' });
+            return res.status(404).json({ message: 'Publicación no encontrada' });
         }
 
-        return res.json({ message: 'Publicación eliminada correctamente' });
+        if (!isOwner) {
+            try {
+                await pool.query(
+                    `INSERT INTO moderacion_historial (
+                        id_moderador,
+                        tipo_accion,
+                        tipo_contenido,
+                        id_contenido,
+                        detalle
+                    ) VALUES (?, ?, 'post_personal', ?, ?)`,
+                    [
+                        requesterUser.id_usuario,
+                        'eliminar_post_personal',
+                        postId,
+                        'Publicación personal eliminada'
+                    ]
+                );
+            } catch (historyError) {
+                // El historial no debe impedir el borrado.
+            }
+        }
+
+        return res.status(200).json({ message: 'Publicación eliminada correctamente' });
     } catch (error) {
-        return res.status(500).json({ message: 'Error interno al eliminar la publicación' });
+        return res.status(500).json({ message: 'Error interno al eliminar publicación' });
     }
 });
 
