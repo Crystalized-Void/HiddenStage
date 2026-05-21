@@ -86,7 +86,6 @@
         <section class="profile-tabs-strip">
             <nav class="tabs">
                 <button type="button" class="tab active" data-tab="posts" data-i18n="profile.tabs.posts">POST</button>
-                <button type="button" class="tab" data-tab="coleccion" data-i18n="profile.tabs.collection">COLECCION</button>
                 <button type="button" class="tab" data-tab="guardados" data-i18n="profile.tabs.saved">GUARDADOS</button>
             </nav>
         </section>
@@ -102,27 +101,6 @@
                 <p class="handle" data-profile-handle>@example</p>
                 <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
                 <p class="joined"><span data-i18n="profile.joined">Se unió el</span> 13 de febrero del 2026</p>
-
-                <h2 data-i18n="profile.socials">Socials</h2>
-                <div class="social-grid">
-                    <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
-                    <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
-                    <a href="#" aria-label="Red social" data-social-slot="3"><i class="fa-solid fa-link"></i></a>
-                    <a href="#" aria-label="Red social" data-social-slot="4"><i class="fa-solid fa-link"></i></a>
-                    <a href="#" aria-label="Red social" data-social-slot="5"><i class="fa-solid fa-link"></i></a>
-                </div>
-
-                <div class="following-box">
-                    <div class="following-head">
-                        <h3 data-i18n="profile.following">Seguidos:</h3>
-                        <a href="#" data-i18n="profile.following_more">ver más</a>
-                    </div>
-                    <div class="following-list">
-                        <div class="follow-item"><span></span>Usuario</div>
-                        <div class="follow-item"><span></span>Usuario</div>
-                        <div class="follow-item"><span></span>Usuario</div>
-                    </div>
-                </div>
             </aside>
 
             <section class="profile-content">
@@ -135,19 +113,6 @@
                     </div>
 
                     <div class="post-list" data-post-list></div>
-                </div>
-
-                <div class="tab-panel hidden" data-panel="coleccion">
-                    <section class="collection-panel">
-                        <h3 data-i18n="profile.collection.title">COLECCION DE VIDEOJUEGOS</h3>
-                        <div class="collection-grid">
-                            <article class="collection-card"></article>
-                            <article class="collection-card"></article>
-                            <article class="collection-card"></article>
-                            <article class="collection-card"></article>
-                            <article class="collection-card"></article>
-                        </div>
-                    </section>
                 </div>
 
                 <div class="tab-panel hidden" data-panel="guardados">
@@ -199,7 +164,6 @@
             const avatarBadge = document.querySelector('.avatar-badge');
             const profileCover = document.querySelector('.cover');
             const logoutLinks = document.querySelectorAll('[data-logout-link]');
-            const socialSlots = document.querySelectorAll('[data-social-slot]');
             const postsList = document.querySelector('[data-post-list]');
             const savedList = document.querySelector('[data-saved-list]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
@@ -226,89 +190,6 @@
                 const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
                 localStorage.setItem(THEME_KEY, nextTheme);
                 applyTheme();
-            };
-
-            const normalizeUrl = (value) => {
-                if (!value || typeof value !== 'string') {
-                    return '';
-                }
-
-                const trimmedValue = value.trim();
-                if (!trimmedValue) {
-                    return '';
-                }
-
-                if (/^https?:\/\//i.test(trimmedValue)) {
-                    return trimmedValue;
-                }
-
-                return `https://${trimmedValue}`;
-            };
-
-            const getSocialIcon = (url) => {
-                const normalized = String(url).toLowerCase();
-
-                if (normalized.includes('instagram.com')) return { icon: 'fa-brands fa-instagram', label: 'Instagram' };
-                if (normalized.includes('x.com') || normalized.includes('twitter.com')) return { icon: 'fa-brands fa-x-twitter', label: 'X' };
-                if (normalized.includes('facebook.com')) return { icon: 'fa-brands fa-facebook-f', label: 'Facebook' };
-                if (normalized.includes('tiktok.com')) return { icon: 'fa-brands fa-tiktok', label: 'TikTok' };
-                if (normalized.includes('youtube.com') || normalized.includes('youtu.be')) return { icon: 'fa-brands fa-youtube', label: 'YouTube' };
-                if (normalized.includes('twitch.tv')) return { icon: 'fa-brands fa-twitch', label: 'Twitch' };
-                if (normalized.includes('discord.gg') || normalized.includes('discord.com')) return { icon: 'fa-brands fa-discord', label: 'Discord' };
-                if (normalized.includes('linkedin.com')) return { icon: 'fa-brands fa-linkedin-in', label: 'LinkedIn' };
-                if (normalized.includes('github.com')) return { icon: 'fa-brands fa-github', label: 'GitHub' };
-
-                return { icon: 'fa-solid fa-link', label: 'Enlace' };
-            };
-
-            const renderSocialLinks = (storedUser) => {
-                if (!socialSlots.length) {
-                    return;
-                }
-
-                const socialLinks = [
-                    storedUser?.red_social_1,
-                    storedUser?.red_social_2,
-                    storedUser?.red_social_3,
-                    storedUser?.red_social_4,
-                    storedUser?.red_social_5
-                ];
-
-                const visibleLinks = socialLinks
-                    .map((link) => normalizeUrl(link))
-                    .filter((link) => Boolean(link));
-
-                socialSlots.forEach((slot, index) => {
-                    const iconNode = slot.querySelector('i');
-                    const normalizedUrl = visibleLinks[index] || '';
-
-                    if (!normalizedUrl) {
-                        slot.classList.add('social-empty');
-                        slot.classList.add('social-hidden');
-                        slot.setAttribute('href', '#');
-                        slot.removeAttribute('target');
-                        slot.removeAttribute('rel');
-                        slot.setAttribute('aria-label', 'Sin red social');
-
-                        if (iconNode) {
-                            iconNode.className = 'fa-solid fa-link';
-                        }
-
-                        return;
-                    }
-
-                    const iconData = getSocialIcon(normalizedUrl);
-                    slot.classList.remove('social-empty');
-                    slot.classList.remove('social-hidden');
-                    slot.setAttribute('href', normalizedUrl);
-                    slot.setAttribute('target', '_blank');
-                    slot.setAttribute('rel', 'noopener noreferrer');
-                    slot.setAttribute('aria-label', iconData.label);
-
-                    if (iconNode) {
-                        iconNode.className = iconData.icon;
-                    }
-                });
             };
 
             const readPresenceFromSettings = () => {
@@ -680,7 +561,6 @@
                         }
                     }
 
-                    renderSocialLinks(storedUser);
                     renderMergedPosts();
                     renderSavedPosts();
                 } catch (error) {
