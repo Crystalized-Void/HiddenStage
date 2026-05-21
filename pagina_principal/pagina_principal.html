@@ -326,6 +326,45 @@
 
     const getUserRoleId = (user) => Number(user?.id_rol);
 
+    const showNotification = (message, type = 'error') => {
+        const existing = document.getElementById('mainNotification');
+        if (existing) existing.remove();
+
+        const notification = document.createElement('div');
+        notification.id = 'mainNotification';
+        notification.style.position = 'fixed';
+        notification.style.top = '80px';
+        notification.style.left = '50%';
+        notification.style.transform = 'translateX(-50%)';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '320px';
+        notification.style.maxWidth = '500px';
+        notification.style.padding = '14px 18px';
+        notification.style.borderRadius = '10px';
+        notification.style.fontSize = '14px';
+        notification.style.fontWeight = '600';
+        notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        notification.style.animation = 'slideDown 0.3s ease';
+
+        if (type === 'error') {
+            notification.style.background = 'rgba(231, 76, 60, 0.95)';
+            notification.style.color = '#fff';
+            notification.style.border = '1px solid rgba(192, 57, 43, 0.4)';
+        } else {
+            notification.style.background = 'rgba(46, 204, 113, 0.95)';
+            notification.style.color = '#fff';
+            notification.style.border = '1px solid rgba(39, 174, 96, 0.4)';
+        }
+
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3500);
+    };
+
     function Menu() {
         document.getElementById('sideMenu').classList.toggle('active');
     }
@@ -353,13 +392,13 @@
         const storedUser = getStoredUser();
 
         if (!storedUser) {
-            alert('Debes iniciar sesión para crear una publicación');
+            showNotification('Debes iniciar sesión para crear una publicación', 'error');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
 
         if (![2, 5].includes(getUserRoleId(storedUser))) {
-            alert('Solo los autores verificados pueden crear publicaciones principales.');
+            showNotification('Solo los autores verificados pueden crear publicaciones principales.', 'error');
             return;
         }
 
@@ -370,13 +409,13 @@
         const storedUser = getStoredUser();
 
         if (!storedUser) {
-            alert('Debes iniciar sesión para acceder a revisión.');
+            showNotification('Debes iniciar sesión para acceder a revisión.', 'error');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
 
         if (![4, 5].includes(getUserRoleId(storedUser))) {
-            alert('No tienes permisos para revisar publicaciones.');
+            showNotification('No tienes permisos para revisar publicaciones.', 'error');
             return;
         }
 
@@ -387,13 +426,13 @@
         const storedUser = getStoredUser();
 
         if (!storedUser) {
-            alert('Debes iniciar sesión para acceder a moderación.');
+            showNotification('Debes iniciar sesión para acceder a moderación.', 'error');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
 
         if (![3, 5].includes(getUserRoleId(storedUser))) {
-            alert('No tienes permisos para moderar comunidad.');
+            showNotification('No tienes permisos para moderar comunidad.', 'error');
             return;
         }
 
@@ -404,13 +443,13 @@
         const storedUser = getStoredUser();
 
         if (!storedUser) {
-            alert('Debes iniciar sesión para acceder al panel administrador.');
+            showNotification('Debes iniciar sesión para acceder al panel administrador.', 'error');
             window.location.href = '../inicio_de_sesion/index.html';
             return;
         }
 
         if (getUserRoleId(storedUser) !== 5) {
-            alert('No tienes permisos para acceder al panel administrador.');
+            showNotification('No tienes permisos para acceder al panel administrador.', 'error');
             return;
         }
 
@@ -440,42 +479,85 @@
             return;
         }
 
+        let userResultsCache = [];
+        let userSearchToken = 0;
+
         const renderResults = (results) => {
-            if (!results.length) {
-                searchResults.innerHTML = '<div class="search-empty">No se encontraron publicaciones</div>';
+            const hasUsers = userResultsCache.length > 0;
+            const hasPosts = results.length > 0;
+
+            if (!hasUsers && !hasPosts) {
+                searchResults.innerHTML = '<div class="search-empty">No se encontraron resultados</div>';
                 searchResults.classList.add('active');
                 return;
             }
 
-            searchResults.innerHTML = results.slice(0, 6).map((post) => {
-                const title = escapeHtml(post.titulo || 'Sin título');
-                const heading = escapeHtml(post.encabezado || '');
-                const category = escapeHtml(post.categoria || '');
-                const author = escapeHtml(post.username || 'Autor');
-                const excerpt = escapeHtml(String(post.contenido || '').trim().slice(0, 120));
-                const image = post.imagen_principal
-                    ? `<img class="search-result-thumb" src="${escapeHtml(post.imagen_principal)}" alt="${title}">`
-                    : '<div class="search-result-thumb placeholder" aria-hidden="true"></div>';
-
-                return `
-                    <button type="button" class="search-result-item" data-post-id="${escapeHtml(post.id_publicacion)}">
-                        ${image}
-                        <div class="search-result-text">
-                            <div class="search-result-title">${title}</div>
-                            <div class="search-result-excerpt">${heading || excerpt || ' '}</div>
-                            <div class="search-result-meta">
-                                <span>${category}</span>
-                                <span>•</span>
-                                <span>${author}</span>
+            const usersHtml = hasUsers ? `
+                <div class="search-section-title">Usuarios</div>
+                ${userResultsCache.slice(0, 5).map((user) => {
+                    const username = escapeHtml(user.username || 'Usuario');
+                    const role = escapeHtml(user.nombre_rol || '');
+                    const bio = escapeHtml(String(user.biografia || '').trim().slice(0, 60));
+                    const photo = user.foto_perfil
+                        ? `<img class="search-result-thumb avatar-thumb" src="${escapeHtml(user.foto_perfil)}" alt="${username}">`
+                        : `<div class="search-result-thumb avatar-thumb placeholder" aria-hidden="true"><i class="fa-solid fa-user"></i></div>`;
+                    return `
+                        <button type="button" class="search-result-item" data-user-id="${escapeHtml(user.id_usuario)}">
+                            ${photo}
+                            <div class="search-result-text">
+                                <div class="search-result-title">@${username}</div>
+                                <div class="search-result-excerpt">${bio || ' '}</div>
+                                <div class="search-result-meta">
+                                    <span>${role || 'Usuario'}</span>
+                                </div>
                             </div>
-                        </div>
-                    </button>
-                `;
-            }).join('');
+                        </button>
+                    `;
+                }).join('')}
+            ` : '';
 
+            const postsHtml = hasPosts ? `
+                <div class="search-section-title">Publicaciones</div>
+                ${results.slice(0, 6).map((post) => {
+                    const title = escapeHtml(post.titulo || 'Sin título');
+                    const heading = escapeHtml(post.encabezado || '');
+                    const category = escapeHtml(post.categoria || '');
+                    const author = escapeHtml(post.username || 'Autor');
+                    const excerpt = escapeHtml(String(post.contenido || '').trim().slice(0, 120));
+                    const image = post.imagen_principal
+                        ? `<img class="search-result-thumb" src="${escapeHtml(post.imagen_principal)}" alt="${title}">`
+                        : '<div class="search-result-thumb placeholder" aria-hidden="true"></div>';
+
+                    return `
+                        <button type="button" class="search-result-item" data-post-id="${escapeHtml(post.id_publicacion)}">
+                            ${image}
+                            <div class="search-result-text">
+                                <div class="search-result-title">${title}</div>
+                                <div class="search-result-excerpt">${heading || excerpt || ' '}</div>
+                                <div class="search-result-meta">
+                                    <span>${category}</span>
+                                    <span>•</span>
+                                    <span>${author}</span>
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                }).join('')}
+            ` : '';
+
+            searchResults.innerHTML = usersHtml + postsHtml;
             searchResults.classList.add('active');
 
-            searchResults.querySelectorAll('.search-result-item').forEach((item) => {
+            searchResults.querySelectorAll('.search-result-item[data-user-id]').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const userId = item.getAttribute('data-user-id');
+                    if (userId) {
+                        window.location.href = `../perfil/perfil.html?user=${encodeURIComponent(userId)}`;
+                    }
+                });
+            });
+
+            searchResults.querySelectorAll('.search-result-item[data-post-id]').forEach((item) => {
                 item.addEventListener('click', () => {
                     const postId = item.getAttribute('data-post-id');
                     if (postId) {
@@ -485,10 +567,32 @@
             });
         };
 
-        const updateSearch = () => {
-            const query = normalizeSearchText(searchInput.value);
+        const fetchUsers = async (query) => {
+            if (query.length < 2) {
+                userResultsCache = [];
+                return;
+            }
+            const token = ++userSearchToken;
+            try {
+                const response = await fetch(`${API_BASE}/api/usuarios/buscar?q=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    if (token === userSearchToken) userResultsCache = [];
+                    return;
+                }
+                const data = await response.json();
+                if (token !== userSearchToken) return; // respuesta vieja
+                userResultsCache = Array.isArray(data?.users) ? data.users : [];
+            } catch {
+                if (token === userSearchToken) userResultsCache = [];
+            }
+        };
+
+        const updateSearch = async () => {
+            const rawValue = searchInput.value.trim();
+            const query = normalizeSearchText(rawValue);
 
             if (!query) {
+                userResultsCache = [];
                 searchResults.innerHTML = '';
                 searchResults.classList.remove('active');
                 return;
@@ -506,6 +610,9 @@
                 return haystack.includes(query);
             });
 
+            // Render inicial con posts (rápido) y luego refresca con usuarios
+            renderResults(matches);
+            await fetchUsers(rawValue);
             renderResults(matches);
         };
 
