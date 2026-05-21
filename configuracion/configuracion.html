@@ -1262,19 +1262,44 @@
                         status: 'pendiente'
                     };
 
-                    localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
+                    submitAuthorRequestBtn.disabled = true;
+                    const originalText = submitAuthorRequestBtn.textContent;
+                    submitAuthorRequestBtn.textContent = 'Enviando...';
 
-                    authorFullNameInput.value = '';
-                    authorContactInput.value = '';
-                    authorContentTypeInput.value = '';
-                    authorExperienceInput.value = '';
-                    authorMotivationInput.value = '';
-                    if (authorReferenceLinkInput) {
-                        authorReferenceLinkInput.value = '';
-                    }
-                    authorTermsInput.checked = false;
+                    fetch('/api/solicitud-autor', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(authorRequestPayload)
+                    })
+                        .then(async (response) => {
+                            const data = await response.json().catch(() => ({}));
+                            if (!response.ok) {
+                                throw new Error(data.message || 'No se pudo enviar la solicitud.');
+                            }
+                            return data;
+                        })
+                        .then(() => {
+                            localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
 
-                    updateAuthorRequestUI();
+                            authorFullNameInput.value = '';
+                            authorContactInput.value = '';
+                            authorContentTypeInput.value = '';
+                            authorExperienceInput.value = '';
+                            authorMotivationInput.value = '';
+                            if (authorReferenceLinkInput) {
+                                authorReferenceLinkInput.value = '';
+                            }
+                            authorTermsInput.checked = false;
+
+                            updateAuthorRequestUI();
+                        })
+                        .catch((err) => {
+                            alert(err.message || 'No se pudo enviar la solicitud. Intenta de nuevo.');
+                        })
+                        .finally(() => {
+                            submitAuthorRequestBtn.disabled = false;
+                            submitAuthorRequestBtn.textContent = originalText;
+                        });
                 });
             }
         })();
