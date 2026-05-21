@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="configuracion.css">
+    <script src="../js/toast.js" defer></script>
 </head>
 <body>
     <header class="topbar">
@@ -201,6 +202,42 @@
                                 Importante: después de enviar tu solicitud, espera hasta 2 días hábiles para validar tu acceso como Autor.
                             </p>
                         </div>
+
+                        <div class="author-status-card author-status-pending" id="author-status-pending" hidden>
+                            <div class="author-status-glow" aria-hidden="true"></div>
+                            <div class="author-status-icon" aria-hidden="true">
+                                <i class="fa-regular fa-paper-plane"></i>
+                            </div>
+                            <span class="author-status-badge" data-i18n="config.author.pending_badge">En revisión</span>
+                            <h2 data-i18n="config.author.pending_title">¡Solicitud enviada!</h2>
+                            <p data-i18n="config.author.pending_desc">
+                                Hemos recibido tu solicitud para ser Autor. Nuestro equipo la revisará y recibirás respuesta en un máximo de <strong>2 días hábiles</strong>.
+                            </p>
+                            <div class="author-status-progress" aria-hidden="true">
+                                <div class="author-status-progress-bar"></div>
+                            </div>
+                            <p class="author-status-meta" id="author-status-pending-meta"></p>
+                            <button type="button" class="author-status-cancel" id="cancel-author-request-btn">
+                                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                                <span data-i18n="config.author.cancel_request">Cancelar solicitud</span>
+                            </button>
+                        </div>
+
+                        <div class="author-status-card author-status-approved" id="author-status-approved" hidden>
+                            <div class="author-status-glow" aria-hidden="true"></div>
+                            <div class="author-status-icon" aria-hidden="true">
+                                <i class="fa-solid fa-feather-pointed"></i>
+                            </div>
+                            <span class="author-status-badge author-status-badge-success" data-i18n="config.author.approved_badge">Rol activo</span>
+                            <h2 data-i18n="config.author.approved_title">¡Felicidades, ya eres Autor!</h2>
+                            <p data-i18n="config.author.approved_desc">
+                                Ahora formas parte oficial de esta comunidad. Puedes crear <strong>guías, trucos, noticias y reseñas</strong> desde la página principal y compartir tu pasión con el resto de jugadores.
+                            </p>
+                            <a class="author-status-cta" href="../pagina_principal/crearPublicacion.html">
+                                <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+                                <span data-i18n="config.author.go_create">Crear publicación</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -242,12 +279,16 @@
                             <div class="privacy-security-divider"></div>
 
                             <div class="security-item-list">
-                                <div class="security-item">
+                                <div class="security-item security-item-verification">
                                     <i class="fa-solid fa-shield-halved"></i>
-                                    <div>
-                                        <h3 data-i18n="config.security.2fa_title">Verificación de dos pasos (2FA)</h3>
-                                        <p data-i18n="config.security.2fa_desc">La verificación de dos pasos está desactivada.</p>
+                                    <div class="security-item-copy">
+                                        <h3>Verificación de correo</h3>
+                                        <p data-verification-status-text>Tu correo aún no está verificado.</p>
                                     </div>
+                                    <button type="button" class="verification-btn" data-verification-trigger>
+                                        <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                                        <span>Verificar</span>
+                                    </button>
                                 </div>
                                 <div class="security-item">
                                     <i class="fa-solid fa-key"></i>
@@ -1094,7 +1135,95 @@
                 authorMotivationInput &&
                 authorTermsInput
             ) {
+                const authorFormEl = document.getElementById('author-request-form');
+                const authorPendingEl = document.getElementById('author-status-pending');
+                const authorApprovedEl = document.getElementById('author-status-approved');
+                const authorPendingMetaEl = document.getElementById('author-status-pending-meta');
+                const cancelAuthorRequestBtn = document.getElementById('cancel-author-request-btn');
+
+                const AUTHOR_ROLE_IDS = [2, 3, 4, 5];
+
+                const getStoredAuthorRequest = () => {
+                    try {
+                        const raw = localStorage.getItem('hiddenstageAuthorRequest');
+                        if (!raw) return null;
+                        const parsed = JSON.parse(raw);
+                        const userId = currentUser?.id_usuario;
+                        if (userId && parsed?.id_usuario && parsed.id_usuario !== userId) {
+                            return null;
+                        }
+                        return parsed;
+                    } catch (_) {
+                        return null;
+                    }
+                };
+
+                const formatRequestedAt = (iso) => {
+                    if (!iso) return '';
+                    const d = new Date(iso);
+                    if (Number.isNaN(d.getTime())) return '';
+                    return d.toLocaleString();
+                };
+
+                const updateAuthorRequestUI = () => {
+                    const roleId = Number(currentUser?.id_rol);
+                    const isAlreadyAuthor = AUTHOR_ROLE_IDS.includes(roleId);
+                    const pendingRequest = getStoredAuthorRequest();
+
+                    const showForm = () => {
+                        if (authorFormEl) { authorFormEl.removeAttribute('hidden'); authorFormEl.style.display = ''; }
+                        if (authorPendingEl) { authorPendingEl.setAttribute('hidden', ''); authorPendingEl.style.display = 'none'; }
+                        if (authorApprovedEl) { authorApprovedEl.setAttribute('hidden', ''); authorApprovedEl.style.display = 'none'; }
+                    };
+                    const showPending = () => {
+                        if (authorFormEl) { authorFormEl.setAttribute('hidden', ''); authorFormEl.style.display = 'none'; }
+                        if (authorApprovedEl) { authorApprovedEl.setAttribute('hidden', ''); authorApprovedEl.style.display = 'none'; }
+                        if (authorPendingEl) { authorPendingEl.removeAttribute('hidden'); authorPendingEl.style.display = ''; }
+                    };
+                    const showApproved = () => {
+                        if (authorFormEl) { authorFormEl.setAttribute('hidden', ''); authorFormEl.style.display = 'none'; }
+                        if (authorPendingEl) { authorPendingEl.setAttribute('hidden', ''); authorPendingEl.style.display = 'none'; }
+                        if (authorApprovedEl) { authorApprovedEl.removeAttribute('hidden'); authorApprovedEl.style.display = ''; }
+                    };
+
+                    if (isAlreadyAuthor) {
+                        showApproved();
+                        return;
+                    }
+
+                    if (pendingRequest && pendingRequest.status === 'pendiente') {
+                        showPending();
+                        if (authorPendingMetaEl) {
+                            const when = formatRequestedAt(pendingRequest.requestedAt);
+                            authorPendingMetaEl.textContent = when
+                                ? `Enviada el ${when}`
+                                : '';
+                        }
+                        return;
+                    }
+
+                    showForm();
+                };
+
+                updateAuthorRequestUI();
+
+                if (cancelAuthorRequestBtn) {
+                    cancelAuthorRequestBtn.addEventListener('click', () => {
+                        if (!confirm('¿Quieres cancelar tu solicitud para ser Autor?')) {
+                            return;
+                        }
+                        localStorage.removeItem('hiddenstageAuthorRequest');
+                        updateAuthorRequestUI();
+                    });
+                }
+
                 submitAuthorRequestBtn.addEventListener('click', () => {
+                    const roleId = Number(currentUser?.id_rol);
+                    if (AUTHOR_ROLE_IDS.includes(roleId)) {
+                        updateAuthorRequestUI();
+                        return;
+                    }
+
                     const fullName = authorFullNameInput.value.trim();
                     const contactEmail = authorContactInput.value.trim();
                     const contentType = authorContentTypeInput.value;
@@ -1135,8 +1264,6 @@
 
                     localStorage.setItem('hiddenstageAuthorRequest', JSON.stringify(authorRequestPayload));
 
-                    alert('Solicitud enviada. Nuestro equipo la revisará y recibirás respuesta en un máximo de 2 días hábiles.');
-
                     authorFullNameInput.value = '';
                     authorContactInput.value = '';
                     authorContentTypeInput.value = '';
@@ -1146,9 +1273,50 @@
                         authorReferenceLinkInput.value = '';
                     }
                     authorTermsInput.checked = false;
+
+                    updateAuthorRequestUI();
                 });
             }
         })();
     </script>
+
+    <div class="verification-modal" id="email-verification-modal" hidden aria-hidden="true">
+        <div class="verification-modal-backdrop" data-verification-close></div>
+        <section class="verification-modal-card" role="dialog" aria-modal="true" aria-labelledby="verification-modal-title">
+            <button type="button" class="verification-modal-close" data-verification-close aria-label="Cerrar ventana de verificación">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <p class="verification-modal-eyebrow">Soporte · soporte@hiddenstage.io</p>
+            <h2 id="verification-modal-title">Verificación de correo</h2>
+            <p class="verification-modal-copy">
+                Introduce tu correo para solicitar el código. Después podrás escribir el código que recibas por correo.
+            </p>
+
+            <div class="verification-step is-active" data-verification-step="email">
+                <label for="verification-email-input">Correo electrónico</label>
+                <input id="verification-email-input" type="email" placeholder="tu@correo.com" autocomplete="email">
+                <button type="button" class="verification-modal-action" data-send-verification-email>
+                    <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+                    <span>Enviar</span>
+                </button>
+            </div>
+
+            <div class="verification-step" data-verification-step="code" hidden>
+                <label for="verification-code-input">Código de verificación</label>
+                <input id="verification-code-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+                <button type="button" class="verification-modal-action" data-submit-verification-code>
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span>Confirmar código</span>
+                </button>
+                <button type="button" class="verification-modal-link" data-back-to-email-step>
+                    Cambiar correo
+                </button>
+            </div>
+
+            <p class="verification-modal-feedback" data-verification-feedback></p>
+        </section>
+    </div>
+
+    <script src="verificacion-correo.js"></script>
 </body>
 </html>
