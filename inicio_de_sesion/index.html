@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -74,7 +75,20 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="primary-button">Crear cuenta</button>
+                        <button type="submit" class="primary-button" id="register-submit-btn">Crear cuenta</button>
+                    </div>
+
+                    <div class="verification-step" id="register-verification-step" hidden>
+                        <div class="verification-step-head">
+                            <span class="verification-step-kicker">Verificación de correo</span>
+                            <strong>Te enviamos un código a tu email</strong>
+                            <p>Ingresa el código que recibiste para terminar tu registro.</p>
+                        </div>
+
+                        <div class="input">
+                            <label for="register-code">Código de verificación</label>
+                            <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" id="register-code" placeholder="000000">
+                        </div>
                     </div>
 
                     <p class="account">¿Ya tienes cuenta? <a href="#" id="sign-in">Inicia sesión</a></p>
