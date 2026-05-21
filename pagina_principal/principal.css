@@ -187,6 +187,28 @@ body {
     text-align: center;
 }
 
+.search-section-title {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid rgba(124, 105, 168, 0.18);
+}
+
+.search-section-title:first-child {
+    border-top: none;
+}
+
+.search-result-thumb.avatar-thumb {
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 22px;
+}
+
 
 .create-post-btn {
     background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
@@ -1282,3 +1304,27 @@ body[data-theme="dark"] .topbar-search input::placeholder {
 }
 
 
+
+
+/* === Notification banner animations (re-injected) === */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
