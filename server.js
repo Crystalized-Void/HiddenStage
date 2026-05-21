@@ -63,6 +63,42 @@ const createSupportTicketId = () => {
     return `HS-${datePart}-${randomPart}`;
 };
 
+// === VERIFICACION DE CORREO (registro) ===
+const VERIFICATION_CODE_TTL_MS = 10 * 60 * 1000;
+const emailVerificationCodes = new Map();
+
+const createVerificationCode = () => {
+    return String(Math.floor(100000 + Math.random() * 900000));
+};
+
+const getMailConfiguration = () => {
+    const mailHost = process.env.MAIL_HOST;
+    const mailPort = Number(process.env.MAIL_PORT || 587);
+    const mailSecure = String(process.env.MAIL_SECURE || 'false').toLowerCase() === 'true';
+    const mailUser = process.env.MAIL_USER;
+    const mailPass = process.env.MAIL_PASS;
+    const mailFrom = process.env.MAIL_FROM || mailUser;
+
+    if (!mailHost || !mailUser || !mailPass || !mailFrom) {
+        return null;
+    }
+
+    return { mailHost, mailPort, mailSecure, mailUser, mailPass, mailFrom };
+};
+
+const createMailTransporter = (mailConfig) => {
+    return nodemailer.createTransport({
+        host: mailConfig.mailHost,
+        port: mailConfig.mailPort,
+        secure: mailConfig.mailSecure,
+        auth: {
+            user: mailConfig.mailUser,
+            pass: mailConfig.mailPass
+        }
+    });
+};
+// === FIN VERIFICACION DE CORREO ===
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT || 3306),
@@ -78,7 +114,7 @@ const getUserWithRoleById = async (id_usuario) => {
     const [rows] = await pool.query(
         `SELECT u.id_usuario, u.username, u.email, u.biografia, u.pronombres,
                 u.red_social_1, u.red_social_2, u.red_social_3, u.red_social_4, u.red_social_5,
-                u.foto_perfil, u.banner_perfil, u.id_rol, r.nombre_rol
+                u.foto_perfil, u.banner_perfil, u.id_rol, r.nombre_rol, u.created_at
          FROM usuarios u
          INNER JOIN roles r ON u.id_rol = r.id_rol
          WHERE u.id_usuario = ?
@@ -165,6 +201,104 @@ app.get('/api/health', async (req, res) => {
         return res.status(500).json({ ok: false, message: 'No se pudo conectar con la base de datos' });
     }
 });
+
+// === ENDPOINTS VERIFICACION DE CORREO (registro) ===
+app.post('/api/email-verification/request', async (req, res) => {
+    try {
+        const { email } = req.body || {};
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+        if (!normalizedEmail) {
+            return res.status(400).json({ message: 'El correo es obligatorio.' });
+        }
+
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+        if (!validEmail) {
+            return res.status(400).json({ message: 'El correo no es válido.' });
+        }
+
+        const mailConfig = getMailConfiguration();
+        if (!mailConfig) {
+            return res.status(500).json({ message: 'El servicio de correo no está configurado en el servidor.' });
+        }
+
+        const code = createVerificationCode();
+        const expiresAt = Date.now() + VERIFICATION_CODE_TTL_MS;
+        emailVerificationCodes.set(normalizedEmail, { code, expiresAt });
+
+        const transporter = createMailTransporter(mailConfig);
+        const expiresMinutes = Math.round(VERIFICATION_CODE_TTL_MS / 60000);
+
+        await transporter.sendMail({
+            from: `HiddenStage <${mailConfig.mailFrom}>`,
+            to: normalizedEmail,
+            subject: 'Tu código de verificación de HiddenStage',
+            text: [
+                'Hola,',
+                '',
+                'Este es tu código para verificar tu correo en HiddenStage:',
+                '',
+                code,
+                '',
+                `El código expira en ${expiresMinutes} minutos.`,
+                '',
+                'Si no solicitaste esta verificación, puedes ignorar este mensaje.'
+            ].join('\n'),
+            html: `
+                <h2>Verificación de correo</h2>
+                <p>Este es tu código para verificar tu correo en HiddenStage:</p>
+                <p style="font-size: 28px; font-weight: 700; letter-spacing: 4px;">${escapeHtml(code)}</p>
+                <p>El código expira en ${expiresMinutes} minutos.</p>
+                <p>Si no solicitaste esta verificación, puedes ignorar este mensaje.</p>
+            `
+        });
+
+        return res.status(201).json({
+            message: 'Código enviado correctamente.',
+            email: normalizedEmail,
+            expiresInMinutes: expiresMinutes
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'No se pudo enviar el código de verificación.' });
+    }
+});
+
+app.post('/api/email-verification/confirm', async (req, res) => {
+    try {
+        const { email, code } = req.body || {};
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+        const normalizedCode = typeof code === 'string' ? code.replace(/\D/g, '').trim() : '';
+
+        if (!normalizedEmail || !normalizedCode) {
+            return res.status(400).json({ message: 'Correo y código son obligatorios.' });
+        }
+
+        const stored = emailVerificationCodes.get(normalizedEmail);
+        if (!stored) {
+            return res.status(404).json({ message: 'No existe un código pendiente para ese correo.' });
+        }
+
+        if (stored.expiresAt <= Date.now()) {
+            emailVerificationCodes.delete(normalizedEmail);
+            return res.status(410).json({ message: 'El código expiró. Solicita uno nuevo.' });
+        }
+
+        if (stored.code !== normalizedCode) {
+            return res.status(401).json({ message: 'El código no coincide.' });
+        }
+
+        emailVerificationCodes.delete(normalizedEmail);
+
+        return res.json({
+            message: 'Correo verificado correctamente.',
+            email: normalizedEmail,
+            verified: true
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'No se pudo confirmar el código de verificación.' });
+    }
+});
+// === FIN ENDPOINTS VERIFICACION ===
 
 app.post('/api/register', async (req, res) => {
     try {
@@ -274,7 +408,8 @@ app.post('/api/login', async (req, res) => {
                 foto_perfil: userWithRole.foto_perfil || '',
                 banner_perfil: userWithRole.banner_perfil || '',
                 id_rol: userWithRole.id_rol,
-                nombre_rol: userWithRole.nombre_rol
+                nombre_rol: userWithRole.nombre_rol,
+                created_at: userWithRole.created_at
             }
         });
     } catch (error) {
@@ -415,6 +550,182 @@ app.put('/api/profile', async (req, res) => {
     }
 });
 
+app.get('/api/usuarios/buscar', async (req, res) => {
+    try {
+        const q = String(req.query?.q || '').trim();
+        if (q.length < 2) {
+            return res.json({ users: [] });
+        }
+        const like = `%${q}%`;
+        const [rows] = await pool.query(
+            `SELECT u.id_usuario, u.username, u.foto_perfil, u.biografia, u.id_rol, r.nombre_rol
+             FROM usuarios u
+             LEFT JOIN roles r ON r.id_rol = u.id_rol
+             WHERE u.username LIKE ?
+             ORDER BY (u.username = ?) DESC, LENGTH(u.username) ASC, u.username ASC
+             LIMIT 10`,
+            [like, q]
+        );
+        return res.json({
+            users: rows.map((u) => ({
+                id_usuario: u.id_usuario,
+                username: u.username,
+                foto_perfil: u.foto_perfil || '',
+                biografia: u.biografia || '',
+                id_rol: u.id_rol,
+                nombre_rol: u.nombre_rol || ''
+            }))
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al buscar usuarios' });
+    }
+});
+
+app.get('/api/profile/:id_usuario', async (req, res) => {
+    try {
+        const userId = Number(req.params.id_usuario);
+        if (!userId) {
+            return res.status(400).json({ message: 'id_usuario inválido' });
+        }
+        const user = await getUserWithRoleById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        return res.json({
+            user: {
+                id_usuario: user.id_usuario,
+                username: user.username,
+                email: user.email,
+                biografia: user.biografia || '',
+                pronombres: user.pronombres || '',
+                red_social_1: user.red_social_1 || '',
+                red_social_2: user.red_social_2 || '',
+                red_social_3: user.red_social_3 || '',
+                red_social_4: user.red_social_4 || '',
+                red_social_5: user.red_social_5 || '',
+                foto_perfil: user.foto_perfil || '',
+                banner_perfil: user.banner_perfil || '',
+                id_rol: user.id_rol,
+                nombre_rol: user.nombre_rol,
+                created_at: user.created_at
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno al obtener perfil' });
+    }
+});
+
+// =============================================================
+// SISTEMA DE SEGUIDORES
+// =============================================================
+
+// Devuelve los contadores y, si se pasa ?viewer=<id>, si ese
+// usuario sigue al perfil consultado.
+app.get('/api/follow/:id_usuario', async (req, res) => {
+    try {
+        const userId = Number(req.params.id_usuario);
+        const viewerId = Number(req.query.viewer) || null;
+        if (!userId) return res.status(400).json({ message: 'id_usuario inválido' });
+
+        const [[followers]] = await pool.query(
+            'SELECT COUNT(*) AS total FROM seguidores WHERE id_seguido = ?',
+            [userId]
+        );
+        const [[following]] = await pool.query(
+            'SELECT COUNT(*) AS total FROM seguidores WHERE id_seguidor = ?',
+            [userId]
+        );
+        let isFollowing = false;
+        if (viewerId && viewerId !== userId) {
+            const [rows] = await pool.query(
+                'SELECT 1 FROM seguidores WHERE id_seguidor = ? AND id_seguido = ? LIMIT 1',
+                [viewerId, userId]
+            );
+            isFollowing = rows.length > 0;
+        }
+        return res.json({
+            id_usuario: userId,
+            seguidores: followers.total,
+            seguidos: following.total,
+            isFollowing
+        });
+    } catch (error) {
+        console.error('GET /api/follow error:', error);
+        return res.status(500).json({ message: 'Error al obtener seguidores' });
+    }
+});
+
+// Lista los usuarios que sigue id_usuario (para "Seguidos:" sidebar).
+app.get('/api/follow/:id_usuario/seguidos', async (req, res) => {
+    try {
+        const userId = Number(req.params.id_usuario);
+        const limit = Math.min(Number(req.query.limit) || 20, 100);
+        if (!userId) return res.status(400).json({ message: 'id_usuario inválido' });
+        const [rows] = await pool.query(
+            `SELECT u.id_usuario, u.username, u.foto_perfil, u.id_rol, r.nombre_rol
+             FROM seguidores s
+             INNER JOIN usuarios u ON u.id_usuario = s.id_seguido
+             LEFT JOIN roles r ON r.id_rol = u.id_rol
+             WHERE s.id_seguidor = ?
+             ORDER BY s.created_at DESC
+             LIMIT ?`,
+            [userId, limit]
+        );
+        return res.json({ seguidos: rows });
+    } catch (error) {
+        console.error('GET /api/follow/seguidos error:', error);
+        return res.status(500).json({ message: 'Error al listar seguidos' });
+    }
+});
+
+// Seguir a un usuario. Body: { id_seguidor, id_seguido }.
+app.post('/api/follow', async (req, res) => {
+    try {
+        const idSeguidor = Number(req.body?.id_seguidor);
+        const idSeguido = Number(req.body?.id_seguido);
+        if (!idSeguidor || !idSeguido) {
+            return res.status(400).json({ message: 'Faltan id_seguidor o id_seguido' });
+        }
+        if (idSeguidor === idSeguido) {
+            return res.status(400).json({ message: 'No puedes seguirte a ti mismo' });
+        }
+        await pool.query(
+            'INSERT IGNORE INTO seguidores (id_seguidor, id_seguido) VALUES (?, ?)',
+            [idSeguidor, idSeguido]
+        );
+        const [[followers]] = await pool.query(
+            'SELECT COUNT(*) AS total FROM seguidores WHERE id_seguido = ?',
+            [idSeguido]
+        );
+        return res.json({ ok: true, isFollowing: true, seguidores: followers.total });
+    } catch (error) {
+        console.error('POST /api/follow error:', error);
+        return res.status(500).json({ message: 'Error al seguir usuario' });
+    }
+});
+
+// Dejar de seguir. Body: { id_seguidor, id_seguido }.
+app.delete('/api/follow', async (req, res) => {
+    try {
+        const idSeguidor = Number(req.body?.id_seguidor);
+        const idSeguido = Number(req.body?.id_seguido);
+        if (!idSeguidor || !idSeguido) {
+            return res.status(400).json({ message: 'Faltan id_seguidor o id_seguido' });
+        }
+        await pool.query(
+            'DELETE FROM seguidores WHERE id_seguidor = ? AND id_seguido = ?',
+            [idSeguidor, idSeguido]
+        );
+        const [[followers]] = await pool.query(
+            'SELECT COUNT(*) AS total FROM seguidores WHERE id_seguido = ?',
+            [idSeguido]
+        );
+        return res.json({ ok: true, isFollowing: false, seguidores: followers.total });
+    } catch (error) {
+        console.error('DELETE /api/follow error:', error);
+        return res.status(500).json({ message: 'Error al dejar de seguir' });
+    }
+});
 app.get('/api/admin/usuarios', async (req, res) => {
     try {
         const { id_admin, search, rol } = req.query || {};
