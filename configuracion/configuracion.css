@@ -142,10 +142,10 @@ body[data-theme="dark"] .brand-logo {
 }
 .language-control {
     margin-top: 14px;
-    padding: 12px;
-    border: 1px solid #d9d9d9;
-    border-radius: 14px;
-    background: #ffffff;
+    padding: 10px 12px 12px;
+    border: 1px solid rgba(124, 105, 168, 0.22);
+    border-radius: 12px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--cfg-panel-soft) 94%, #ffffff 6%), var(--cfg-panel-soft));
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -155,22 +155,51 @@ body[data-theme="dark"] .brand-logo {
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: #5e5e5e;
+    color: #7c69a8;
 }
-.language-control select {
+.language-control select,
+#langSelector {
     width: 100%;
-    border: 1px solid #d9d9d9;
+    min-height: 42px;
+    border: 1px solid rgba(124, 105, 168, 0.32);
     border-radius: 10px;
-    background: #f7f7f7;
-    color: #1f1f1f;
+    background: color-mix(in srgb, var(--cfg-panel) 84%, #ece5f7 16%);
+    color: var(--cfg-text);
     font: inherit;
     font-weight: 600;
-    padding: 9px 10px;
+    padding: 10px 12px;
     outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
 }
-.language-control select:focus {
-    border-color: #9a84c7;
-    box-shadow: 0 0 0 3px rgba(149, 130, 193, 0.16);
+.language-control select:focus,
+#langSelector:focus {
+    border-color: rgba(124, 105, 168, 0.52);
+    box-shadow: 0 0 0 2px rgba(124, 105, 168, 0.2);
+}
+
+body[data-theme="dark"] .language-control {
+    border-color: rgba(176, 154, 223, 0.22);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--cfg-panel-soft) 86%, #1b1429 14%), var(--cfg-panel-soft));
+}
+
+body[data-theme="dark"] .language-control label {
+    color: var(--cfg-text);
+}
+
+body[data-theme="dark"] .language-control select,
+body[data-theme="dark"] #langSelector {
+    border-color: rgba(176, 154, 223, 0.3);
+    background: color-mix(in srgb, var(--cfg-panel) 76%, #241a37 24%);
+    color: var(--cfg-text);
+}
+
+body[data-theme="dark"] .language-control select:focus,
+body[data-theme="dark"] #langSelector:focus {
+    border-color: rgba(176, 154, 223, 0.55);
+    box-shadow: 0 0 0 2px rgba(176, 154, 223, 0.22);
 }
 
 /* === Panel de edición de perfil === */
