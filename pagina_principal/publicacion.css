@@ -382,16 +382,28 @@ body {
     cursor: not-allowed;
 }
 
+.reaction-btn.active {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(124, 105, 168, 0.18);
+}
+
+.hype-btn.active,
 .hype-btn.already-hype {
-    background: rgba(255, 107, 107, 0.2);
-    border-color: rgba(255, 107, 107, 0.5);
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.24), rgba(124, 105, 168, 0.18));
+    border-color: rgba(255, 107, 107, 0.55);
     color: #ff6b6b;
 }
 
+.like-btn.active,
 .like-btn.liked {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: rgba(219, 39, 119, 0.5);
+    background: linear-gradient(180deg, rgba(219, 39, 119, 0.22), rgba(142, 116, 196, 0.16));
+    border-color: rgba(219, 39, 119, 0.52);
     color: #db2777;
+}
+
+.reaction-btn.active i,
+.reaction-btn.active span {
+    color: inherit;
 }
 
 .save-btn.saved {
