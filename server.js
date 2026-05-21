@@ -97,6 +97,21 @@ const createMailTransporter = (mailConfig) => {
         }
     });
 };
+
+// Configuración de la cuenta de Autores (para recibir solicitudes)
+const getAuthorMailConfiguration = () => {
+    const mailHost = process.env.MAIL_HOST;
+    const mailPort = Number(process.env.MAIL_PORT || 587);
+    const mailSecure = String(process.env.MAIL_SECURE || 'false').toLowerCase() === 'true';
+    const mailUser = process.env.AUTHOR_MAIL_USER;
+    const mailPass = process.env.AUTHOR_MAIL_PASS;
+    const mailFrom = process.env.AUTHOR_MAIL_USER;
+
+    if (!mailHost || !mailUser || !mailPass) {
+        return null;
+    }
+    return { mailHost, mailPort, mailSecure, mailUser, mailPass, mailFrom };
+};
 // === FIN VERIFICACION DE CORREO ===
 
 const pool = mysql.createPool({
@@ -299,6 +314,99 @@ app.post('/api/email-verification/confirm', async (req, res) => {
     }
 });
 // === FIN ENDPOINTS VERIFICACION ===
+
+// === SOLICITUD PARA SER AUTOR ===
+// Envía un correo a la cuenta de autores con los datos del solicitante.
+app.post('/api/solicitud-autor', async (req, res) => {
+    try {
+        const {
+            id_usuario,
+            username,
+            fullName,
+            contactEmail,
+            contentType,
+            experience,
+            motivation,
+            referenceLink
+        } = req.body || {};
+
+        if (!fullName || !contactEmail || !contentType || !experience || !motivation) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios.' });
+        }
+
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(contactEmail).trim());
+        if (!validEmail) {
+            return res.status(400).json({ message: 'Correo de contacto inválido.' });
+        }
+
+        const mailConfig = getAuthorMailConfiguration() || getMailConfiguration();
+        if (!mailConfig) {
+            return res.status(500).json({
+                message: 'El servicio de correo no está configurado en el servidor.'
+            });
+        }
+
+        const ticketId = createSupportTicketId().replace('HS-', 'HA-');
+        const subject = `${ticketId} Solicitud para Autor - ${escapeHtml(fullName)}`;
+        const transporter = createMailTransporter(mailConfig);
+
+        const safeRow = (label, value) => `
+            <tr>
+                <td style="padding:6px 12px;font-weight:700;background:#f4ecff;">${escapeHtml(label)}</td>
+                <td style="padding:6px 12px;">${escapeHtml(value || '—')}</td>
+            </tr>`;
+
+        const html = `
+            <h2 style="font-family:sans-serif;color:#5b3aa8;">Nueva solicitud para ser Autor</h2>
+            <p style="font-family:sans-serif;">Ticket: <strong>${ticketId}</strong></p>
+            <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+                ${safeRow('Nombre completo', fullName)}
+                ${safeRow('Username en HiddenStage', username)}
+                ${safeRow('ID de usuario', id_usuario)}
+                ${safeRow('Correo de contacto', contactEmail)}
+                ${safeRow('Tipo de contenido', contentType)}
+                ${safeRow('Experiencia', experience)}
+                ${safeRow('Motivación', motivation)}
+                ${safeRow('Enlace de referencia', referenceLink)}
+                ${safeRow('Enviado el', new Date().toLocaleString('es-MX'))}
+            </table>
+        `;
+
+        const text = [
+            `Nueva solicitud para ser Autor (${ticketId})`,
+            '',
+            `Nombre completo: ${fullName}`,
+            `Username: ${username || '—'}`,
+            `ID de usuario: ${id_usuario || '—'}`,
+            `Correo de contacto: ${contactEmail}`,
+            `Tipo de contenido: ${contentType}`,
+            `Experiencia: ${experience}`,
+            `Motivación: ${motivation}`,
+            `Enlace de referencia: ${referenceLink || '—'}`,
+            `Enviado el: ${new Date().toLocaleString('es-MX')}`
+        ].join('\n');
+
+        const recipient = process.env.AUTHOR_MAIL_USER || 'autores@hiddenstage.io';
+
+        await transporter.sendMail({
+            from: `HiddenStage Autores <${mailConfig.mailFrom}>`,
+            to: recipient,
+            replyTo: contactEmail,
+            subject,
+            text,
+            html
+        });
+
+        return res.status(201).json({
+            message: 'Solicitud enviada correctamente.',
+            ticketId
+        });
+    } catch (error) {
+        console.error('POST /api/solicitud-autor error:', error);
+        return res.status(500).json({ message: 'No se pudo enviar la solicitud.' });
+    }
+});
+// === FIN SOLICITUD AUTOR ===
 
 app.post('/api/register', async (req, res) => {
     try {
