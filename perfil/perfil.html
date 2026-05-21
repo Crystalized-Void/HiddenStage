@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="perfil.css">
+    <script src="../js/toast.js" defer></script>
 </head>
 <body>
     <header class="topbar">
@@ -100,7 +101,39 @@
                 <h1 data-profile-name>Nombre de Usuario/Autor</h1>
                 <p class="handle" data-profile-handle>@example</p>
                 <p class="bio" data-profile-bio>Jugador competitivo, creador de guías y reseñas de videojuegos.</p>
-                <p class="joined"><span data-i18n="profile.joined">Se unió el</span> 13 de febrero del 2026</p>
+
+                <!-- Botón seguir/dejar de seguir y contadores -->
+                <div class="follow-actions" data-follow-actions hidden>
+                    <button type="button" class="follow-btn" data-follow-btn>
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span data-follow-btn-label>Seguir</span>
+                    </button>
+                </div>
+                <div class="follow-counts" data-follow-counts>
+                    <span><strong data-follow-followers>0</strong> seguidores</span>
+                    <span><strong data-follow-following>0</strong> seguidos</span>
+                </div>
+
+                <p class="joined"><span data-i18n="profile.joined">Se unió el</span> <span data-profile-joined>—</span></p>
+
+                <h2 data-i18n="profile.socials">Socials</h2>
+                <div class="social-grid">
+                    <a href="#" aria-label="Red social" data-social-slot="1"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="2"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="3"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="4"><i class="fa-solid fa-link"></i></a>
+                    <a href="#" aria-label="Red social" data-social-slot="5"><i class="fa-solid fa-link"></i></a>
+                </div>
+
+                <div class="following-box">
+                    <div class="following-head">
+                        <h3 data-i18n="profile.following">Seguidos:</h3>
+                        <a href="#" data-i18n="profile.following_more">ver más</a>
+                    </div>
+                    <div class="following-list" data-following-list>
+                        <p class="following-empty" data-following-empty>Aún no sigue a nadie.</p>
+                    </div>
+                </div>
             </aside>
 
             <section class="profile-content">
@@ -160,17 +193,102 @@
             const profileNameText = document.querySelector('[data-profile-name]');
             const profileHandleText = document.querySelector('[data-profile-handle]');
             const profileBioText = document.querySelector('[data-profile-bio]');
+            const profileJoinedText = document.querySelector('[data-profile-joined]');
             const profileAvatar = document.querySelector('.avatar');
             const avatarBadge = document.querySelector('.avatar-badge');
             const profileCover = document.querySelector('.cover');
             const logoutLinks = document.querySelectorAll('[data-logout-link]');
+            const socialSlots = document.querySelectorAll('[data-social-slot]');
+            const followActions = document.querySelector('[data-follow-actions]');
+            const followBtn = document.querySelector('[data-follow-btn]');
+            const followBtnLabel = document.querySelector('[data-follow-btn-label]');
+            const followFollowersEl = document.querySelector('[data-follow-followers]');
+            const followFollowingEl = document.querySelector('[data-follow-following]');
+            const followingListEl = document.querySelector('[data-following-list]');
+            const followingEmptyEl = document.querySelector('[data-following-empty]');
             const postsList = document.querySelector('[data-post-list]');
             const savedList = document.querySelector('[data-saved-list]');
             const defaultBioText = 'Jugador competitivo, creador de guías y reseñas de videojuegos.';
             const PRIVACY_SETTINGS_KEY = 'hiddenstagePrivacySettings';
             let currentSessionUser = null;
 
+            // Soporte para visitar el perfil de otro usuario vía ?user=<id>
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewedUserParam = Number(urlParams.get('user'));
+            let viewedUserId = null;
+            let isOwnProfile = true;
+
             const getLocalizedText = (key, fallback) => window.hiddenstageGetTranslation?.(key, fallback) || fallback;
+
+            const normalizeUrl = (value) => {
+                if (!value || typeof value !== 'string') {
+                    return '';
+                }
+                const trimmedValue = value.trim();
+                if (!trimmedValue) {
+                    return '';
+                }
+                if (/^https?:\/\//i.test(trimmedValue)) {
+                    return trimmedValue;
+                }
+                return `https://${trimmedValue}`;
+            };
+
+            const getSocialIcon = (url) => {
+                const normalized = String(url).toLowerCase();
+                if (normalized.includes('instagram.com')) return { icon: 'fa-brands fa-instagram', label: 'Instagram' };
+                if (normalized.includes('x.com') || normalized.includes('twitter.com')) return { icon: 'fa-brands fa-x-twitter', label: 'X' };
+                if (normalized.includes('facebook.com')) return { icon: 'fa-brands fa-facebook-f', label: 'Facebook' };
+                if (normalized.includes('tiktok.com')) return { icon: 'fa-brands fa-tiktok', label: 'TikTok' };
+                if (normalized.includes('youtube.com') || normalized.includes('youtu.be')) return { icon: 'fa-brands fa-youtube', label: 'YouTube' };
+                if (normalized.includes('twitch.tv')) return { icon: 'fa-brands fa-twitch', label: 'Twitch' };
+                if (normalized.includes('discord.gg') || normalized.includes('discord.com')) return { icon: 'fa-brands fa-discord', label: 'Discord' };
+                if (normalized.includes('linkedin.com')) return { icon: 'fa-brands fa-linkedin-in', label: 'LinkedIn' };
+                if (normalized.includes('github.com')) return { icon: 'fa-brands fa-github', label: 'GitHub' };
+                return { icon: 'fa-solid fa-link', label: 'Enlace' };
+            };
+
+            const renderSocialLinks = (storedUser) => {
+                if (!socialSlots.length) {
+                    return;
+                }
+                const socialLinks = [
+                    storedUser?.red_social_1,
+                    storedUser?.red_social_2,
+                    storedUser?.red_social_3,
+                    storedUser?.red_social_4,
+                    storedUser?.red_social_5
+                ];
+                const visibleLinks = socialLinks
+                    .map((link) => normalizeUrl(link))
+                    .filter((link) => Boolean(link));
+                socialSlots.forEach((slot, index) => {
+                    const iconNode = slot.querySelector('i');
+                    const normalizedUrl = visibleLinks[index] || '';
+                    if (!normalizedUrl) {
+                        slot.classList.add('social-empty');
+                        slot.classList.add('social-hidden');
+                        slot.setAttribute('href', '#');
+                        slot.removeAttribute('target');
+                        slot.removeAttribute('rel');
+                        slot.setAttribute('aria-label', 'Sin red social');
+                        if (iconNode) {
+                            iconNode.className = 'fa-solid fa-link';
+                        }
+                        return;
+                    }
+                    const iconData = getSocialIcon(normalizedUrl);
+                    slot.classList.remove('social-empty');
+                    slot.classList.remove('social-hidden');
+                    slot.setAttribute('href', normalizedUrl);
+                    slot.setAttribute('target', '_blank');
+                    slot.setAttribute('rel', 'noopener noreferrer');
+                    slot.setAttribute('aria-label', iconData.label);
+                    if (iconNode) {
+                        iconNode.className = iconData.icon;
+                    }
+                });
+            };
 
             const applyTheme = () => {
                 const storedTheme = localStorage.getItem(THEME_KEY);
@@ -218,12 +336,13 @@
             };
 
             const readSqlPosts = async () => {
-                if (!currentSessionUser?.id_usuario) {
+                const targetId = viewedUserId || currentSessionUser?.id_usuario;
+                if (!targetId) {
                     return [];
                 }
 
                 try {
-                    const response = await fetch(`${API_BASE}/api/posts/${Number(currentSessionUser.id_usuario)}`);
+                    const response = await fetch(`${API_BASE}/api/posts/${Number(targetId)}`);
                     const data = await response.json();
 
                     if (!response.ok || !Array.isArray(data?.posts)) {
@@ -334,6 +453,11 @@
                 // Agregar contenedor de acciones con botón de eliminar
                 const actionsContainer = document.createElement('div');
                 actionsContainer.className = 'post-actions';
+
+                // Solo mostrar el botón eliminar si es el perfil propio
+                if (!isOwnProfile) {
+                    return article;
+                }
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.type = 'button';
@@ -482,92 +606,298 @@
             const storedUserRaw = localStorage.getItem('hiddenstageUser');
             renderPresenceBadge(readPresenceFromSettings());
 
-            if (storedUserRaw) {
+            // Determinar quién es la sesión y a quién estamos viendo
+            const sessionUserParsed = (() => {
+                if (!storedUserRaw) return null;
+                try { return JSON.parse(storedUserRaw); } catch { return null; }
+            })();
+            currentSessionUser = sessionUserParsed;
+            if (viewedUserParam && (!sessionUserParsed || Number(sessionUserParsed.id_usuario) !== viewedUserParam)) {
+                viewedUserId = viewedUserParam;
+                isOwnProfile = false;
+            } else if (sessionUserParsed?.id_usuario) {
+                viewedUserId = Number(sessionUserParsed.id_usuario);
+                isOwnProfile = true;
+            }
+
+            // Aplicar clase al body para CSS condicional
+            if (!isOwnProfile) {
+                document.body.classList.add('viewing-other');
+            }
+
+            // Construye un badge visual para el rol del usuario.
+            // Sólo muestra badge para Autor (2), Moderador de comunidad (3),
+            // Moderador de autores (4) y Administrador (5).
+            const ROLE_BADGE_CONFIG = {
+                2: { label: 'Autor',                icon: 'fa-solid fa-circle-check', cls: 'role-author' },
+                3: { label: 'Moderador',            icon: 'fa-solid fa-shield-halved', cls: 'role-mod-community' },
+                4: { label: 'Mod. de autores',      icon: 'fa-solid fa-user-shield',   cls: 'role-mod-authors' },
+                5: { label: 'Admin',                icon: 'fa-solid fa-crown',         cls: 'role-admin' }
+            };
+            const buildRoleBadge = (user) => {
+                if (!user) return null;
+                const idRol = Number(user.id_rol);
+                const cfg = ROLE_BADGE_CONFIG[idRol];
+                if (!cfg) return null;
+                const span = document.createElement('span');
+                span.className = `role-badge ${cfg.cls}`;
+                span.title = user.nombre_rol || cfg.label;
+                span.innerHTML = `<i class="${cfg.icon}" aria-hidden="true"></i><span class="role-badge-label">${cfg.label}</span>`;
+                return span;
+            };
+
+            // Pinta el sidebar del perfil (avatar grande, nombre, bio, banner, redes) con un usuario dado
+            const renderProfileSidebar = (user) => {
+                if (!user) return;
+                const username = user.username || 'Usuario';
+                if (profileNameText) {
+                    profileNameText.textContent = username;
+                    // Insertar badge de rol al lado del nombre si aplica
+                    const existingBadge = profileNameText.parentElement?.querySelector('.role-badge');
+                    if (existingBadge) existingBadge.remove();
+                    const badge = buildRoleBadge(user);
+                    if (badge) profileNameText.insertAdjacentElement('afterend', badge);
+                }
+                if (profileHandleText) profileHandleText.textContent = `@${String(username).toLowerCase().replace(/\s+/g, '_')}`;
+                if (profileBioText) {
+                    const bio = typeof user.biografia === 'string' ? user.biografia.trim() : '';
+                    profileBioText.textContent = bio || defaultBioText;
+                }
+                if (profileAvatar) {
+                    const photo = user.foto_perfil || '';
+                    if (photo) {
+                        profileAvatar.style.backgroundImage = `url(${photo})`;
+                        profileAvatar.classList.add('has-photo');
+                    } else {
+                        profileAvatar.style.backgroundImage = '';
+                        profileAvatar.classList.remove('has-photo');
+                    }
+                }
+                if (profileCover) {
+                    const banner = user.banner_perfil || '';
+                    if (banner) {
+                        profileCover.style.backgroundImage = `linear-gradient(108deg, rgba(0, 217, 255, 0.2), rgba(123, 97, 255, 0.22) 45%, rgba(255, 62, 143, 0.25)), url(${banner})`;
+                    } else {
+                        profileCover.style.backgroundImage = '';
+                    }
+                }
+                renderSocialLinks(user);
+                // Fecha de registro (created_at)
+                if (profileJoinedText) {
+                    const raw = user.created_at;
+                    if (raw) {
+                        const d = new Date(raw);
+                        if (!isNaN(d.getTime())) {
+                            const meses = ['enero','febrero','marzo','abril','mayo','junio',
+                                           'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+                            profileJoinedText.textContent =
+                                `${d.getDate()} de ${meses[d.getMonth()]} del ${d.getFullYear()}`;
+                        } else {
+                            profileJoinedText.textContent = '—';
+                        }
+                    } else {
+                        profileJoinedText.textContent = '—';
+                    }
+                }
+            };
+
+            // ====== SISTEMA DE SEGUIDORES (frontend) ======
+            const updateFollowCounts = (data) => {
+                if (followFollowersEl) followFollowersEl.textContent = String(data?.seguidores ?? 0);
+                if (followFollowingEl) followFollowingEl.textContent = String(data?.seguidos ?? 0);
+            };
+            const updateFollowButton = (isFollowing) => {
+                if (!followBtn || !followBtnLabel) return;
+                followBtn.classList.toggle('is-following', !!isFollowing);
+                followBtn.querySelector('i')?.setAttribute(
+                    'class',
+                    isFollowing ? 'fa-solid fa-user-check' : 'fa-solid fa-user-plus'
+                );
+                followBtnLabel.textContent = isFollowing ? 'Siguiendo' : 'Seguir';
+            };
+            const refreshFollowState = async () => {
+                const targetId = viewedUserId || currentSessionUser?.id_usuario;
+                if (!targetId) return;
+                const viewerId = currentSessionUser?.id_usuario;
                 try {
-                    const storedUser = JSON.parse(storedUserRaw);
-                    currentSessionUser = storedUser;
-                    const isOnlineFromUser = typeof storedUser?.status_en_linea === 'boolean'
-                        ? storedUser.status_en_linea
-                        : readPresenceFromSettings();
-                    renderPresenceBadge(isOnlineFromUser);
-
-                    if (storedUser?.username) {
-                        if (userNameText) {
-                            userNameText.textContent = storedUser.username;
+                    const url = `${API_BASE}/api/follow/${targetId}` +
+                        (viewerId ? `?viewer=${viewerId}` : '');
+                    const res = await fetch(url);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    updateFollowCounts(data);
+                    updateFollowButton(data.isFollowing);
+                } catch (_) { /* silencioso */ }
+            };
+            const refreshFollowingList = async () => {
+                const targetId = viewedUserId || currentSessionUser?.id_usuario;
+                if (!targetId || !followingListEl) return;
+                try {
+                    const res = await fetch(`${API_BASE}/api/follow/${targetId}/seguidos?limit=12`);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const list = Array.isArray(data?.seguidos) ? data.seguidos : [];
+                    followingListEl.innerHTML = '';
+                    if (list.length === 0) {
+                        const p = document.createElement('p');
+                        p.className = 'following-empty';
+                        p.textContent = 'Aún no sigue a nadie.';
+                        followingListEl.appendChild(p);
+                        return;
+                    }
+                    list.forEach((u) => {
+                        const a = document.createElement('a');
+                        a.className = 'follow-item';
+                        a.href = `perfil.html?user=${u.id_usuario}`;
+                        const span = document.createElement('span');
+                        if (u.foto_perfil) {
+                            span.style.backgroundImage = `url(${u.foto_perfil})`;
+                            span.style.backgroundSize = 'cover';
+                            span.style.backgroundPosition = 'center';
                         }
+                        a.appendChild(span);
+                        a.appendChild(document.createTextNode(u.username || 'Usuario'));
+                        followingListEl.appendChild(a);
+                    });
+                } catch (_) { /* silencioso */ }
+            };
+            const handleFollowClick = async () => {
+                if (!followBtn) return;
+                const viewerId = currentSessionUser?.id_usuario;
+                const targetId = viewedUserId;
+                if (!viewerId) {
+                    if (typeof showToast === 'function') {
+                        showToast('Inicia sesión para seguir usuarios', 'info');
+                    }
+                    return;
+                }
+                if (!targetId || viewerId === targetId) return;
+                const wasFollowing = followBtn.classList.contains('is-following');
+                followBtn.disabled = true;
+                try {
+                    const res = await fetch(`${API_BASE}/api/follow`, {
+                        method: wasFollowing ? 'DELETE' : 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id_seguidor: viewerId, id_seguido: targetId })
+                    });
+                    if (!res.ok) throw new Error('follow failed');
+                    const data = await res.json();
+                    updateFollowButton(data.isFollowing);
+                    if (followFollowersEl) followFollowersEl.textContent = String(data.seguidores ?? 0);
+                    if (typeof showToast === 'function') {
+                        showToast(data.isFollowing ? 'Ahora sigues a este usuario' : 'Dejaste de seguir', 'success');
+                    }
+                } catch (e) {
+                    if (typeof showToast === 'function') {
+                        showToast('No se pudo completar la acción', 'error');
+                    }
+                } finally {
+                    followBtn.disabled = false;
+                }
+            };
+            if (followBtn) followBtn.addEventListener('click', handleFollowClick);
 
-                        if (userFullNameText) {
-                            userFullNameText.textContent = storedUser.username;
+            // Mostrar el botón seguir sólo si NO es el perfil propio
+            const setupFollowUI = () => {
+                if (followActions) {
+                    followActions.hidden = isOwnProfile;
+                }
+                refreshFollowState();
+                refreshFollowingList();
+            };
+
+            // Pinta la topbar (avatar/nombre del usuario en sesión, no del que se está viendo)
+            const renderTopBar = (sessionUser) => {
+                if (!sessionUser) return;
+                if (sessionUser.username) {
+                    if (userNameText) userNameText.textContent = sessionUser.username;
+                    if (userFullNameText) userFullNameText.textContent = sessionUser.username;
+                    if (sideUsername) sideUsername.textContent = sessionUser.username;
+                    if (sideHandle) sideHandle.textContent = `@${sessionUser.username.toLowerCase().replace(/\s+/g, '_')}`;
+                }
+                if (userTopAvatar) {
+                    const photo = sessionUser.foto_perfil || '';
+                    if (photo) {
+                        userTopAvatar.style.backgroundImage = `url(${photo})`;
+                        userTopAvatar.classList.add('has-photo');
+                        if (sideAvatar) {
+                            sideAvatar.style.backgroundImage = `url(${photo})`;
+                            sideAvatar.classList.add('has-photo');
                         }
-
-                        if (profileNameText) {
-                            profileNameText.textContent = storedUser.username;
-                        }
-
-                        if (profileHandleText) {
-                            profileHandleText.textContent = `@${storedUser.username}`;
-                        }
-
-                        if (sideUsername) {
-                            sideUsername.textContent = storedUser.username;
-                        }
-
-                        if (sideHandle) {
-                            sideHandle.textContent = `@${storedUser.username.toLowerCase().replace(/\s+/g, '_')}`;
+                    } else {
+                        userTopAvatar.style.backgroundImage = '';
+                        userTopAvatar.classList.remove('has-photo');
+                        if (sideAvatar) {
+                            sideAvatar.style.backgroundImage = '';
+                            sideAvatar.classList.remove('has-photo');
                         }
                     }
+                }
+            };
 
-                    if (profileBioText) {
-                        const bio = typeof storedUser?.biografia === 'string'
-                            ? storedUser.biografia.trim()
-                            : '';
-                        profileBioText.textContent = bio || defaultBioText;
-                    }
+            if (sessionUserParsed) {
+                const isOnlineFromUser = typeof sessionUserParsed?.status_en_linea === 'boolean'
+                    ? sessionUserParsed.status_en_linea
+                    : readPresenceFromSettings();
+                renderPresenceBadge(isOnlineFromUser);
+                renderTopBar(sessionUserParsed);
 
-                    if (profileAvatar) {
-                        const photo = storedUser?.foto_perfil || '';
-                        if (photo) {
-                            profileAvatar.style.backgroundImage = `url(${photo})`;
-                            profileAvatar.classList.add('has-photo');
-                        } else {
-                            profileAvatar.style.backgroundImage = '';
-                            profileAvatar.classList.remove('has-photo');
-                        }
-                    }
-
-                    if (profileCover) {
-                        const banner = storedUser?.banner_perfil || '';
-                        if (banner) {
-                            profileCover.style.backgroundImage = `linear-gradient(108deg, rgba(0, 217, 255, 0.2), rgba(123, 97, 255, 0.22) 45%, rgba(255, 62, 143, 0.25)), url(${banner})`;
-                        }
-                    }
-
-                    if (userTopAvatar) {
-                        const photo = storedUser?.foto_perfil || '';
-                        if (photo) {
-                            userTopAvatar.style.backgroundImage = `url(${photo})`;
-                            userTopAvatar.classList.add('has-photo');
-                            if (sideAvatar) {
-                                sideAvatar.style.backgroundImage = `url(${photo})`;
-                                sideAvatar.classList.add('has-photo');
-                            }
-                        } else {
-                            userTopAvatar.style.backgroundImage = '';
-                            userTopAvatar.classList.remove('has-photo');
-                            if (sideAvatar) {
-                                sideAvatar.style.backgroundImage = '';
-                                sideAvatar.classList.remove('has-photo');
-                            }
-                        }
-                    }
-
+                if (isOwnProfile) {
+                    renderProfileSidebar(sessionUserParsed);
                     renderMergedPosts();
                     renderSavedPosts();
-                } catch (error) {
-                    localStorage.removeItem('hiddenstageUser');
+                    setupFollowUI();
+
+                    // Refrescar datos del servidor (perfil propio)
+                    if (sessionUserParsed.id_usuario) {
+                        fetch(`${API_BASE}/api/profile/${sessionUserParsed.id_usuario}`)
+                            .then((r) => (r.ok ? r.json() : null))
+                            .then((data) => {
+                                if (!data?.user) return;
+                                const fresh = { ...sessionUserParsed, ...data.user };
+                                currentSessionUser = fresh;
+                                localStorage.setItem('hiddenstageUser', JSON.stringify(fresh));
+                                renderTopBar(fresh);
+                                renderProfileSidebar(fresh);
+                            })
+                            .catch(() => {});
+                    }
+                } else {
+                    // Viendo perfil de otro usuario: traer sus datos del servidor
+                    renderProfileSidebar({ username: 'Cargando…' });
+                    fetch(`${API_BASE}/api/profile/${viewedUserId}`)
+                        .then((r) => (r.ok ? r.json() : null))
+                        .then((data) => {
+                            if (!data?.user) {
+                                renderProfileSidebar({ username: 'Usuario no encontrado', biografia: '' });
+                                return;
+                            }
+                            renderProfileSidebar(data.user);
+                            renderMergedPosts();
+                            setupFollowUI();
+                        })
+                        .catch(() => {});
                 }
             } else {
-                renderSavedPosts();
+                // Sin sesión: si viene ?user=<id> permitimos verlo, si no, vacío
+                if (!isOwnProfile && viewedUserId) {
+                    renderProfileSidebar({ username: 'Cargando…' });
+                    fetch(`${API_BASE}/api/profile/${viewedUserId}`)
+                        .then((r) => (r.ok ? r.json() : null))
+                        .then((data) => {
+                            if (!data?.user) {
+                                renderProfileSidebar({ username: 'Usuario no encontrado', biografia: '' });
+                                return;
+                            }
+                            renderProfileSidebar(data.user);
+                            renderMergedPosts();
+                            setupFollowUI();
+                        })
+                        .catch(() => {});
+                } else {
+                    renderSocialLinks(null);
+                    renderSavedPosts();
+                }
             }
 
             logoutLinks.forEach((logoutLink) => {
