@@ -840,3 +840,204 @@ body[data-theme="dark"] .delete-post-btn:hover:not(:disabled) {
         font-size: 28px;
     }
 }
+
+
+/* === Socials grid + following box (re-injected) === */
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.social-grid a {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: #d9d9d9;
+    border: 1px solid rgba(124, 105, 168, 0.45);
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #1f1f1f;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-grid a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(6, 15, 42, 0.42);
+}
+
+.social-grid a i {
+    font-size: 22px;
+}
+
+.social-grid a.social-empty {
+    opacity: 0.42;
+}
+
+.social-grid a.social-hidden {
+    display: none;
+}
+
+.following-box {
+    background: var(--panel-soft);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.following-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.following-head h3 {
+    font-size: 15px;
+}
+
+.following-head a {
+    color: #7c69a8;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.following-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.follow-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.follow-item span {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(124, 105, 168, 0.32);
+    display: inline-block;
+}
+
+/* Modo: viendo perfil de otro usuario */
+body.viewing-other .create-post-btn,
+body.viewing-other .posts-toolbar,
+body.viewing-other [data-tab='guardados'],
+body.viewing-other [data-panel='guardados'],
+body.viewing-other .post-actions {
+    display: none !important;
+}
+
+/* Badge de rol al lado del nombre de perfil */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.3px;
+    border: 1px solid transparent;
+    background: rgba(124, 105, 168, 0.16);
+    color: #4b3a8a;
+    width: fit-content;
+}
+.role-badge i { font-size: 12px; }
+.role-badge.role-author {
+    background: linear-gradient(135deg, rgba(45, 156, 219, 0.18), rgba(91, 99, 255, 0.18));
+    color: #2363c4;
+    border-color: rgba(45, 156, 219, 0.4);
+}
+.role-badge.role-mod-community {
+    background: linear-gradient(135deg, rgba(47, 184, 107, 0.18), rgba(80, 200, 120, 0.16));
+    color: #1f7a47;
+    border-color: rgba(47, 184, 107, 0.4);
+}
+.role-badge.role-mod-authors {
+    background: linear-gradient(135deg, rgba(226, 163, 47, 0.2), rgba(255, 188, 80, 0.18));
+    color: #8a5a10;
+    border-color: rgba(226, 163, 47, 0.45);
+}
+.role-badge.role-admin {
+    background: linear-gradient(135deg, rgba(226, 59, 95, 0.18), rgba(180, 60, 200, 0.18));
+    color: #962547;
+    border-color: rgba(226, 59, 95, 0.45);
+}
+body[data-theme="dark"] .role-badge { color: #e8d6ff; }
+body[data-theme="dark"] .role-badge.role-author      { color: #9ad0ff; }
+body[data-theme="dark"] .role-badge.role-mod-community { color: #a6f0c4; }
+body[data-theme="dark"] .role-badge.role-mod-authors { color: #ffd591; }
+body[data-theme="dark"] .role-badge.role-admin       { color: #ffadc6; }
+
+
+/* ====== SISTEMA DE SEGUIDORES ====== */
+.follow-actions {
+    margin-top: 10px;
+}
+.follow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-2);
+    background: var(--accent-2);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+}
+.follow-btn:hover { transform: translateY(-1px); }
+.follow-btn:disabled { opacity: 0.6; cursor: progress; }
+.follow-btn.is-following {
+    background: transparent;
+    color: var(--accent-2);
+}
+.follow-btn.is-following:hover {
+    background: rgba(226, 59, 95, 0.15);
+    color: #c2185b;
+    border-color: #c2185b;
+}
+body[data-theme="dark"] .follow-btn.is-following:hover {
+    background: rgba(255, 110, 140, 0.18);
+    color: #ffadc6;
+    border-color: #ffadc6;
+}
+
+.follow-counts {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+}
+.follow-counts strong {
+    color: var(--text);
+    font-weight: 800;
+    margin-right: 3px;
+}
+
+.following-list a.follow-item {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+.following-list a.follow-item:hover { color: var(--accent-2); }
+.following-empty {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+}
